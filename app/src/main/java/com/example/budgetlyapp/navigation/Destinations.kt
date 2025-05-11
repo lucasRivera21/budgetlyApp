@@ -8,3 +8,8 @@ object SplashScreen : Destinations {
     override val route: String
         get() = "SplashScreen"
 }
+
+object LoginScreen : Destinations {
+    override val route: String
+        get() = "LoginScreen"
+}
