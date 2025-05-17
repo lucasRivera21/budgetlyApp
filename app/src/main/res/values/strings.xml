@@ -33,7 +33,7 @@
     <string name="register_user_info_title">Ahora crea tu cuenta</string>
     <string name="register_repeat_password">Repetir contraseña</string>
     <string name="register_budget_info_title">Ahora queremos conocer tus ingresos</string>
-    <string name="register_income_input">Ingresos mensuales</string>
+    <string name="register_income_input">Ingresos netos mensuales</string>
     <string name="register_frequency_income_input">Tus ingresos los recibes</string>
     <string name="register_next_button">Siguiente</string>
 

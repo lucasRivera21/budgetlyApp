@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.present.register.components.AboutYouScreen
+import com.example.budgetlyapp.present.register.components.IncomingInfoScreen
 import com.example.budgetlyapp.present.register.components.PagerIndicator
 import com.example.budgetlyapp.ui.theme.AppTheme
 import kotlinx.coroutines.launch
@@ -32,6 +33,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun RegisterScreen() {
     val pagerState = rememberPagerState(
+        initialPage = 1,
         pageCount = { 3 }
     )
 
@@ -89,7 +91,8 @@ private fun ViewPager(modifier: Modifier, pagerState: PagerState) {
     Box(modifier = modifier) {
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            userScrollEnabled = false
         ) { page ->
             when (page) {
                 0 -> AboutYouScreen()
@@ -106,11 +109,6 @@ private fun ViewPager(modifier: Modifier, pagerState: PagerState) {
             PagerIndicator(pagerState.pageCount, pagerState.currentPage)
         }
     }
-}
-
-@Composable
-private fun IncomingInfoScreen() {
-    Text("Incoming info")
 }
 
 @Composable
