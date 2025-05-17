@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.present.register.components.AboutYouScreen
+import com.example.budgetlyapp.present.register.components.AccountInfoScreen
 import com.example.budgetlyapp.present.register.components.IncomingInfoScreen
 import com.example.budgetlyapp.present.register.components.PagerIndicator
 import com.example.budgetlyapp.ui.theme.AppTheme
@@ -33,7 +34,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun RegisterScreen() {
     val pagerState = rememberPagerState(
-        initialPage = 1,
         pageCount = { 3 }
     )
 
@@ -77,7 +77,7 @@ private fun Header() {
             )
         }
         Text(
-            "Registrarse",
+            stringResource(R.string.register_title),
             modifier = Modifier.align(Alignment.Center),
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.onSurface
@@ -97,7 +97,7 @@ private fun ViewPager(modifier: Modifier, pagerState: PagerState) {
             when (page) {
                 0 -> AboutYouScreen()
                 1 -> IncomingInfoScreen()
-                2 -> PersonalInfoScreen()
+                2 -> AccountInfoScreen()
             }
         }
 
@@ -109,11 +109,6 @@ private fun ViewPager(modifier: Modifier, pagerState: PagerState) {
             PagerIndicator(pagerState.pageCount, pagerState.currentPage)
         }
     }
-}
-
-@Composable
-private fun PersonalInfoScreen() {
-    Text("Personal info")
 }
 
 @Preview(showSystemUi = true, showBackground = true, apiLevel = 34)
