@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.budgetlyapp.present.SplashScreen
 import com.example.budgetlyapp.present.login.LoginScreen
+import com.example.budgetlyapp.present.register.RegisterScreen
 
 @Composable
 fun AppNavigation() {
@@ -19,7 +20,11 @@ fun AppNavigation() {
         }
 
         composable(LoginScreen.route) {
-            LoginScreen()
+            LoginScreen(navController)
+        }
+
+        composable(RegisterScreen.route) {
+            RegisterScreen(navController)
         }
     }
 }

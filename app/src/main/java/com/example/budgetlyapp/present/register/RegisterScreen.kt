@@ -19,10 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.present.register.components.AboutYouScreen
 import com.example.budgetlyapp.present.register.components.AccountInfoScreen
@@ -32,7 +34,7 @@ import com.example.budgetlyapp.ui.theme.AppTheme
 import kotlinx.coroutines.launch
 
 @Composable
-fun RegisterScreen() {
+fun RegisterScreen(navController: NavController) {
     val pagerState = rememberPagerState(
         pageCount = { 3 }
     )
@@ -43,7 +45,15 @@ fun RegisterScreen() {
             .fillMaxSize()
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        Header()
+        Header {
+            scope.launch {
+                if (pagerState.currentPage != 0) {
+                    pagerState.animateScrollToPage(pagerState.currentPage - 1)
+                } else {
+                    navController.popBackStack()
+                }
+            }
+        }
 
         Spacer(Modifier.size(48.dp))
 
@@ -67,9 +77,11 @@ fun RegisterScreen() {
 }
 
 @Composable
-private fun Header() {
+private fun Header(onChangePage: () -> Unit) {
     Box(modifier = Modifier.fillMaxWidth()) {
-        IconButton(onClick = {}, modifier = Modifier.align(Alignment.CenterStart)) {
+        IconButton(onClick = {
+            onChangePage()
+        }, modifier = Modifier.align(Alignment.CenterStart)) {
             Icon(
                 painter = painterResource(R.drawable.ic_arrow_back),
                 contentDescription = "arrow back",
@@ -115,6 +127,6 @@ private fun ViewPager(modifier: Modifier, pagerState: PagerState) {
 @Composable
 fun RegisterScreenPreview() {
     AppTheme {
-        RegisterScreen()
+        RegisterScreen(NavController(LocalContext.current))
     }
 }

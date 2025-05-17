@@ -19,18 +19,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.budgetlyapp.R
+import com.example.budgetlyapp.navigation.RegisterScreen
 import com.example.budgetlyapp.present.components.CustomTextField
 import com.example.budgetlyapp.ui.theme.AppTheme
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavController) {
     Column(
         Modifier
             .fillMaxSize()
@@ -49,7 +52,7 @@ fun LoginScreen() {
 
         BodyInputs()
 
-        RegisterForgetBox()
+        RegisterForgetBox(navController)
 
         TermsAndConditions()
     }
@@ -85,7 +88,7 @@ fun BodyInputs() {
 }
 
 @Composable
-fun RegisterForgetBox() {
+fun RegisterForgetBox(navController: NavController) {
     Column(
         Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -103,7 +106,9 @@ fun RegisterForgetBox() {
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.labelLarge,
                 textDecoration = TextDecoration.Underline,
-                modifier = Modifier.clickable { }
+                modifier = Modifier.clickable {
+                    navController.navigate(RegisterScreen.route)
+                }
             )
         }
 
@@ -141,6 +146,6 @@ fun TermsAndConditions() {
 @Composable
 fun LoginScreenPreview() {
     AppTheme {
-        LoginScreen()
+        LoginScreen(NavController(LocalContext.current))
     }
 }
