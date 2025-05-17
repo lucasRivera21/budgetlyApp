@@ -11,4 +11,30 @@
     <string name="lgoin_forgot_password">¿Olvidaste tu contraseña?</string>
     <string name="lgoin_accept_terms">Al estar registrado aceptas</string>
     <string name="lgoin_terms_and_conditions">los términos y condiciones</string>
+
+    <!-- Register -->
+    <string name="register_title">Registrarse</string>
+    <string name="register_about_you_title">Primero queremos saber quién eres</string>
+    <string name="register_first_name_input">Nombre</string>
+    <string name="register_last_name_input">Apellido</string>
+    <string name="register_birthday_input">Fecha de nacimiento</string>
+    <string name="register_month_jan">ENE</string>
+    <string name="register_month_feb">FEB</string>
+    <string name="register_month_mar">MAR</string>
+    <string name="register_month_abr">ABR</string>
+    <string name="register_month_may">MAY</string>
+    <string name="register_month_jun">JUN</string>
+    <string name="register_month_jul">JUL</string>
+    <string name="register_month_aug">AGO</string>
+    <string name="register_month_sep">SEP</string>
+    <string name="register_month_oct">OCT</string>
+    <string name="register_month_nov">NOV</string>
+    <string name="register_month_dic">DIC</string>
+    <string name="register_user_info_title">Ahora crea tu cuenta</string>
+    <string name="register_repeat_password">Repetir contraseña</string>
+    <string name="register_budget_info_title">Ahora queremos conocer tus ingresos</string>
+    <string name="register_income_input">Ingresos mensuales</string>
+    <string name="register_frequency_income_input">Tus ingresos los recibes</string>
+    <string name="register_next_button">Siguiente</string>
+
 </resources>

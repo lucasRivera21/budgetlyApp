@@ -60,4 +60,7 @@ dependencies {
 
     //Navigation
     implementation(libs.androidx.navigation.compose)
+
+    //Picker
+    implementation(libs.numberpicker)
 }
