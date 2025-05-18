@@ -30,16 +30,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.budgetlyapp.R
-import com.example.budgetlyapp.ui.theme.AppTheme
+import com.example.budgetlyapp.present.register.RegisterViewModel
 
 @Composable
-fun IncomingInfoScreen() {
+fun IncomingInfoScreen(
+    incomeValue: String,
+    moneyType: String,
+    registerViewModel: RegisterViewModel
+) {
     var expanded by remember { mutableStateOf(false) }
-    val options = listOf("USD", "COP", "EUR")
-    var optionSelected by remember { mutableStateOf(options[0]) }
+    val options = registerViewModel.returnMoneyTypeList()
     val animationRotate by animateFloatAsState(
         targetValue = if (expanded) -180f else 0f,
         label = "Rotate"
@@ -52,8 +54,10 @@ fun IncomingInfoScreen() {
             modifier = Modifier.fillMaxWidth()
         ) {
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = incomeValue,
+                onValueChange = {
+                    registerViewModel.onIncomeValueChange(it)
+                },
                 label = { Text(stringResource(R.string.register_income_input)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 modifier = Modifier.weight(1f)
@@ -70,7 +74,7 @@ fun IncomingInfoScreen() {
                         .padding(8.dp)
 
                 ) {
-                    Text(optionSelected)
+                    Text(moneyType)
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = "arrow down icon",
@@ -88,7 +92,7 @@ fun IncomingInfoScreen() {
                         DropdownMenuItem(
                             text = { Text(it) },
                             onClick = {
-                                optionSelected = it
+                                registerViewModel.onMoneyTypeChange(it)
                                 expanded = false
                             }
                         )
@@ -96,13 +100,5 @@ fun IncomingInfoScreen() {
                 }
             }
         }
-    }
-}
-
-@Preview(apiLevel = 34, showBackground = true)
-@Composable
-fun IncomingInfoScreenPreview() {
-    AppTheme {
-        IncomingInfoScreen()
     }
 }

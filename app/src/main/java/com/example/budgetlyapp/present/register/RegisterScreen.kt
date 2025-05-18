@@ -46,11 +46,16 @@ fun RegisterScreen(
     )
     val scope = rememberCoroutineScope()
 
+    //About You
     val name by registerViewModel.name.collectAsState()
     val lastName by registerViewModel.lastName.collectAsState()
     val dayBirth by registerViewModel.dayBirth.collectAsState()
     val monthBirth by registerViewModel.monthBirth.collectAsState()
     val yearBirth by registerViewModel.yearBirth.collectAsState()
+
+    //Incoming Info
+    val incomeValue by registerViewModel.incomeValue.collectAsState()
+    val moneyType by registerViewModel.moneyType.collectAsState()
 
     Column(
         modifier = Modifier
@@ -79,6 +84,8 @@ fun RegisterScreen(
             dayBirth,
             monthBirth,
             yearBirth,
+            incomeValue,
+            moneyType,
             registerViewModel
         )
 
@@ -126,6 +133,8 @@ private fun ViewPager(
     dayBirth: String,
     monthBirth: String,
     yearBirth: String,
+    incomeValue: String,
+    moneyType: String,
     registerViewModel: RegisterViewModel
 ) {
 
@@ -145,7 +154,7 @@ private fun ViewPager(
                     registerViewModel
                 )
 
-                1 -> IncomingInfoScreen()
+                1 -> IncomingInfoScreen(incomeValue, moneyType, registerViewModel)
                 2 -> AccountInfoScreen()
             }
         }

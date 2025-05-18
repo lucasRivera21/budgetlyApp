@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.present.register.models.RegisterUserModel
+import com.example.budgetlyapp.utils.Util.Companion.MoneyType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +30,7 @@ class RegisterViewModel @Inject constructor(@ApplicationContext private val cont
     private val _monthBirth = MutableStateFlow("")
     val monthBirth = _monthBirth
 
-    private var selectedMonthBirth = 0
+    private var selectedMonthBirth = 1
 
     private val _yearBirth = MutableStateFlow(LocalDate.now().year.toString())
     val yearBirth = _yearBirth
@@ -85,6 +86,23 @@ class RegisterViewModel @Inject constructor(@ApplicationContext private val cont
     }
 
     //Incoming Info
+    private val _incomeValue = MutableStateFlow("")
+    val incomeValue = _incomeValue
+
+    private val _moneyType = MutableStateFlow(MoneyType.entries[0].returnMoneyType())
+    val moneyType = _moneyType
+
+    fun returnMoneyTypeList(): List<String> {
+        return MoneyType.entries.map { it.returnMoneyType() }
+    }
+
+    fun onIncomeValueChange(newIncomeValue: String) {
+        _incomeValue.value = newIncomeValue
+    }
+
+    fun onMoneyTypeChange(newMoneyType: String) {
+        _moneyType.value = newMoneyType
+    }
 
     //Account Info
 
@@ -104,9 +122,22 @@ class RegisterViewModel @Inject constructor(@ApplicationContext private val cont
         changePage()
     }
 
+    private fun validateIncomingInfo(changePage: () -> Unit) {
+        if (_incomeValue.value.isEmpty()) {
+            Toast.makeText(context, "Complete los campos", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        registerUser.incomeValue = _incomeValue.value
+        registerUser.moneyType = _moneyType.value
+
+        changePage()
+    }
+
     fun validateForm(page: Int, changePage: () -> Unit) {
         when (page) {
             0 -> validateAboutYou(changePage)
+            1 -> validateIncomingInfo(changePage)
         }
     }
 }
