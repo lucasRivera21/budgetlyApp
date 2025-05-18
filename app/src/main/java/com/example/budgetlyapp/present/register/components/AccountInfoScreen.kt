@@ -4,43 +4,45 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.present.components.CustomTextField
-import com.example.budgetlyapp.ui.theme.AppTheme
+import com.example.budgetlyapp.present.register.RegisterViewModel
 
 @Composable
-fun AccountInfoScreen() {
+fun AccountInfoScreen(
+    email: String,
+    password: String,
+    confirmPassword: String,
+    registerViewModel: RegisterViewModel
+) {
     FormRegister(stringResource(R.string.register_user_info_title)) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             CustomTextField(
                 textLabel = stringResource(R.string.lgoin_email_input),
-                textValue = "",
-                onValueChange = {}
+                textValue = email,
+                onValueChange = {
+                    registerViewModel.onChangeEmail(it)
+                }
             )
 
             CustomTextField(
                 textLabel = stringResource(R.string.lgoin_password_input),
-                textValue = "",
-                onValueChange = {},
+                textValue = password,
+                onValueChange = {
+                    registerViewModel.onChangePassword(it)
+                },
                 isPasswordField = true
             )
 
             CustomTextField(
                 textLabel = stringResource(R.string.register_repeat_password),
-                textValue = "",
-                onValueChange = {},
+                textValue = confirmPassword,
+                onValueChange = {
+                    registerViewModel.onChangeConfirmPassword(it)
+                },
                 isPasswordField = true
             )
         }
-    }
-}
-
-@Preview(showBackground = true, apiLevel = 34)
-@Composable
-fun AccountInfoScreenPreview() {
-    AppTheme {
-        AccountInfoScreen()
     }
 }

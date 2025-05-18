@@ -2,6 +2,7 @@ package com.example.budgetlyapp.present.register
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.present.register.models.RegisterUserModel
@@ -106,10 +107,31 @@ class RegisterViewModel @Inject constructor(@ApplicationContext private val cont
 
     //Account Info
 
+    private val _email = MutableStateFlow("")
+    val email = _email
+
+    private val _password = MutableStateFlow("")
+    val password = _password
+
+    private val _confirmPassword = MutableStateFlow("")
+    val confirmPassword = _confirmPassword
+
+    fun onChangeEmail(newEmail: String) {
+        _email.value = newEmail
+    }
+
+    fun onChangePassword(newPassword: String) {
+        _password.value = newPassword
+    }
+
+    fun onChangeConfirmPassword(newConfirmPassword: String) {
+        _confirmPassword.value = newConfirmPassword
+    }
+
     //Validate Form
     private fun validateAboutYou(changePage: () -> Unit) {
         if (_name.value.isEmpty() || _lastName.value.isEmpty()) {
-            Toast.makeText(context, "Complete los campos", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Completa los campos", Toast.LENGTH_SHORT).show()
             return
         }
         val birthDate =
@@ -124,7 +146,7 @@ class RegisterViewModel @Inject constructor(@ApplicationContext private val cont
 
     private fun validateIncomingInfo(changePage: () -> Unit) {
         if (_incomeValue.value.isEmpty()) {
-            Toast.makeText(context, "Complete los campos", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Completa los campos", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -134,10 +156,25 @@ class RegisterViewModel @Inject constructor(@ApplicationContext private val cont
         changePage()
     }
 
+    private fun validateAccountInfo(changePage: () -> Unit) {
+        if (_email.value.isEmpty() || _password.value.isEmpty() || _confirmPassword.value.isEmpty()) {
+            Toast.makeText(context, "Completa los campos", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (_password.value != _confirmPassword.value) {
+            Toast.makeText(context, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        changePage()
+    }
+
     fun validateForm(page: Int, changePage: () -> Unit) {
         when (page) {
             0 -> validateAboutYou(changePage)
             1 -> validateIncomingInfo(changePage)
+            2 -> validateAccountInfo(changePage)
         }
     }
 }

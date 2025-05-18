@@ -46,6 +46,9 @@ fun RegisterScreen(
     )
     val scope = rememberCoroutineScope()
 
+    val textButton =
+        stringResource(if (pagerState.currentPage == pagerState.pageCount - 1) R.string.register_title else R.string.register_next_button)
+
     //About You
     val name by registerViewModel.name.collectAsState()
     val lastName by registerViewModel.lastName.collectAsState()
@@ -56,6 +59,11 @@ fun RegisterScreen(
     //Incoming Info
     val incomeValue by registerViewModel.incomeValue.collectAsState()
     val moneyType by registerViewModel.moneyType.collectAsState()
+
+    //Account Info
+    val email by registerViewModel.email.collectAsState()
+    val password by registerViewModel.password.collectAsState()
+    val confirmPassword by registerViewModel.confirmPassword.collectAsState()
 
     Column(
         modifier = Modifier
@@ -86,6 +94,9 @@ fun RegisterScreen(
             yearBirth,
             incomeValue,
             moneyType,
+            email,
+            password,
+            confirmPassword,
             registerViewModel
         )
 
@@ -98,7 +109,7 @@ fun RegisterScreen(
                 }
             }
         }, modifier = Modifier.fillMaxWidth()) {
-            Text(stringResource(R.string.register_next_button))
+            Text(textButton)
         }
     }
 }
@@ -135,6 +146,9 @@ private fun ViewPager(
     yearBirth: String,
     incomeValue: String,
     moneyType: String,
+    email: String,
+    password: String,
+    confirmPassword: String,
     registerViewModel: RegisterViewModel
 ) {
 
@@ -155,7 +169,7 @@ private fun ViewPager(
                 )
 
                 1 -> IncomingInfoScreen(incomeValue, moneyType, registerViewModel)
-                2 -> AccountInfoScreen()
+                2 -> AccountInfoScreen(email, password, confirmPassword, registerViewModel)
             }
         }
 
