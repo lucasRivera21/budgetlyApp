@@ -16,6 +16,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.present.register.components.AboutYouScreen
@@ -34,12 +37,21 @@ import com.example.budgetlyapp.ui.theme.AppTheme
 import kotlinx.coroutines.launch
 
 @Composable
-fun RegisterScreen(navController: NavController) {
+fun RegisterScreen(
+    navController: NavController,
+    registerViewModel: RegisterViewModel = hiltViewModel()
+) {
     val pagerState = rememberPagerState(
         pageCount = { 3 }
     )
-
     val scope = rememberCoroutineScope()
+
+    val name by registerViewModel.name.collectAsState()
+    val lastName by registerViewModel.lastName.collectAsState()
+    val dayBirth by registerViewModel.dayBirth.collectAsState()
+    val monthBirth by registerViewModel.monthBirth.collectAsState()
+    val yearBirth by registerViewModel.yearBirth.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -61,13 +73,21 @@ fun RegisterScreen(navController: NavController) {
             Modifier
                 .weight(1f)
                 .fillMaxWidth(),
-            pagerState
+            pagerState,
+            name,
+            lastName,
+            dayBirth,
+            monthBirth,
+            yearBirth,
+            registerViewModel
         )
 
         Button(onClick = {
-            scope.launch {
-                if (pagerState.pageCount != pagerState.currentPage + 1) {
-                    pagerState.animateScrollToPage(pagerState.currentPage + 1)
+            registerViewModel.validateForm(pagerState.currentPage) {
+                scope.launch {
+                    if (pagerState.pageCount != pagerState.currentPage + 1) {
+                        pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                    }
                 }
             }
         }, modifier = Modifier.fillMaxWidth()) {
@@ -98,7 +118,16 @@ private fun Header(onChangePage: () -> Unit) {
 }
 
 @Composable
-private fun ViewPager(modifier: Modifier, pagerState: PagerState) {
+private fun ViewPager(
+    modifier: Modifier,
+    pagerState: PagerState,
+    name: String,
+    lastName: String,
+    dayBirth: String,
+    monthBirth: String,
+    yearBirth: String,
+    registerViewModel: RegisterViewModel
+) {
 
     Box(modifier = modifier) {
         HorizontalPager(
@@ -107,7 +136,15 @@ private fun ViewPager(modifier: Modifier, pagerState: PagerState) {
             userScrollEnabled = false
         ) { page ->
             when (page) {
-                0 -> AboutYouScreen()
+                0 -> AboutYouScreen(
+                    name,
+                    lastName,
+                    dayBirth,
+                    monthBirth,
+                    yearBirth,
+                    registerViewModel
+                )
+
                 1 -> IncomingInfoScreen()
                 2 -> AccountInfoScreen()
             }
