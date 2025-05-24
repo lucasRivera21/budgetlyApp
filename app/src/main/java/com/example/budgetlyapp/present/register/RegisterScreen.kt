@@ -101,7 +101,7 @@ fun RegisterScreen(
         )
 
         Button(onClick = {
-            registerViewModel.validateForm(pagerState.currentPage) {
+            registerViewModel.validateForm(pagerState.currentPage, navController) {
                 scope.launch {
                     if (pagerState.pageCount != pagerState.currentPage + 1) {
                         pagerState.animateScrollToPage(pagerState.currentPage + 1)

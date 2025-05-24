@@ -1,11 +1,15 @@
 package com.example.budgetlyapp.present.register
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import com.example.budgetlyapp.R
+import com.example.budgetlyapp.navigation.MainScreen
 import com.example.budgetlyapp.present.register.models.RegisterUserModel
 import com.example.budgetlyapp.utils.Util.Companion.MoneyType
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +17,10 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class RegisterViewModel @Inject constructor(@ApplicationContext private val context: Context) :
+class RegisterViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val auth: FirebaseAuth
+) :
     ViewModel() {
     private val registerUser = RegisterUserModel()
 
@@ -155,7 +162,7 @@ class RegisterViewModel @Inject constructor(@ApplicationContext private val cont
         changePage()
     }
 
-    private fun validateAccountInfo(changePage: () -> Unit) {
+    private fun validateAccountInfo(changePage: () -> Unit, navController: NavController) {
         if (_email.value.isEmpty() || _password.value.isEmpty() || _confirmPassword.value.isEmpty()) {
             Toast.makeText(context, "Completa los campos", Toast.LENGTH_SHORT).show()
             return
@@ -167,13 +174,27 @@ class RegisterViewModel @Inject constructor(@ApplicationContext private val cont
         }
 
         changePage()
+
+        registerNewUser(navController)
+
     }
 
-    fun validateForm(page: Int, changePage: () -> Unit) {
+    private fun registerNewUser(navController: NavController) {
+        auth.createUserWithEmailAndPassword(_email.value, _password.value).addOnCompleteListener {
+            if (it.isSuccessful) {
+                it.result.user?.uid
+                navController.navigate(MainScreen.route)
+            } else {
+                Toast.makeText(context, "Error al registrar", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    fun validateForm(page: Int, navController: NavController, changePage: () -> Unit) {
         when (page) {
             0 -> validateAboutYou(changePage)
             1 -> validateIncomingInfo(changePage)
-            2 -> validateAccountInfo(changePage)
+            2 -> validateAccountInfo(changePage, navController)
         }
     }
 }
