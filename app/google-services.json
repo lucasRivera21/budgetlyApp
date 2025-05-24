@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "479243981654",
+    "firebase_url": "https://budgetly-2c8ea-default-rtdb.firebaseio.com",
+    "project_id": "budgetly-2c8ea",
+    "storage_bucket": "budgetly-2c8ea.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:479243981654:android:d5a49806d14f84baecbcf7",
+        "android_client_info": {
+          "package_name": "com.example.budgetly"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsrm6wJnNDO4D-k7hwdOGcKkQIkUo7V_w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:479243981654:android:8b3d249d358d5430ecbcf7",
+        "android_client_info": {
+          "package_name": "com.example.budgetlyapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsrm6wJnNDO4D-k7hwdOGcKkQIkUo7V_w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

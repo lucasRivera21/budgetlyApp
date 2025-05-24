@@ -2,7 +2,6 @@ package com.example.budgetlyapp.present.register
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.present.register.models.RegisterUserModel
