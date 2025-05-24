@@ -18,3 +18,8 @@ object RegisterScreen : Destinations {
     override val route: String
         get() = "RegisterScreen"
 }
+
+object MainScreen : Destinations {
+    override val route: String
+        get() = "MainScreen"
+}

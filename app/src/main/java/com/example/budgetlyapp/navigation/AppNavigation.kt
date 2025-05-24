@@ -4,8 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.budgetlyapp.present.SplashScreen
+import com.example.budgetlyapp.present.splash.SplashScreen
 import com.example.budgetlyapp.present.login.LoginScreen
+import com.example.budgetlyapp.present.main.MainScreen
 import com.example.budgetlyapp.present.register.RegisterScreen
 
 @Composable
@@ -25,6 +26,10 @@ fun AppNavigation() {
 
         composable(RegisterScreen.route) {
             RegisterScreen(navController)
+        }
+
+        composable(MainScreen.route) {
+            MainScreen()
         }
     }
 }

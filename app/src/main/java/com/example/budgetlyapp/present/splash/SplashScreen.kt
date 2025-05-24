@@ -1,4 +1,4 @@
-package com.example.budgetlyapp.present
+package com.example.budgetlyapp.present.splash
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -11,13 +11,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.budgetlyapp.navigation.LoginScreen
 
 @Composable
-fun SplashScreen(navController: NavHostController) {
+fun SplashScreen(
+    navController: NavHostController,
+    splashViewModel: SplashViewModel = hiltViewModel()
+) {
     LaunchedEffect(Unit) {
-        navController.navigate(LoginScreen.route)
+        splashViewModel.navigate(navController)
     }
 
     Box(
