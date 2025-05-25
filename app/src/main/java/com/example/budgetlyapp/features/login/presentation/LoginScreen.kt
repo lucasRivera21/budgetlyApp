@@ -1,4 +1,4 @@
-package com.example.budgetlyapp.present.login
+package com.example.budgetlyapp.features.login.presentation
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.navigation.RegisterScreen
-import com.example.budgetlyapp.present.components.CustomTextField
+import com.example.budgetlyapp.common.presentation.components.CustomTextField
 import com.example.budgetlyapp.ui.theme.AppTheme
 
 @Composable

@@ -1,4 +1,4 @@
-package com.example.budgetlyapp.present.register.components
+package com.example.budgetlyapp.features.register.presentation.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.border
@@ -32,7 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.budgetlyapp.R
-import com.example.budgetlyapp.present.register.RegisterViewModel
+import com.example.budgetlyapp.features.register.presentation.RegisterViewModel
 
 @Composable
 fun IncomingInfoScreen(

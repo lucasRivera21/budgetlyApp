@@ -1,4 +1,4 @@
-package com.example.budgetlyapp.present.register.models
+package com.example.budgetlyapp.features.register.domain.model
 
 data class RegisterUserModel(
     var name: String? = null,

@@ -1,4 +1,4 @@
-package com.example.budgetlyapp.present.register
+package com.example.budgetlyapp.features.register.presentation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,10 +29,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.budgetlyapp.R
-import com.example.budgetlyapp.present.register.components.AboutYouScreen
-import com.example.budgetlyapp.present.register.components.AccountInfoScreen
-import com.example.budgetlyapp.present.register.components.IncomingInfoScreen
-import com.example.budgetlyapp.present.register.components.PagerIndicator
+import com.example.budgetlyapp.features.register.presentation.components.AboutYouScreen
+import com.example.budgetlyapp.features.register.presentation.components.AccountInfoScreen
+import com.example.budgetlyapp.features.register.presentation.components.IncomingInfoScreen
+import com.example.budgetlyapp.features.register.presentation.components.PagerIndicator
 import com.example.budgetlyapp.ui.theme.AppTheme
 import kotlinx.coroutines.launch
 

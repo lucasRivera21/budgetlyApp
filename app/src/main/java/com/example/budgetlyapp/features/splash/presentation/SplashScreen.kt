@@ -1,4 +1,4 @@
-package com.example.budgetlyapp.present.splash
+package com.example.budgetlyapp.features.splash.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

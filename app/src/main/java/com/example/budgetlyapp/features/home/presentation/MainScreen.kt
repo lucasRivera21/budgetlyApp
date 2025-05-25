@@ -1,9 +1,9 @@
-package com.example.budgetlyapp.present.main
+package com.example.budgetlyapp.features.home.presentation
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-fun MainScreen() {
+fun HomeScreen() {
     Text(text = "Hola Mundo Main Screen")
 }

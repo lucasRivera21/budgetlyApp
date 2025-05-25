@@ -1,4 +1,4 @@
-package com.example.budgetlyapp
+package com.example.budgetlyapp.features
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

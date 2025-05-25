@@ -1,14 +1,13 @@
-package com.example.budgetlyapp.present.register
+package com.example.budgetlyapp.features.register.presentation
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.example.budgetlyapp.R
-import com.example.budgetlyapp.navigation.MainScreen
-import com.example.budgetlyapp.present.register.models.RegisterUserModel
-import com.example.budgetlyapp.utils.Util.Companion.MoneyType
+import com.example.budgetlyapp.navigation.HomeScreen
+import com.example.budgetlyapp.features.register.domain.model.RegisterUserModel
+import com.example.budgetlyapp.common.Util.Companion.MoneyType
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -183,7 +182,7 @@ class RegisterViewModel @Inject constructor(
         auth.createUserWithEmailAndPassword(_email.value, _password.value).addOnCompleteListener {
             if (it.isSuccessful) {
                 it.result.user?.uid
-                navController.navigate(MainScreen.route)
+                navController.navigate(HomeScreen.route)
             } else {
                 Toast.makeText(context, "Error al registrar", Toast.LENGTH_SHORT).show()
             }

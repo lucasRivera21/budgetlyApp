@@ -1,4 +1,4 @@
-package com.example.budgetlyapp.present.register.components
+package com.example.budgetlyapp.features.register.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

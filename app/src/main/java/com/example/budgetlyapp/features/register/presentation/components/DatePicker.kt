@@ -1,4 +1,4 @@
-package com.example.budgetlyapp.present.register.components
+package com.example.budgetlyapp.features.register.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -8,7 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.chargemap.compose.numberpicker.ListItemPicker
-import com.example.budgetlyapp.present.register.RegisterViewModel
+import com.example.budgetlyapp.features.register.presentation.RegisterViewModel
 
 @Composable
 fun DatePicker(
