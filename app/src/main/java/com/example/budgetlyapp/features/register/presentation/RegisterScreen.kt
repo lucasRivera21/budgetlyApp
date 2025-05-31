@@ -11,6 +11,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -48,6 +49,8 @@ fun RegisterScreen(
 
     val textButton =
         stringResource(if (pagerState.currentPage == pagerState.pageCount - 1) R.string.register_title else R.string.register_next_button)
+
+    val isLoading by registerViewModel.isLoadingFlow.collectAsState()
 
     //About You
     val name by registerViewModel.name.collectAsState()
@@ -109,7 +112,15 @@ fun RegisterScreen(
                 }
             }
         }, modifier = Modifier.fillMaxWidth()) {
-            Text(textButton)
+            if (!isLoading) {
+                Text(textButton)
+            } else {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    strokeWidth = 2.dp
+                )
+            }
         }
     }
 }

@@ -9,7 +9,7 @@ import androidx.navigation.NavController
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.features.register.domain.model.RegisterUserModel
 import com.example.budgetlyapp.common.Util.Companion.MoneyType
-import com.example.budgetlyapp.features.register.domain.usecase.RegisterNewUserUseCase
+import com.example.budgetlyapp.features.register.domain.usecase.RegisterUserUseCase
 import com.example.budgetlyapp.navigation.HomeScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -25,10 +25,13 @@ const val TAG = "RegisterViewModel"
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val registerNewUserUseCase: RegisterNewUserUseCase,
+    private val registerUserUseCase: RegisterUserUseCase
 ) :
     ViewModel() {
     private val registerUser = RegisterUserModel()
+
+    private val isLoading = MutableStateFlow(false)
+    val isLoadingFlow: MutableStateFlow<Boolean> = isLoading
 
     //About You
     private val _name = MutableStateFlow("")
@@ -182,18 +185,22 @@ class RegisterViewModel @Inject constructor(
         changePage()
 
         viewModelScope.launch(Dispatchers.IO) {
-            val resultNewUser = registerNewUserUseCase(_email.value, _password.value)
-            if (resultNewUser.isSuccess) {
-                Log.d(TAG, "Registro exitoso, uuid: ${resultNewUser.getOrNull()}")
-                withContext(Dispatchers.Main) {
+            isLoading.value = true
+            val resultUser = registerUserUseCase(_email.value, _password.value, registerUser)
+
+            withContext(Dispatchers.Main) {
+                if (resultUser.isSuccess) {
                     navController.navigate(HomeScreen.route)
-                }
-            } else {
-                Log.d(TAG, "Error al registrar: ${resultNewUser.exceptionOrNull()}")
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "Error al registrar", Toast.LENGTH_SHORT).show()
+                } else {
+                    Log.d(TAG, "Error: ${resultUser.exceptionOrNull()}")
+                    Toast.makeText(
+                        context,
+                        "Error al registrarse",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
+            isLoading.value = false
         }
     }
 
