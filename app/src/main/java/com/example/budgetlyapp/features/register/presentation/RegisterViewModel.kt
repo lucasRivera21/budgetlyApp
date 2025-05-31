@@ -1,24 +1,31 @@
 package com.example.budgetlyapp.features.register.presentation
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.budgetlyapp.R
-import com.example.budgetlyapp.navigation.HomeScreen
 import com.example.budgetlyapp.features.register.domain.model.RegisterUserModel
 import com.example.budgetlyapp.common.Util.Companion.MoneyType
-import com.google.firebase.auth.FirebaseAuth
+import com.example.budgetlyapp.features.register.domain.usecase.RegisterNewUserUseCase
+import com.example.budgetlyapp.navigation.HomeScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import javax.inject.Inject
+
+const val TAG = "RegisterViewModel"
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val auth: FirebaseAuth
+    private val registerNewUserUseCase: RegisterNewUserUseCase,
 ) :
     ViewModel() {
     private val registerUser = RegisterUserModel()
@@ -174,17 +181,18 @@ class RegisterViewModel @Inject constructor(
 
         changePage()
 
-        registerNewUser(navController)
-
-    }
-
-    private fun registerNewUser(navController: NavController) {
-        auth.createUserWithEmailAndPassword(_email.value, _password.value).addOnCompleteListener {
-            if (it.isSuccessful) {
-                it.result.user?.uid
-                navController.navigate(HomeScreen.route)
+        viewModelScope.launch(Dispatchers.IO) {
+            val resultNewUser = registerNewUserUseCase(_email.value, _password.value)
+            if (resultNewUser.isSuccess) {
+                Log.d(TAG, "Registro exitoso, uuid: ${resultNewUser.getOrNull()}")
+                withContext(Dispatchers.Main) {
+                    navController.navigate(HomeScreen.route)
+                }
             } else {
-                Toast.makeText(context, "Error al registrar", Toast.LENGTH_SHORT).show()
+                Log.d(TAG, "Error al registrar: ${resultNewUser.exceptionOrNull()}")
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Error al registrar", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
