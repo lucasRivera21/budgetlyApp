@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.budgetlyapp.features.login.domain.LoginUserUseCase
-import com.example.budgetlyapp.navigation.HomeScreen
+import com.example.budgetlyapp.navigation.MainScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -44,7 +44,7 @@ class LoginViewModel @Inject constructor(
             val resultLogin = loginUserUseCase(email.value, password.value)
             withContext(Dispatchers.Main) {
                 if (resultLogin.isSuccess) {
-                    navController.navigate(HomeScreen.route)
+                    navController.navigate(MainScreen.route)
                 } else {
                     Toast.makeText(context, "Revisa los campos", Toast.LENGTH_SHORT).show()
                 }

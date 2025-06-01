@@ -6,9 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.budgetlyapp.features.home.presentation.HomeScreen
 import com.example.budgetlyapp.features.splash.presentation.SplashScreen
 import com.example.budgetlyapp.features.login.presentation.LoginScreen
+import com.example.budgetlyapp.features.main.presentation.MainScreen
 import com.example.budgetlyapp.features.register.presentation.RegisterScreen
 
 @Composable
@@ -42,8 +42,8 @@ fun AppNavigation() {
             RegisterScreen(navController)
         }
 
-        composable(HomeScreen.route) {
-            HomeScreen()
+        composable(MainScreen.route) {
+            MainScreen()
         }
     }
 }

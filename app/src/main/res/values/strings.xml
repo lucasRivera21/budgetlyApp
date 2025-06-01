@@ -37,4 +37,9 @@
     <string name="register_frequency_income_input">Tus ingresos los recibes</string>
     <string name="register_next_button">Siguiente</string>
 
+    <!-- Main -->
+    <string name="main_home_title">Inicio</string>
+    <string name="main_expense_title">Gastos</string>
+    <string name="main_profile_title">Perfil</string>
+
 </resources>

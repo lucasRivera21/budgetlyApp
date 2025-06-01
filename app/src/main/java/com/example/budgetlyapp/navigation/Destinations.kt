@@ -19,7 +19,22 @@ object RegisterScreen : Destinations {
         get() = "RegisterScreen"
 }
 
+object MainScreen : Destinations {
+    override val route: String
+        get() = "MainScreen"
+}
+
 object HomeScreen : Destinations {
     override val route: String
         get() = "HomeScreen"
+}
+
+object ExpenseScreen : Destinations {
+    override val route: String
+        get() = "ExpenseScreen"
+}
+
+object ProfileScreen : Destinations {
+    override val route: String
+        get() = "ProfileScreen"
 }

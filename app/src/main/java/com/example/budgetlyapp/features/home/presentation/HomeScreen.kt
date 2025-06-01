@@ -5,5 +5,5 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun HomeScreen() {
-    Text(text = "Hola Mundo Main Screen")
+    Text(text = "Hola Mundo Home Screen")
 }
