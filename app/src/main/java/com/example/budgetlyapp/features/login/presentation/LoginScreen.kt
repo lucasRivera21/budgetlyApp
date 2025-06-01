@@ -10,13 +10,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -26,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.navigation.RegisterScreen
@@ -33,7 +33,11 @@ import com.example.budgetlyapp.common.presentation.components.CustomTextField
 import com.example.budgetlyapp.ui.theme.AppTheme
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = hiltViewModel()) {
+    val email by loginViewModel.email.collectAsState()
+    val password by loginViewModel.password.collectAsState()
+    val isLoading by loginViewModel.isLoading.collectAsState()
+
     Column(
         Modifier
             .fillMaxSize()
@@ -50,7 +54,7 @@ fun LoginScreen(navController: NavController) {
             textAlign = TextAlign.Center
         )
 
-        BodyInputs()
+        BodyInputs(email, password, loginViewModel, navController, isLoading)
 
         RegisterForgetBox(navController)
 
@@ -59,16 +63,19 @@ fun LoginScreen(navController: NavController) {
 }
 
 @Composable
-fun BodyInputs() {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-
+fun BodyInputs(
+    email: String,
+    password: String,
+    loginViewModel: LoginViewModel,
+    navController: NavController,
+    isLoading: Boolean
+) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         CustomTextField(
             textLabel = stringResource(R.string.lgoin_email_input),
             textValue = email,
             onValueChange = {
-                email = it
+                loginViewModel.onChangeEmail(it)
             }
         )
 
@@ -76,13 +83,22 @@ fun BodyInputs() {
             textLabel = stringResource(R.string.lgoin_password_input),
             textValue = password,
             onValueChange = {
-                password = it
+                loginViewModel.onChangePassword(it)
             },
             isPasswordField = true
         )
 
-        Button(onClick = { }, modifier = Modifier.fillMaxWidth()) {
-            Text(text = stringResource(R.string.lgoin_enter_button))
+        Button(onClick = {
+            loginViewModel.loginUser(navController)
+        }, modifier = Modifier.fillMaxWidth()) {
+            if (!isLoading) {
+                Text(text = stringResource(R.string.lgoin_enter_button))
+            } else {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
         }
     }
 }
