@@ -1,4 +1,4 @@
-package com.example.budgetlyapp.common
+package com.example.budgetlyapp.common.utils
 
 class Util {
     companion object {

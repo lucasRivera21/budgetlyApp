@@ -42,4 +42,13 @@
     <string name="main_expense_title">Gastos</string>
     <string name="main_profile_title">Perfil</string>
 
+    <!-- Expense -->
+    <string name="expense_title">Gastos</string>
+    <string name="expense_unknown_month">En el mes</string>
+    <string name="expense_day_month">del mes</string>
+    <string name="expense_subtitle_expenses">Gastos pago</string>
+    <string name="expense_new_expense">Nuevo gasto</string>
+    <string name="expense_total_expense">Total</string>
+    <string name="expense_add_expense">Agrega los gastos de este ingreso oprimiendo</string>
+    <string name="expense_here">aquí</string>
 </resources>

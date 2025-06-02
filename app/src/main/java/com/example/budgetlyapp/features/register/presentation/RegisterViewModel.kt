@@ -8,9 +8,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.features.register.domain.model.RegisterUserModel
-import com.example.budgetlyapp.common.Util.Companion.MoneyType
+import com.example.budgetlyapp.common.utils.Util.Companion.MoneyType
 import com.example.budgetlyapp.features.register.domain.usecase.RegisterUserUseCase
-import com.example.budgetlyapp.navigation.HomeScreen
+import com.example.budgetlyapp.navigation.MainScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -190,7 +190,7 @@ class RegisterViewModel @Inject constructor(
 
             withContext(Dispatchers.Main) {
                 if (resultUser.isSuccess) {
-                    navController.navigate(HomeScreen.route)
+                    navController.navigate(MainScreen.route)
                 } else {
                     Log.d(TAG, "Error: ${resultUser.exceptionOrNull()}")
                     Toast.makeText(
