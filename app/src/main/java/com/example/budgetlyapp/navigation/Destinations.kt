@@ -34,6 +34,11 @@ object ExpenseScreen : Destinations {
         get() = "ExpenseScreen"
 }
 
+object CreateExpenseScreen : Destinations {
+    override val route: String
+        get() = "CreateExpenseScreen"
+}
+
 object ProfileScreen : Destinations {
     override val route: String
         get() = "ProfileScreen"

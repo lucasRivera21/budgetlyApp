@@ -15,13 +15,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.budgetlyapp.ui.theme.AppTheme
 
 @Composable
-fun MainScreen() {
+fun MainScreen(globalNavController: NavHostController) {
     val bottomNavController = rememberNavController()
     val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -52,15 +51,7 @@ fun MainScreen() {
         }
     }) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            MainNavigation(bottomNavController)
+            MainNavigation(bottomNavController, globalNavController)
         }
-    }
-}
-
-@Preview(showBackground = true, showSystemUi = true, apiLevel = 33)
-@Composable
-fun MainScreenPreview() {
-    AppTheme {
-        MainScreen()
     }
 }

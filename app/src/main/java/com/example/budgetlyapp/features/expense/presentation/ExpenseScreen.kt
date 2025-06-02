@@ -13,15 +13,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.common.domain.models.ExpensesGroupModel
 import com.example.budgetlyapp.features.expense.presentation.components.ExpenseBox
-import com.example.budgetlyapp.ui.theme.AppTheme
+import com.example.budgetlyapp.navigation.CreateExpenseScreen
 
 @Composable
-fun ExpenseScreen() {
+fun ExpenseScreen(globalNavController: NavHostController) {
     val expenseGroupList = listOf(
         ExpensesGroupModel(
             1, 0, listOf(
@@ -44,17 +44,11 @@ fun ExpenseScreen() {
 
         LazyColumn(modifier = Modifier.weight(1f)) {
             items(expenseGroupList) {
-                ExpenseBox(it)
+                ExpenseBox(it) {
+                    globalNavController.navigate(CreateExpenseScreen.route)
+                }
             }
         }
 
-    }
-}
-
-@Preview(showBackground = true, showSystemUi = true, apiLevel = 33)
-@Composable
-fun ExpenseScreenPreview() {
-    AppTheme {
-        ExpenseScreen()
     }
 }

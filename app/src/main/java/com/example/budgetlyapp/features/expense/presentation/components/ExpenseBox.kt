@@ -30,7 +30,7 @@ import com.example.budgetlyapp.common.domain.models.ExpensesGroupModel
 import com.example.budgetlyapp.ui.theme.AppTheme
 
 @Composable
-fun ExpenseBox(expensesGroupModel: ExpensesGroupModel) {
+fun ExpenseBox(expensesGroupModel: ExpensesGroupModel, onClickWithOutExpenseList: () -> Unit = {}) {
     val textWithOutExpenseList = buildAnnotatedString {
         withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onSurface)) {
             append(stringResource(R.string.expense_add_expense))
@@ -105,7 +105,7 @@ fun ExpenseBox(expensesGroupModel: ExpensesGroupModel) {
                 textWithOutExpenseList,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.clickable { }
+                modifier = Modifier.clickable { onClickWithOutExpenseList() }
             )
         }
     }

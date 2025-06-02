@@ -14,7 +14,7 @@ import com.example.budgetlyapp.navigation.HomeScreen
 import com.example.budgetlyapp.navigation.ProfileScreen
 
 @Composable
-fun MainNavigation(localNavController: NavHostController) {
+fun MainNavigation(localNavController: NavHostController, globalNavController: NavHostController) {
     NavHost(
         navController = localNavController,
         startDestination = HomeScreen.route,
@@ -26,7 +26,7 @@ fun MainNavigation(localNavController: NavHostController) {
         }
     ) {
         composable(ExpenseScreen.route) {
-            ExpenseScreen()
+            ExpenseScreen(globalNavController)
         }
 
         composable(HomeScreen.route) {
