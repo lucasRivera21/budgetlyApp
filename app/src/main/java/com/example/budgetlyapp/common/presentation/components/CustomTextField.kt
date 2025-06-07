@@ -24,13 +24,12 @@ import com.example.budgetlyapp.ui.theme.AppTheme
 fun CustomTextField(
     textLabel: String,
     textValue: String,
+    keyBoardType: KeyboardType = KeyboardType.Text,
     onValueChange: (String) -> Unit,
     isPasswordField: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     var isPasswordVisible by remember { mutableStateOf(false) }
-
-    val keyBoardType = if (!isPasswordField) KeyboardType.Email else KeyboardType.Password
     val icon =
         if (isPasswordVisible) painterResource(id = R.drawable.ic_visibility) else painterResource(
             id = R.drawable.ic_visibility_off

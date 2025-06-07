@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -74,6 +75,7 @@ fun BodyInputs(
         CustomTextField(
             textLabel = stringResource(R.string.lgoin_email_input),
             textValue = email,
+            keyBoardType = KeyboardType.Email,
             onValueChange = {
                 loginViewModel.onChangeEmail(it)
             }
@@ -82,6 +84,7 @@ fun BodyInputs(
         CustomTextField(
             textLabel = stringResource(R.string.lgoin_password_input),
             textValue = password,
+            keyBoardType = KeyboardType.Password,
             onValueChange = {
                 loginViewModel.onChangePassword(it)
             },

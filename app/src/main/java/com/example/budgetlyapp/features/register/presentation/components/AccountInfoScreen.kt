@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.common.presentation.components.CustomTextField
@@ -21,6 +22,7 @@ fun AccountInfoScreen(
             CustomTextField(
                 textLabel = stringResource(R.string.lgoin_email_input),
                 textValue = email,
+                keyBoardType = KeyboardType.Email,
                 onValueChange = {
                     registerViewModel.onChangeEmail(it)
                 }
@@ -29,6 +31,7 @@ fun AccountInfoScreen(
             CustomTextField(
                 textLabel = stringResource(R.string.lgoin_password_input),
                 textValue = password,
+                keyBoardType = KeyboardType.Password,
                 onValueChange = {
                     registerViewModel.onChangePassword(it)
                 },
@@ -38,6 +41,7 @@ fun AccountInfoScreen(
             CustomTextField(
                 textLabel = stringResource(R.string.register_repeat_password),
                 textValue = confirmPassword,
+                keyBoardType = KeyboardType.Password,
                 onValueChange = {
                     registerViewModel.onChangeConfirmPassword(it)
                 },
