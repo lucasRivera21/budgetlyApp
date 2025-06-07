@@ -72,7 +72,7 @@ fun ExpenseComponent(expenseModel: ExpenseModel) {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    expenseModel.tag.tagName, style = MaterialTheme.typography.bodySmall,
+                    expenseModel.tag.tagNameId, style = MaterialTheme.typography.bodySmall,
                     color = Color.White
                 )
             }

@@ -51,4 +51,22 @@
     <string name="expense_total_expense">Total</string>
     <string name="expense_add_expense">Agrega los gastos de este ingreso oprimiendo</string>
     <string name="expense_here">aquí</string>
+
+    <!-- Create Expense -->
+    <string name="create_expense_title">Nuevo gasto</string>
+    <string name="create_expense_name_input">Nombre</string>
+    <string name="create_expense_amount_input">Monto</string>
+    <string name="create_expense_category">Categoria:</string>
+
+    <!-- Tags -->
+    <string name="tag_saving">Ahorro</string>
+    <string name="tag_home">Hogar</string>
+    <string name="tag_health">Salud</string>
+    <string name="tag_pet">Mascota</string>
+    <string name="tag_transport">Transporte</string>
+    <string name="tag_market">Mercado</string>
+    <string name="tag_sure">Seguro</string>
+    <string name="tag_study">Estudio</string>
+    <string name="tag_subscription">Suscripción</string>
+    <string name="tag_other">Otro</string>
 </resources>

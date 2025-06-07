@@ -2,7 +2,7 @@ package com.example.budgetlyapp.common.domain.models
 
 data class TagModel(
     val tagId: Int,
-    val tagName: String,
+    val tagNameId: String,
     val color: String,
-    val icon: String
+    val iconId: String
 )
