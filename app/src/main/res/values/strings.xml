@@ -63,6 +63,7 @@
     <string name="create_expense_or">O</string>
     <string name="create_expense_without_day">No tiene dia exacto</string>
     <string name="create_expense_notification_title">¿Quires recibir notificaciones?</string>
+    <string name="create_expense_save">Guardar</string>
 
     <!-- Tags -->
     <string name="tag_saving">Ahorro</string>
