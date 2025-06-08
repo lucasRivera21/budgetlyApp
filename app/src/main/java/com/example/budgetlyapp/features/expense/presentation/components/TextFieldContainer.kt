@@ -4,34 +4,33 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.common.presentation.components.CustomTextField
+import com.example.budgetlyapp.features.expense.presentation.viewModels.CreateExpenseViewModel
 
 @Composable
-fun TextFieldContainer() {
-    var text by remember { mutableStateOf("") }
-    var number by remember { mutableStateOf("") }
+fun TextFieldContainer(
+    nameExpense: String,
+    amountExpense: String,
+    viewModel: CreateExpenseViewModel
+) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         CustomTextField(
             textLabel = stringResource(R.string.create_expense_name_input),
-            textValue = text,
-            onValueChange = { text = it },
+            textValue = nameExpense,
+            onValueChange = { viewModel.onChaneNameExpense(it) },
             modifier = Modifier.fillMaxWidth()
         )
 
         CustomTextField(
             textLabel = stringResource(R.string.create_expense_amount_input),
-            textValue = number,
+            textValue = amountExpense,
             keyBoardType = KeyboardType.Number,
-            onValueChange = { number = it },
+            onValueChange = { viewModel.onChaneAmountExpense(it) },
             modifier = Modifier.fillMaxWidth()
         )
     }

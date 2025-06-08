@@ -5,21 +5,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.budgetlyapp.R
+import com.example.budgetlyapp.features.expense.presentation.viewModels.CreateExpenseViewModel
 
 @Composable
-fun NotifyComponent() {
-    var isChecked by remember { mutableStateOf(false) }
+fun NotifyComponent(hasNotification: Boolean, viewModel: CreateExpenseViewModel) {
     val notificationIcon =
-        if (!isChecked) R.drawable.ic_notification_off else R.drawable.ic_notification_active
+        if (!hasNotification) R.drawable.ic_notification_off else R.drawable.ic_notification_active
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             stringResource(R.string.create_expense_notification_title),
@@ -28,8 +24,12 @@ fun NotifyComponent() {
             fontWeight = FontWeight.Medium
         )
 
-        SwitchComponent(isChecked, notificationIcon, Modifier.align(Alignment.CenterHorizontally)) {
-            isChecked = it
+        SwitchComponent(
+            hasNotification,
+            notificationIcon,
+            Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            viewModel.onChangeHasNotification(it)
         }
     }
 }

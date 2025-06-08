@@ -19,9 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,8 +34,8 @@ import android.graphics.Color as ColorAndroid
 
 @SuppressLint("DiscouragedApi")
 @Composable
-fun CategoryComponent(tagModel: TagModel) {
-    var categorySelected by remember { mutableStateOf(false) }
+fun CategoryComponent(tagModel: TagModel, tagIdSelected: Int, onClickCategory: () -> Unit) {
+    val categorySelected = tagIdSelected == tagModel.tagId
     val widthAnimation by animateDpAsState(
         targetValue = if (!categorySelected) 48.dp else 50.dp,
         label = "widthAnimation"
@@ -66,7 +63,7 @@ fun CategoryComponent(tagModel: TagModel) {
                 .width(50.dp)
                 .height(80.dp)
                 .clickable {
-                    categorySelected = !categorySelected
+                    onClickCategory()
                 }
         ) {
             Box(
@@ -115,7 +112,10 @@ fun CategoryComponent(tagModel: TagModel) {
 fun CategoryComponentPreview() {
     AppTheme {
         CategoryComponent(
-            TagModel(1, "tag_saving", "#0000ff", "ic_savings_category")
-        )
+            TagModel(1, "tag_saving", "#0000ff", "ic_savings_category"),
+            0
+        ) {
+
+        }
     }
 }

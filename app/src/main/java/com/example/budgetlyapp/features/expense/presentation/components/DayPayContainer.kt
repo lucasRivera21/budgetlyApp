@@ -15,10 +15,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -31,12 +28,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.budgetlyapp.R
+import com.example.budgetlyapp.features.expense.presentation.viewModels.CreateExpenseViewModel
 
 @Composable
-fun DayPayContainer() {
-    var number by remember { mutableStateOf("") }
-    var hasDay by remember { mutableStateOf(true) }
-
+fun DayPayContainer(dayPayString: String, hasDayPay: Boolean, viewModel: CreateExpenseViewModel) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
@@ -64,18 +59,14 @@ fun DayPayContainer() {
                 )
 
                 BasicTextField(
-                    value = number,
+                    value = dayPayString,
                     onValueChange = {
-                        number = if (it.isEmpty() || it.toInt() in 1..31) {
-                            it
-                        } else {
-                            "31"
-                        }
+                        viewModel.onChangeDayPayString(it)
                     },
                     modifier = Modifier
                         .border(
-                            width = if (!hasDay) 1.dp else 3.dp,
-                            color = if (!hasDay) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.primary,
+                            width = if (!hasDayPay) 1.dp else 3.dp,
+                            color = if (!hasDayPay) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.primary,
                             shape = RoundedCornerShape(8.dp)
                         )
                         .widthIn(max = 44.dp)
@@ -83,10 +74,10 @@ fun DayPayContainer() {
                         .align(Alignment.CenterVertically)
                         .focusRequester(focusRequester)
                         .onFocusChanged {
-                            hasDay = true
+                            viewModel.onChangeHasDayPay(true)
                         },
                     textStyle = TextStyle(
-                        color = if (!hasDay) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.primary,
+                        color = if (!hasDayPay) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.SemiBold
                     ),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -108,13 +99,13 @@ fun DayPayContainer() {
             Box(
                 modifier = Modifier
                     .border(
-                        if (!hasDay) 3.dp else 1.dp,
-                        if (!hasDay) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
+                        if (!hasDayPay) 3.dp else 1.dp,
+                        if (!hasDayPay) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
                         shape = RoundedCornerShape(8.dp)
                     )
                     .clickable {
                         focusManager.clearFocus()
-                        hasDay = false
+                        viewModel.onChangeHasDayPay(false)
                     }
                     .padding(vertical = 8.dp, horizontal = 16.dp)
 
@@ -122,7 +113,7 @@ fun DayPayContainer() {
                 Text(
                     stringResource(R.string.create_expense_without_day),
                     style = MaterialTheme.typography.labelLarge,
-                    color = if (!hasDay) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
+                    color = if (!hasDayPay) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
                 )
             }
         }

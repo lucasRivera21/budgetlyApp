@@ -13,9 +13,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.common.domain.models.CategoryProvider
+import com.example.budgetlyapp.common.domain.models.TagModel
+import com.example.budgetlyapp.features.expense.presentation.viewModels.CreateExpenseViewModel
 
 @Composable
-fun CategorySelector() {
+fun CategorySelector(categorySelected: TagModel, viewModel: CreateExpenseViewModel) {
     val categories = CategoryProvider.categories
 
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -32,7 +34,9 @@ fun CategorySelector() {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(categories) { tagModel ->
-                CategoryComponent(tagModel)
+                CategoryComponent(tagModel, categorySelected.tagId) {
+                    viewModel.onChangeCategorySelected(tagModel)
+                }
             }
         }
     }
