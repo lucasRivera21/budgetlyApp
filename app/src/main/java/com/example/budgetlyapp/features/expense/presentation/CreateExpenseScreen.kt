@@ -58,7 +58,7 @@ fun CreateExpenseScreen(
             icon = {
                 Icon(imageVector = Icons.Default.Check, "save")
             },
-            onClick = { /*TODO*/ },
+            onClick = { viewModel.onClickSave(navController) },
         )
     }) { _ ->
         Column(

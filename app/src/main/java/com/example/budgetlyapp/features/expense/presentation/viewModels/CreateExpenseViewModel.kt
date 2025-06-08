@@ -1,13 +1,29 @@
 package com.example.budgetlyapp.features.expense.presentation.viewModels
 
+import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import com.example.budgetlyapp.common.domain.models.ExpenseModel
 import com.example.budgetlyapp.common.domain.models.TagModel
+import com.example.budgetlyapp.features.expense.domain.useCase.SaveExpenseUseCase
+import com.example.budgetlyapp.features.expense.domain.useCase.VerifyFieldsNewExpenseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class CreateExpenseViewModel @Inject constructor() : ViewModel() {
+class CreateExpenseViewModel @Inject constructor(
+    private val saveExpenseUseCase: SaveExpenseUseCase,
+    private val verifyFieldsNewExpenseUseCase: VerifyFieldsNewExpenseUseCase,
+    @ApplicationContext private val context: Context
+) :
+    ViewModel() {
     private val _nameExpense = MutableStateFlow("")
     val nameExpense: MutableStateFlow<String> = _nameExpense
 
@@ -58,4 +74,42 @@ class CreateExpenseViewModel @Inject constructor() : ViewModel() {
         _hasNotification.value = hasNotification
     }
 
+    fun onClickSave(navController: NavController) {
+        viewModelScope.launch {
+            val validateFieldsResult = verifyFieldsNewExpenseUseCase(
+                _nameExpense.value,
+                _amountExpense.value,
+                _categorySelected.value,
+                _dayPayString.value,
+                _hasDayPay.value
+            )
+
+            if (validateFieldsResult.isFailure) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        context,
+                        validateFieldsResult.exceptionOrNull()?.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                return@launch
+            }
+
+            val expenseModel = ExpenseModel(
+                expenseName = _nameExpense.value,
+                amount = _amountExpense.value.toDouble(),
+                tag = _categorySelected.value,
+                day = if (!_hasDayPay.value) null else _dayPayString.value.toInt(),
+                hasNotification = _hasNotification.value
+            )
+
+            val saveExpenseResult = saveExpenseUseCase(expenseModel)
+
+            if (saveExpenseResult.isSuccess) {
+                withContext(Dispatchers.Main) {
+                    navController.popBackStack()
+                }
+            }
+        }
+    }
 }

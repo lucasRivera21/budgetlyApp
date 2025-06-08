@@ -102,7 +102,6 @@ fun ExpenseComponentPreview() {
     AppTheme {
         ExpenseComponent(
             expenseModel = ExpenseModel(
-                0,
                 "Arriendo",
                 0.0,
                 TagModel(0, "Ahorro", "#7987FF", ""),
