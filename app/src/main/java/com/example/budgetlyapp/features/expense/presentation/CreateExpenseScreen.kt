@@ -16,6 +16,7 @@ import androidx.navigation.NavHostController
 import com.example.budgetlyapp.features.expense.presentation.components.CategorySelector
 import com.example.budgetlyapp.features.expense.presentation.components.DayPayContainer
 import com.example.budgetlyapp.features.expense.presentation.components.Header
+import com.example.budgetlyapp.features.expense.presentation.components.NotifyComponent
 import com.example.budgetlyapp.features.expense.presentation.components.TextFieldContainer
 import com.example.budgetlyapp.ui.theme.AppTheme
 
@@ -37,6 +38,8 @@ fun CreateExpenseScreen(navController: NavHostController) {
         CategorySelector()
 
         DayPayContainer()
+
+        NotifyComponent()
     }
 }
 

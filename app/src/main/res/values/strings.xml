@@ -57,6 +57,12 @@
     <string name="create_expense_name_input">Nombre</string>
     <string name="create_expense_amount_input">Monto</string>
     <string name="create_expense_category">Categoria:</string>
+    <string name="create_expense_day_pay_title">¿En que dia tienes que pagar el gasto?</string>
+    <string name="create_expense_each">Cada</string>
+    <string name="create_expense_of_the_month">del mes</string>
+    <string name="create_expense_or">O</string>
+    <string name="create_expense_without_day">No tiene dia exacto</string>
+    <string name="create_expense_notification_title">¿Quires recibir notificaciones?</string>
 
     <!-- Tags -->
     <string name="tag_saving">Ahorro</string>

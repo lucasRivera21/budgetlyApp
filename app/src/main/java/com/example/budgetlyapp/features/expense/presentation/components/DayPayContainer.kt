@@ -25,10 +25,12 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.example.budgetlyapp.R
 
 @Composable
 fun DayPayContainer() {
@@ -40,7 +42,7 @@ fun DayPayContainer() {
 
     Column(verticalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.fillMaxWidth()) {
         Text(
-            "¿En que dia tienes que pagar el gasto?",
+            stringResource(R.string.create_expense_day_pay_title),
             style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onSurface,
             fontWeight = FontWeight.Medium
@@ -56,7 +58,7 @@ fun DayPayContainer() {
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
-                    "Cada",
+                    stringResource(R.string.create_expense_each),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -91,14 +93,14 @@ fun DayPayContainer() {
                 )
 
                 Text(
-                    "del mes",
+                    stringResource(R.string.create_expense_of_the_month),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
             Text(
-                "O",
+                stringResource(R.string.create_expense_or),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -118,7 +120,7 @@ fun DayPayContainer() {
 
             ) {
                 Text(
-                    "No tiene dia exacto",
+                    stringResource(R.string.create_expense_without_day),
                     style = MaterialTheme.typography.labelLarge,
                     color = if (!hasDay) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
                 )
