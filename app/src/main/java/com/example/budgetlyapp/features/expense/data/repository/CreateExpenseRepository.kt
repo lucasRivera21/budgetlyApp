@@ -29,11 +29,29 @@ class CreateExpenseRepository @Inject constructor(
                 ExpenseGroupCollection.collectionName
             )
 
-        val expenseRef = expenseGroupRef.document().collection(ExpenseCollection.collectionName)
-
         return try {
-            expenseRef.add(expenseModel).await()
-            Result.success(expenseRef.id)
+            var expenseGroupSize = 0
+            expenseGroupRef.get().addOnSuccessListener { result ->
+                expenseGroupSize = result.size()
+            }
+
+            var expenseGroupId: String? = null
+            val expenseGroupMap = mapOf<String, Any>(
+                "order" to expenseGroupSize,
+            )
+            expenseGroupRef.add(expenseGroupMap).addOnSuccessListener {
+                expenseGroupId = it.id
+            }.addOnFailureListener {
+                Log.e(TAG, it.message, it)
+            }.await()
+            if (expenseGroupId != null) {
+                val expenseRef = expenseGroupRef.document(expenseGroupId!!)
+                    .collection(ExpenseCollection.collectionName)
+                expenseRef.add(expenseModel).await()
+                Result.success(expenseRef.id)
+            } else {
+                Result.failure(Exception("Expense group ID is null"))
+            }
         } catch (e: Exception) {
             Log.e(TAG, e.message, e)
             Result.failure(e)
