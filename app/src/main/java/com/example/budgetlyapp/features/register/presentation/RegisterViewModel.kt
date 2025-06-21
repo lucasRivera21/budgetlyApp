@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.features.register.domain.model.RegisterUserModel
-import com.example.budgetlyapp.common.utils.Util.Companion.MoneyType
+import com.example.budgetlyapp.common.utils.MoneyType
 import com.example.budgetlyapp.features.register.domain.usecase.RegisterUserUseCase
 import com.example.budgetlyapp.navigation.MainScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
