@@ -15,9 +15,14 @@ class ExpenseViewModel @Inject constructor(private val getExpenseGroupListUseCas
     private val _expenseGroupList = MutableStateFlow<List<ExpensesGroupModel>>(emptyList())
     val expenseGroupList: MutableStateFlow<List<ExpensesGroupModel>> = _expenseGroupList
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: MutableStateFlow<Boolean> = _isLoading
+
     fun getExpenseGroupList() {
         viewModelScope.launch {
+            _isLoading.value = true
             _expenseGroupList.value = getExpenseGroupListUseCase()
+            _isLoading.value = false
         }
     }
 }

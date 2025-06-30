@@ -1,13 +1,15 @@
 package com.example.budgetlyapp.features.expense.presentation
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,6 +34,7 @@ fun ExpenseScreen(
     viewModel: ExpenseViewModel = hiltViewModel()
 ) {
     val expenseGroupList by viewModel.expenseGroupList.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.getExpenseGroupList()
@@ -51,13 +54,20 @@ fun ExpenseScreen(
             fontWeight = FontWeight.SemiBold
         )
 
-        LazyColumn(modifier = Modifier.fillMaxHeight()) {
-            itemsIndexed(expenseGroupList) { index, item ->
-                ExpenseBox(index + 1, item) {
-                    globalNavController.navigate(CreateExpenseScreen.route)
+        if (!isLoading) {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                itemsIndexed(expenseGroupList) { index, item ->
+                    ExpenseBox(index + 1, item) {
+                        globalNavController.navigate(CreateExpenseScreen.route)
+                    }
                 }
             }
+        } else {
+            Box(modifier = Modifier.fillMaxSize()) {
+                CircularProgressIndicator(modifier = Modifier
+                    .align(Alignment.Center)
+                    .size(50.dp))
+            }
         }
-
     }
 }
