@@ -2,14 +2,18 @@ package com.example.budgetlyapp.features.expense.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -18,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.budgetlyapp.R
-import com.example.budgetlyapp.common.domain.models.ExpensesGroupModel
 import com.example.budgetlyapp.features.expense.presentation.components.ExpenseBox
 import com.example.budgetlyapp.features.expense.presentation.viewModels.ExpenseViewModel
 import com.example.budgetlyapp.navigation.CreateExpenseScreen
@@ -28,14 +31,7 @@ fun ExpenseScreen(
     globalNavController: NavHostController,
     viewModel: ExpenseViewModel = hiltViewModel()
 ) {
-    //val expenseGroupList by viewModel.expenseGroupList.collectAsState()
-
-    val expenseGroupList = listOf(
-        ExpensesGroupModel(
-            "1", 0, listOf(
-            ), 0.0
-        )
-    )
+    val expenseGroupList by viewModel.expenseGroupList.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.getExpenseGroupList()
@@ -55,9 +51,9 @@ fun ExpenseScreen(
             fontWeight = FontWeight.SemiBold
         )
 
-        LazyColumn(modifier = Modifier.weight(1f)) {
-            items(expenseGroupList) {
-                ExpenseBox(it) {
+        LazyColumn(modifier = Modifier.fillMaxHeight()) {
+            itemsIndexed(expenseGroupList) { index, item ->
+                ExpenseBox(index + 1, item) {
                     globalNavController.navigate(CreateExpenseScreen.route)
                 }
             }

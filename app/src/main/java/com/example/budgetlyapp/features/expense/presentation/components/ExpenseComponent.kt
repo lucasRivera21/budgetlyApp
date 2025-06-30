@@ -23,20 +23,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.budgetlyapp.R
-import com.example.budgetlyapp.common.domain.models.ExpenseModel
+import com.example.budgetlyapp.common.domain.models.ExpenseModelFromDb
 import com.example.budgetlyapp.common.domain.models.TagModel
 import com.example.budgetlyapp.ui.theme.AppTheme
 import android.graphics.Color as AndroidColor
 
 @Composable
-fun ExpenseComponent(expenseModel: ExpenseModel) {
+fun ExpenseComponent(expenseModel: ExpenseModelFromDb) {
     var isChecked by remember { mutableStateOf(expenseModel.hasNotification) }
 
     val notificationIcon =
         if (!isChecked) R.drawable.ic_notification_off else R.drawable.ic_notification_active
 
     val monthDayString =
-        if (expenseModel.day == null) stringResource(R.string.expense_unknown_month) else "${expenseModel.day} ${
+        "${expenseModel.dayPay} ${
             stringResource(R.string.expense_day_month)
         }"
     Row(
@@ -101,12 +101,13 @@ fun ExpenseComponent(expenseModel: ExpenseModel) {
 fun ExpenseComponentPreview() {
     AppTheme {
         ExpenseComponent(
-            expenseModel = ExpenseModel(
-                "Arriendo",
+            expenseModel = ExpenseModelFromDb(
+                expenseId = "1",
                 0.0,
+                10,
+                "Gym",
+                false,
                 TagModel(0, "Ahorro", "#7987FF", ""),
-                null,
-                false
             )
         )
     }

@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -26,11 +24,17 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.budgetlyapp.R
+import com.example.budgetlyapp.common.domain.models.ExpenseModelFromDb
 import com.example.budgetlyapp.common.domain.models.ExpensesGroupModel
+import com.example.budgetlyapp.common.domain.models.TagModel
 import com.example.budgetlyapp.ui.theme.AppTheme
 
 @Composable
-fun ExpenseBox(expensesGroupModel: ExpensesGroupModel, onClickWithOutExpenseList: () -> Unit = {}) {
+fun ExpenseBox(
+    number: Int,
+    expensesGroupModel: ExpensesGroupModel,
+    onClickWithOutExpenseList: () -> Unit = {}
+) {
     val textWithOutExpenseList = buildAnnotatedString {
         withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onSurface)) {
             append(stringResource(R.string.expense_add_expense))
@@ -47,18 +51,18 @@ fun ExpenseBox(expensesGroupModel: ExpensesGroupModel, onClickWithOutExpenseList
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            "${stringResource(R.string.expense_subtitle_expenses)} ${expensesGroupModel.expensesGroupId}",
+            "${stringResource(R.string.expense_subtitle_expenses)} $number",
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
 
         if (expensesGroupModel.expenseList.isNotEmpty()) {
-            LazyColumn(
+            Column(
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
                     .background(MaterialTheme.colorScheme.secondaryContainer)
             ) {
-                itemsIndexed(expensesGroupModel.expenseList) { index, expenseModel ->
+                expensesGroupModel.expenseList.forEachIndexed { index, expenseModel ->
                     ExpenseComponent(expenseModel)
 
                     if (index != expensesGroupModel.expenseList.lastIndex) {
@@ -70,6 +74,7 @@ fun ExpenseBox(expensesGroupModel: ExpensesGroupModel, onClickWithOutExpenseList
                         )
                     }
                 }
+
             }
 
             Row(
@@ -94,7 +99,7 @@ fun ExpenseBox(expensesGroupModel: ExpensesGroupModel, onClickWithOutExpenseList
                     )
 
                     Text(
-                        expensesGroupModel.total.toString(),
+                        "",
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.onSurface
                     )
@@ -116,10 +121,20 @@ fun ExpenseBox(expensesGroupModel: ExpensesGroupModel, onClickWithOutExpenseList
 fun ExpenseBoxPreview() {
     AppTheme {
         ExpenseBox(
+            1,
             ExpensesGroupModel(
-                "1", 0, listOf(
-                ), 0.0
+                "1", "", listOf(
+                    ExpenseModelFromDb(
+                        expenseId = "1",
+                        1000000.0,
+                        10,
+                        "Gym",
+                        true,
+                        TagModel(3, "tag_health", "#90BE6D", "ic_health_category"),
+                    ),
+                )
             )
         )
     }
 }
+//ExpenseModelFromDb(expenseId=8npcqCI8aB4G4hsI7As3, amount=100000.0, dayPay=10, expenseName=gym, hasNotification=true, tag=TagModel(tagId=3, tagNameId=tag_health, color=#90BE6D, iconId=ic_health_category))

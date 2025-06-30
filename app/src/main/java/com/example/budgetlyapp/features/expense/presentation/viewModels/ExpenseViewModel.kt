@@ -17,7 +17,7 @@ class ExpenseViewModel @Inject constructor(private val getExpenseGroupListUseCas
 
     fun getExpenseGroupList() {
         viewModelScope.launch {
-            getExpenseGroupListUseCase()
+            _expenseGroupList.value = getExpenseGroupListUseCase()
         }
     }
 }
