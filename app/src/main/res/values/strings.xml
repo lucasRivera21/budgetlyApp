@@ -46,6 +46,7 @@
     <string name="expense_title">Gastos</string>
     <string name="expense_unknown_month">En el mes</string>
     <string name="expense_day_month">del mes</string>
+    <string name="expense_on_month">En el mes</string>
     <string name="expense_subtitle_expenses">Gastos pago</string>
     <string name="expense_new_expense">Nuevo gasto</string>
     <string name="expense_total_expense">Total</string>

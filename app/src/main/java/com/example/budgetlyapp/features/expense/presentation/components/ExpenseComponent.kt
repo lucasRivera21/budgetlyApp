@@ -36,49 +36,57 @@ fun ExpenseComponent(expenseModel: ExpenseModelFromDb) {
     val notificationIcon =
         if (!isChecked) R.drawable.ic_notification_off else R.drawable.ic_notification_active
 
-    val monthDayString =
-        "${expenseModel.dayPay} ${
-            stringResource(R.string.expense_day_month)
-        }"
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp, horizontal = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        //Name
-        Column(
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+    val monthDayString = if (expenseModel.dayPay != null) "${expenseModel.dayPay} ${
+        stringResource(R.string.expense_day_month)
+    }" else stringResource(R.string.expense_on_month)
+
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp, horizontal = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                expenseModel.expenseName,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                fontWeight = FontWeight.Medium
-            )
-            Box(
-                modifier = Modifier
-                    .background(
-                        Color(AndroidColor.parseColor(expenseModel.tag.color)),
-                        RoundedCornerShape(8.dp)
-                    )
-                    .padding(horizontal = 8.dp),
-                contentAlignment = Alignment.Center
+            //Name
+            Column(
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
-                    convertTagIdNameToTagName(expenseModel.tag.tagNameId),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.White
+                    expenseModel.expenseName,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    fontWeight = FontWeight.Medium
                 )
+                Box(
+                    modifier = Modifier
+                        .background(
+                            Color(AndroidColor.parseColor(expenseModel.tag.color)),
+                            RoundedCornerShape(8.dp)
+                        )
+                        .padding(horizontal = 8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        convertTagIdNameToTagName(expenseModel.tag.tagNameId),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.White
+                    )
+                }
+            }
+
+            //Notification
+            SwitchComponent(isChecked, notificationIcon) {
+                isChecked = it
             }
         }
 
         //Amount
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier.align(Alignment.Center)
         ) {
             Text(
                 "$ ${expenseModel.amount}", style = MaterialTheme.typography.bodyMedium,
@@ -89,11 +97,6 @@ fun ExpenseComponent(expenseModel: ExpenseModelFromDb) {
                 monthDayString, style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
-        }
-
-        //Notification
-        SwitchComponent(isChecked, notificationIcon) {
-            isChecked = it
         }
     }
 }
