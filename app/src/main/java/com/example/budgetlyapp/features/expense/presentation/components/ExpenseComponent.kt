@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.common.domain.models.ExpenseModelFromDb
 import com.example.budgetlyapp.common.domain.models.TagModel
+import com.example.budgetlyapp.common.utils.convertTagIdNameToTagName
 import com.example.budgetlyapp.ui.theme.AppTheme
 import android.graphics.Color as AndroidColor
 
@@ -67,7 +68,8 @@ fun ExpenseComponent(expenseModel: ExpenseModelFromDb) {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    expenseModel.tag.tagNameId, style = MaterialTheme.typography.bodySmall,
+                    convertTagIdNameToTagName(expenseModel.tag.tagNameId),
+                    style = MaterialTheme.typography.bodySmall,
                     color = Color.White
                 )
             }

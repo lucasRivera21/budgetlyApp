@@ -1,5 +1,8 @@
 package com.example.budgetlyapp.common.utils
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.example.budgetlyapp.R
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -21,4 +24,21 @@ enum class MoneyType {
 fun getTodayDate(format: String = "yyyy-MM-dd HH:mm:ss"): String {
     val formatter = DateTimeFormatter.ofPattern(format, Locale.getDefault())
     return LocalDateTime.now().format(formatter)
+}
+
+@Composable
+fun convertTagIdNameToTagName(tagIdName: String): String {
+    return when (tagIdName) {
+        "tag_saving" -> stringResource(R.string.tag_saving)
+        "tag_home" -> stringResource(R.string.tag_home)
+        "tag_health" -> stringResource(R.string.tag_health)
+        "tag_pet" -> stringResource(R.string.tag_pet)
+        "tag_transport" -> stringResource(R.string.tag_transport)
+        "tag_market" -> stringResource(R.string.tag_market)
+        "tag_sure" -> stringResource(R.string.tag_sure)
+        "tag_study" -> stringResource(R.string.tag_study)
+        "tag_subscription" -> stringResource(R.string.tag_subscription)
+        "tag_other" -> stringResource(R.string.tag_other)
+        else -> tagIdName
+    }
 }
