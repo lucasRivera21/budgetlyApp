@@ -47,7 +47,7 @@ class ExpenseRepository @Inject constructor(
                     val model = ExpenseModelFromDb(
                         expenseId = expenseId,
                         amount = expenseMap["amount"].toString().toDouble(),
-                        dayPay = expenseMap["day"].toString().toInt(),
+                        dayPay = expenseMap["day"].toString().toIntOrNull(),
                         expenseName = expenseMap["expenseName"].toString(),
                         hasNotification = expenseMap["hasNotification"].toString().toBoolean(),
                         tag = TagModel(

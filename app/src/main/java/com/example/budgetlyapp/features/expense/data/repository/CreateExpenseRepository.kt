@@ -14,7 +14,7 @@ import javax.inject.Inject
 private const val TAG = "CreateExpenseRepository"
 
 interface CreateExpenseTask {
-    suspend fun createTask(expenseModel: ExpenseModel): Result<String>
+    suspend fun createTask(expenseModel: ExpenseModel, id: String?): Result<String>
 }
 
 class CreateExpenseRepository @Inject constructor(
@@ -22,13 +22,20 @@ class CreateExpenseRepository @Inject constructor(
     private val auth: FirebaseAuth
 ) :
     CreateExpenseTask {
-    override suspend fun createTask(expenseModel: ExpenseModel): Result<String> {
+    override suspend fun createTask(expenseModel: ExpenseModel, id: String?): Result<String> {
         val uuid = auth.currentUser?.uid
 
         val expenseGroupRef =
             db.collection(UsersCollection.collectionName).document(uuid!!).collection(
                 ExpenseGroupCollection.collectionName
             )
+
+        if (id != null) {
+            val expenseRef = expenseGroupRef.document(id)
+                .collection(ExpenseCollection.collectionName)
+            expenseRef.add(expenseModel).await()
+            return Result.success(expenseRef.id)
+        }
 
         return try {
             var expenseGroupId: String? = null

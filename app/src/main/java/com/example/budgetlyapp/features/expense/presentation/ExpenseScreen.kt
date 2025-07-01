@@ -3,7 +3,6 @@ package com.example.budgetlyapp.features.expense.presentation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -57,16 +56,21 @@ fun ExpenseScreen(
         if (!isLoading) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 itemsIndexed(expenseGroupList) { index, item ->
-                    ExpenseBox(index + 1, item) {
+                    ExpenseBox(
+                        index + 1,
+                        item,
+                        { globalNavController.navigate("${CreateExpenseScreen.route}/${item.expensesGroupId}") }) {
                         globalNavController.navigate(CreateExpenseScreen.route)
                     }
                 }
             }
         } else {
             Box(modifier = Modifier.fillMaxSize()) {
-                CircularProgressIndicator(modifier = Modifier
-                    .align(Alignment.Center)
-                    .size(50.dp))
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(50.dp)
+                )
             }
         }
     }

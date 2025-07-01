@@ -33,6 +33,7 @@ import com.example.budgetlyapp.ui.theme.AppTheme
 fun ExpenseBox(
     number: Int,
     expensesGroupModel: ExpensesGroupModel,
+    onClickWithExpenseList: () -> Unit = {},
     onClickWithOutExpenseList: () -> Unit = {}
 ) {
     val textWithOutExpenseList = buildAnnotatedString {
@@ -85,7 +86,10 @@ fun ExpenseBox(
                 Text(
                     "+ ${stringResource(R.string.expense_new_expense)}",
                     style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.clickable {
+                        onClickWithExpenseList()
+                    }
                 )
 
                 Row(
@@ -137,4 +141,3 @@ fun ExpenseBoxPreview() {
         )
     }
 }
-//ExpenseModelFromDb(expenseId=8npcqCI8aB4G4hsI7As3, amount=100000.0, dayPay=10, expenseName=gym, hasNotification=true, tag=TagModel(tagId=3, tagNameId=tag_health, color=#90BE6D, iconId=ic_health_category))

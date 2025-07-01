@@ -74,7 +74,7 @@ class CreateExpenseViewModel @Inject constructor(
         _hasNotification.value = hasNotification
     }
 
-    fun onClickSave(navController: NavController) {
+    fun onClickSave(expenseGroupId: String?, navController: NavController) {
         viewModelScope.launch {
             val validateFieldsResult = verifyFieldsNewExpenseUseCase(
                 _nameExpense.value,
@@ -103,7 +103,7 @@ class CreateExpenseViewModel @Inject constructor(
                 hasNotification = _hasNotification.value
             )
 
-            val saveExpenseResult = saveExpenseUseCase(expenseModel)
+            val saveExpenseResult = saveExpenseUseCase(expenseModel, expenseGroupId)
 
             if (saveExpenseResult.isSuccess) {
                 withContext(Dispatchers.Main) {

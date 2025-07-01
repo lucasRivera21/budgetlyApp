@@ -3,9 +3,11 @@ package com.example.budgetlyapp.navigation
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.budgetlyapp.features.expense.presentation.CreateExpenseScreen
 import com.example.budgetlyapp.features.splash.presentation.SplashScreen
 import com.example.budgetlyapp.features.login.presentation.LoginScreen
@@ -47,8 +49,14 @@ fun AppNavigation() {
             MainScreen(navController)
         }
 
-        composable(CreateExpenseScreen.route){
-            CreateExpenseScreen(navController)
+        composable(
+            "${CreateExpenseScreen.route}/{expenseGroupId}",
+            arguments = listOf(navArgument("expenseGroupId") {
+                type = NavType.StringType
+            })
+        ) {
+            val expenseGroupId = it.arguments?.getString("expenseGroupId")
+            CreateExpenseScreen(expenseGroupId, navController)
         }
     }
 }

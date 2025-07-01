@@ -35,6 +35,7 @@ import com.example.budgetlyapp.ui.theme.AppTheme
 
 @Composable
 fun CreateExpenseScreen(
+    expenseGroupId: String?,
     navController: NavHostController,
     viewModel: CreateExpenseViewModel = hiltViewModel()
 ) {
@@ -58,7 +59,7 @@ fun CreateExpenseScreen(
             icon = {
                 Icon(imageVector = Icons.Default.Check, "save")
             },
-            onClick = { viewModel.onClickSave(navController) },
+            onClick = { viewModel.onClickSave(expenseGroupId, navController) },
         )
     }) { _ ->
         Column(
@@ -87,6 +88,6 @@ fun CreateExpenseScreen(
 @Composable
 fun CreateExpenseScreenPreview() {
     AppTheme {
-        CreateExpenseScreen(NavHostController(LocalContext.current))
+        CreateExpenseScreen(null, NavHostController(LocalContext.current))
     }
 }
