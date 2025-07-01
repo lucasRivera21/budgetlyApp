@@ -36,6 +36,7 @@ fun ExpenseBox(
     onClickWithExpenseList: () -> Unit = {},
     onClickWithOutExpenseList: () -> Unit = {}
 ) {
+    val sumAmount = expensesGroupModel.expenseList.sumOf { it.amount }
     val textWithOutExpenseList = buildAnnotatedString {
         withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onSurface)) {
             append(stringResource(R.string.expense_add_expense))
@@ -97,7 +98,7 @@ fun ExpenseBox(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        "${stringResource(R.string.expense_total_expense)}:",
+                        "${stringResource(R.string.expense_total_expense)}: $sumAmount",
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.primary
                     )
