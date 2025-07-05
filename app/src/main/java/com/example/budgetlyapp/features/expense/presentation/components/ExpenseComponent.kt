@@ -119,6 +119,7 @@ fun ExpenseComponentPreview() {
                 "Gym",
                 false,
                 TagModel(0, "Ahorro", "#7987FF", ""),
+                createdAt = ""
             )
         )
     }

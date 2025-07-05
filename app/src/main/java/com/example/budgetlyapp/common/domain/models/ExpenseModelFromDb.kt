@@ -6,5 +6,6 @@ data class ExpenseModelFromDb(
     val dayPay: Int?,
     val expenseName: String,
     val hasNotification: Boolean,
-    val tag: TagModel
+    val tag: TagModel,
+    val createdAt: String
 )

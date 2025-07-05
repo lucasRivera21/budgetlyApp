@@ -24,6 +24,7 @@ class ExpenseViewModel @Inject constructor(
 
     fun getExpenseGroupList() {
         viewModelScope.launch {
+            _isLoading.value = true
             _expenseGroupList.value = getExpenseGroupListUseCase().sortedBy { it.createdAt }
             _isLoading.value = false
         }

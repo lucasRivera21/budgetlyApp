@@ -57,6 +57,7 @@ class ExpenseRepository @Inject constructor(
                         dayPay = expenseMap["day"].toString().toIntOrNull(),
                         expenseName = expenseMap["expenseName"].toString(),
                         hasNotification = expenseMap["hasNotification"].toString().toBoolean(),
+                        createdAt = expenseMap["createdAt"].toString(),
                         tag = TagModel(
                             tagId = tagMap["tagId"].toString().toInt(),
                             tagNameId = tagMap["tagNameId"].toString(),
@@ -71,7 +72,7 @@ class ExpenseRepository @Inject constructor(
                     ExpensesGroupModel(
                         expensesGroupId = expenseGroupId,
                         createdAt = createdAt,
-                        expenseList = expenseModelFromDb
+                        expenseList = expenseModelFromDb.sortedBy { it.createdAt }
                     )
                 )
             }

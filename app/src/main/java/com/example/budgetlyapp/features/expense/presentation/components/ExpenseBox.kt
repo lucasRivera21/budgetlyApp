@@ -128,6 +128,7 @@ fun ExpenseBoxPreview() {
                         "Gym",
                         true,
                         TagModel(3, "tag_health", "#90BE6D", "ic_health_category"),
+                        createdAt = ""
                     ),
                 )
             )
