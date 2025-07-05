@@ -13,7 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,8 +31,11 @@ import com.example.budgetlyapp.ui.theme.AppTheme
 import android.graphics.Color as AndroidColor
 
 @Composable
-fun ExpenseComponent(expenseModel: ExpenseModelFromDb) {
-    var isChecked by remember { mutableStateOf(expenseModel.hasNotification) }
+fun ExpenseComponent(
+    expenseModel: ExpenseModelFromDb,
+    onClickNotificationSwitch: (Boolean) -> Unit = { }
+) {
+    var isChecked by rememberSaveable { mutableStateOf(expenseModel.hasNotification) }
 
     val notificationIcon =
         if (!isChecked) R.drawable.ic_notification_off else R.drawable.ic_notification_active
@@ -80,6 +83,7 @@ fun ExpenseComponent(expenseModel: ExpenseModelFromDb) {
             //Notification
             SwitchComponent(isChecked, notificationIcon) {
                 isChecked = it
+                onClickNotificationSwitch(it)
             }
         }
 

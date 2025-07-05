@@ -12,8 +12,15 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
+private const val TAG = "ExpenseRepository"
+
 interface ExpenseTask {
     suspend fun getExpenseGroupList(): Result<List<ExpensesGroupModel>>
+    suspend fun updateExpenseNotification(
+        expenseGroupId: String,
+        expenseId: String,
+        hasNotification: Boolean
+    )
 }
 
 class ExpenseRepository @Inject constructor(
@@ -71,8 +78,27 @@ class ExpenseRepository @Inject constructor(
 
             Result.success(expenseGroupList)
         } catch (e: Exception) {
-            Log.e("ExpenseRepository", "getExpenseGroupList: ${e.message}", e)
+            Log.e(TAG, "getExpenseGroupList: ${e.message}", e)
             Result.failure(e)
+        }
+    }
+
+    override suspend fun updateExpenseNotification(
+        expenseGroupId: String,
+        expenseId: String,
+        hasNotification: Boolean
+    ) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            try {
+                val expenseRef = db.collection(UsersCollection.collectionName).document(userId)
+                    .collection(ExpenseGroupCollection.collectionName).document(expenseGroupId)
+                    .collection(ExpenseCollection.collectionName).document(expenseId)
+
+                expenseRef.update("hasNotification", hasNotification)
+            } catch (e: Exception) {
+                Log.e(TAG, "updateExpenseNotification: ${e.message}", e)
+            }
         }
     }
 }

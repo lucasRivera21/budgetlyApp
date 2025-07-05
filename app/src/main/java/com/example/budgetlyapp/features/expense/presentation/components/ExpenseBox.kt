@@ -34,6 +34,7 @@ import com.example.budgetlyapp.ui.theme.AppTheme
 fun ExpenseBox(
     number: Int,
     expensesGroupModel: ExpensesGroupModel,
+    onClickNotificationSwitch: (String, String, Boolean) -> Unit = { _, _, _ -> },
     onClickWithExpenseList: () -> Unit = {},
     onClickWithOutExpenseList: () -> Unit = {}
 ) {
@@ -66,7 +67,15 @@ fun ExpenseBox(
                     .background(MaterialTheme.colorScheme.secondaryContainer)
             ) {
                 expensesGroupModel.expenseList.forEachIndexed { index, expenseModel ->
-                    ExpenseComponent(expenseModel)
+                    ExpenseComponent(
+                        expenseModel = expenseModel,
+                        onClickNotificationSwitch = {
+                            onClickNotificationSwitch(
+                                expensesGroupModel.expensesGroupId,
+                                expenseModel.expenseId,
+                                it
+                            )
+                        })
 
                     if (index != expensesGroupModel.expenseList.lastIndex) {
                         HorizontalDivider(
@@ -77,7 +86,6 @@ fun ExpenseBox(
                         )
                     }
                 }
-
             }
 
             Row(

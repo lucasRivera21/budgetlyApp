@@ -57,11 +57,21 @@ fun ExpenseScreen(
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 itemsIndexed(expenseGroupList) { index, item ->
                     ExpenseBox(
-                        index + 1,
-                        item,
-                        { globalNavController.navigate("${CreateExpenseScreen.route}/${item.expensesGroupId}") }) {
-                        globalNavController.navigate(CreateExpenseScreen.route)
-                    }
+                        number = index + 1,
+                        expensesGroupModel = item,
+                        onClickNotificationSwitch = { expenseGroupId, expenseId, hasNotification ->
+                            viewModel.updateExpenseNotification(
+                                expenseGroupId,
+                                expenseId,
+                                hasNotification
+                            )
+                        },
+                        onClickWithExpenseList = { globalNavController.navigate("${CreateExpenseScreen.route}/${item.expensesGroupId}") },
+                        onClickWithOutExpenseList = {
+                            globalNavController.navigate(
+                                CreateExpenseScreen.route
+                            )
+                        })
                 }
             }
         } else {
