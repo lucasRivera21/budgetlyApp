@@ -26,6 +26,7 @@ import com.example.budgetlyapp.R
 import com.example.budgetlyapp.common.domain.models.ExpenseModelFromDb
 import com.example.budgetlyapp.common.domain.models.TagModel
 import com.example.budgetlyapp.common.utils.convertTagIdNameToTagName
+import com.example.budgetlyapp.common.utils.formatDecimal
 import com.example.budgetlyapp.ui.theme.AppTheme
 import android.graphics.Color as AndroidColor
 
@@ -89,7 +90,8 @@ fun ExpenseComponent(expenseModel: ExpenseModelFromDb) {
             modifier = Modifier.align(Alignment.Center)
         ) {
             Text(
-                "$ ${expenseModel.amount}", style = MaterialTheme.typography.bodyMedium,
+                "$ ${formatDecimal(expenseModel.amount)}",
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 fontWeight = FontWeight.Medium
             )

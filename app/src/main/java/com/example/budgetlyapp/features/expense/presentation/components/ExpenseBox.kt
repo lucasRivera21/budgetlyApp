@@ -27,6 +27,7 @@ import com.example.budgetlyapp.R
 import com.example.budgetlyapp.common.domain.models.ExpenseModelFromDb
 import com.example.budgetlyapp.common.domain.models.ExpensesGroupModel
 import com.example.budgetlyapp.common.domain.models.TagModel
+import com.example.budgetlyapp.common.utils.formatDecimal
 import com.example.budgetlyapp.ui.theme.AppTheme
 
 @Composable
@@ -98,7 +99,11 @@ fun ExpenseBox(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        "${stringResource(R.string.expense_total_expense)}: $sumAmount",
+                        "${stringResource(R.string.expense_total_expense)}: $ ${
+                            formatDecimal(
+                                sumAmount
+                            )
+                        }",
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.primary
                     )

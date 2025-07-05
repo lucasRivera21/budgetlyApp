@@ -3,6 +3,7 @@ package com.example.budgetlyapp.common.utils
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.example.budgetlyapp.R
+import java.text.NumberFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -41,4 +42,11 @@ fun convertTagIdNameToTagName(tagIdName: String): String {
         "tag_other" -> stringResource(R.string.tag_other)
         else -> tagIdName
     }
+}
+
+fun formatDecimal(value: Double): String {
+    val formatter = NumberFormat.getInstance(Locale("en", "EU"))
+    formatter.minimumFractionDigits = 2
+    formatter.maximumFractionDigits = 2
+    return formatter.format(value)
 }
