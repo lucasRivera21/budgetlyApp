@@ -3,6 +3,7 @@ package com.example.budgetlyapp.features.expense.presentation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.features.expense.presentation.components.ExpenseBox
+import com.example.budgetlyapp.features.expense.presentation.components.ExpenseBoxWithOutExpense
 import com.example.budgetlyapp.features.expense.presentation.viewModels.ExpenseViewModel
 import com.example.budgetlyapp.navigation.CreateExpenseScreen
 
@@ -54,7 +56,18 @@ fun ExpenseScreen(
         )
 
         if (!isLoading) {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            if (expenseGroupList.isEmpty()) {
+                ExpenseBoxWithOutExpense {
+                    globalNavController.navigate(
+                        "${CreateExpenseScreen.route}/"
+                    )
+                }
+            }
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
                 itemsIndexed(expenseGroupList) { index, item ->
                     ExpenseBox(
                         number = index + 1,
@@ -66,12 +79,18 @@ fun ExpenseScreen(
                                 hasNotification
                             )
                         },
-                        onClickWithExpenseList = { globalNavController.navigate("${CreateExpenseScreen.route}/${item.expensesGroupId}") },
-                        onClickWithOutExpenseList = {
+                        onClickWithExpenseList = { globalNavController.navigate("${CreateExpenseScreen.route}/${item.expensesGroupId}") }
+                    )
+
+                    if (index == expenseGroupList.lastIndex) {
+                        Spacer(Modifier.size(24.dp))
+
+                        ExpenseBoxWithOutExpense(expenseGroupList.size + 1) {
                             globalNavController.navigate(
-                                CreateExpenseScreen.route
+                                "${CreateExpenseScreen.route}/"
                             )
-                        })
+                        }
+                    }
                 }
             }
         } else {

@@ -30,7 +30,7 @@ class CreateExpenseRepository @Inject constructor(
                 ExpenseGroupCollection.collectionName
             )
 
-        if (id != null) {
+        if (!id.isNullOrEmpty()) {
             val expenseRef = expenseGroupRef.document(id)
                 .collection(ExpenseCollection.collectionName)
             expenseRef.add(expenseModel).await()
