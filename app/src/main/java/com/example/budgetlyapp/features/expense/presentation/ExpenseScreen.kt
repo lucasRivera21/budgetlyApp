@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -36,6 +38,7 @@ fun ExpenseScreen(
 ) {
     val expenseGroupList by viewModel.expenseGroupList.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val showDialog by viewModel.showDialog.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.getExpenseGroupList()
@@ -72,13 +75,7 @@ fun ExpenseScreen(
                     ExpenseBox(
                         number = index + 1,
                         expensesGroupModel = item,
-                        onClickNotificationSwitch = { expenseGroupId, expenseId, hasNotification ->
-                            viewModel.updateExpenseNotification(
-                                expenseGroupId,
-                                expenseId,
-                                hasNotification
-                            )
-                        },
+                        viewModel = viewModel,
                         onClickWithExpenseList = { globalNavController.navigate("${CreateExpenseScreen.route}/${item.expensesGroupId}") }
                     )
 
@@ -102,5 +99,33 @@ fun ExpenseScreen(
                 )
             }
         }
+    }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                viewModel.cancelDialog()
+            },
+            confirmButton = {
+                TextButton(onClick = { viewModel.acceptDialog() }) {
+                    Text(text = stringResource(R.string.dialog_accept))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.cancelDialog() }) {
+                    Text(text = stringResource(R.string.dialog_cancel))
+                }
+            },
+            title = {
+                Text(
+                    text = stringResource(R.string.dialog_title_delete)
+                )
+            },
+            text = {
+                Text(
+                    text = stringResource(R.string.dialog_text_delete)
+                )
+            }
+        )
     }
 }

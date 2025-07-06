@@ -77,4 +77,10 @@
     <string name="tag_study">Estudio</string>
     <string name="tag_subscription">Suscripción</string>
     <string name="tag_other">Otro</string>
+
+    <!-- Dialogs -->
+    <string name="dialog_title_delete">Eliminar</string>
+    <string name="dialog_text_delete">¿Deseas eliminar este gasto permanentemente?</string>
+    <string name="dialog_accept">Aceptar</string>
+    <string name="dialog_cancel">Cancelar</string>
 </resources>

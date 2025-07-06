@@ -22,6 +22,9 @@ class ExpenseViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading: MutableStateFlow<Boolean> = _isLoading
 
+    private val _showDialog = MutableStateFlow(false)
+    val showDialog: MutableStateFlow<Boolean> = _showDialog
+
     fun getExpenseGroupList() {
         viewModelScope.launch {
             _isLoading.value = true
@@ -38,5 +41,19 @@ class ExpenseViewModel @Inject constructor(
         viewModelScope.launch {
             updateExpenseNotificationUseCase(expenseGroupId, expenseId, hasNotification)
         }
+    }
+
+    fun showDialog() {
+        _showDialog.value = true
+    }
+
+    fun acceptDialog() {
+
+        _showDialog.value = false
+
+    }
+
+    fun cancelDialog() {
+        _showDialog.value = false
     }
 }

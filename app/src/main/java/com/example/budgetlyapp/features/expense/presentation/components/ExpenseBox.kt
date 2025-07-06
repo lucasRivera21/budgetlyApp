@@ -16,20 +16,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.budgetlyapp.R
-import com.example.budgetlyapp.common.domain.models.ExpenseModelFromDb
 import com.example.budgetlyapp.common.domain.models.ExpensesGroupModel
-import com.example.budgetlyapp.common.domain.models.TagModel
 import com.example.budgetlyapp.common.utils.formatDecimal
-import com.example.budgetlyapp.ui.theme.AppTheme
+import com.example.budgetlyapp.features.expense.presentation.viewModels.ExpenseViewModel
 
 @Composable
 fun ExpenseBox(
     number: Int,
     expensesGroupModel: ExpensesGroupModel,
-    onClickNotificationSwitch: (String, String, Boolean) -> Unit = { _, _, _ -> },
+    viewModel: ExpenseViewModel,
     onClickWithExpenseList: () -> Unit = {},
 ) {
     val sumAmount = expensesGroupModel.expenseList.sumOf { it.amount }
@@ -55,12 +52,16 @@ fun ExpenseBox(
                 ExpenseComponent(
                     expenseModel = expenseModel,
                     onClickNotificationSwitch = {
-                        onClickNotificationSwitch(
+                        viewModel.updateExpenseNotification(
                             expensesGroupModel.expensesGroupId,
                             expenseModel.expenseId,
                             it
                         )
-                    })
+                    },
+                    onSwipeCard = {
+                        viewModel.showDialog()
+                    }
+                )
 
                 if (index != expensesGroupModel.expenseList.lastIndex) {
                     HorizontalDivider(
@@ -108,28 +109,5 @@ fun ExpenseBox(
                 )
             }
         }
-    }
-}
-
-@Preview(showBackground = true, apiLevel = 33)
-@Composable
-fun ExpenseBoxPreview() {
-    AppTheme {
-        ExpenseBox(
-            1,
-            ExpensesGroupModel(
-                "1", "", listOf(
-                    ExpenseModelFromDb(
-                        expenseId = "1",
-                        1000000.0,
-                        10,
-                        "Gym",
-                        true,
-                        TagModel(3, "tag_health", "#90BE6D", "ic_health_category"),
-                        createdAt = ""
-                    ),
-                )
-            )
-        )
     }
 }

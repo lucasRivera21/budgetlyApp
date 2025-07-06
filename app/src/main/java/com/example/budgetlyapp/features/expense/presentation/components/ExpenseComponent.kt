@@ -1,6 +1,5 @@
 package com.example.budgetlyapp.features.expense.presentation.components
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,12 +41,13 @@ import android.graphics.Color as AndroidColor
 @Composable
 fun ExpenseComponent(
     expenseModel: ExpenseModelFromDb,
-    onClickNotificationSwitch: (Boolean) -> Unit = { }
+    onClickNotificationSwitch: (Boolean) -> Unit = { },
+    onSwipeCard: () -> Unit = { }
 ) {
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = {
             if (it == SwipeToDismissBoxValue.StartToEnd) {
-                Log.d("SwipeToDismissBox", "ExpenseComponent: $it")
+                onSwipeCard()
             }
 
             false
