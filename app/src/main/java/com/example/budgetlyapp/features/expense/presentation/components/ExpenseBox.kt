@@ -1,6 +1,5 @@
 package com.example.budgetlyapp.features.expense.presentation.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -51,7 +50,6 @@ fun ExpenseBox(
         Column(
             modifier = Modifier
                 .clip(RoundedCornerShape(12.dp))
-                .background(MaterialTheme.colorScheme.secondaryContainer)
         ) {
             expensesGroupModel.expenseList.forEachIndexed { index, expenseModel ->
                 ExpenseComponent(
