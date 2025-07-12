@@ -119,10 +119,10 @@ class ExpenseRepository @Inject constructor(
                     expenseGroupRef.collection(ExpenseCollection.collectionName)
 
                 val expenseSnapshot = expenseRef.get().await()
+
+                expenseRef.document(expenseId).delete()
                 if (expenseSnapshot.size() == 1) {
                     expenseGroupRef.delete()
-                } else {
-                    expenseRef.document(expenseId).delete()
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "deleteExpense: ${e.message}", e)
