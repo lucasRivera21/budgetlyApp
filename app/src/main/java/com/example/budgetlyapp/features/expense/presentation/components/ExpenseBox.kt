@@ -59,7 +59,10 @@ fun ExpenseBox(
                         )
                     },
                     onSwipeCard = {
-                        viewModel.showDialog()
+                        viewModel.showDialog(
+                            expensesGroupModel.expensesGroupId,
+                            expenseModel.expenseId
+                        )
                     }
                 )
 

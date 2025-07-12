@@ -21,6 +21,8 @@ interface ExpenseTask {
         expenseId: String,
         hasNotification: Boolean
     )
+
+    suspend fun deleteExpense(expenseGroupId: String, expenseId: String)
 }
 
 class ExpenseRepository @Inject constructor(
@@ -92,13 +94,38 @@ class ExpenseRepository @Inject constructor(
         val userId = auth.currentUser?.uid
         if (userId != null) {
             try {
-                val expenseRef = db.collection(UsersCollection.collectionName).document(userId)
-                    .collection(ExpenseGroupCollection.collectionName).document(expenseGroupId)
-                    .collection(ExpenseCollection.collectionName).document(expenseId)
+                val expenseRef =
+                    db.collection(UsersCollection.collectionName).document(userId)
+                        .collection(ExpenseGroupCollection.collectionName)
+                        .document(expenseGroupId)
+                        .collection(ExpenseCollection.collectionName).document(expenseId)
 
                 expenseRef.update("hasNotification", hasNotification)
             } catch (e: Exception) {
                 Log.e(TAG, "updateExpenseNotification: ${e.message}", e)
+            }
+        }
+    }
+
+    override suspend fun deleteExpense(expenseGroupId: String, expenseId: String) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            try {
+                val expenseGroupRef =
+                    db.collection(UsersCollection.collectionName).document(userId)
+                        .collection(ExpenseGroupCollection.collectionName)
+                        .document(expenseGroupId)
+                val expenseRef =
+                    expenseGroupRef.collection(ExpenseCollection.collectionName)
+
+                val expenseSnapshot = expenseRef.get().await()
+                if (expenseSnapshot.size() == 1) {
+                    expenseGroupRef.delete()
+                } else {
+                    expenseRef.document(expenseId).delete()
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "deleteExpense: ${e.message}", e)
             }
         }
     }
