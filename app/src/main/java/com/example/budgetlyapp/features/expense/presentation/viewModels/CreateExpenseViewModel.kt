@@ -2,11 +2,15 @@ package com.example.budgetlyapp.features.expense.presentation.viewModels
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.budgetlyapp.common.domain.models.ExpenseModel
 import com.example.budgetlyapp.common.domain.models.TagModel
+import com.example.budgetlyapp.common.utils.clearThousandFormat
+import com.example.budgetlyapp.common.utils.formatThousand
 import com.example.budgetlyapp.features.expense.domain.useCase.SaveExpenseUseCase
 import com.example.budgetlyapp.features.expense.domain.useCase.VerifyFieldsNewExpenseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,11 +28,11 @@ class CreateExpenseViewModel @Inject constructor(
     @ApplicationContext private val context: Context
 ) :
     ViewModel() {
-    private val _nameExpense = MutableStateFlow("")
-    val nameExpense: MutableStateFlow<String> = _nameExpense
+    private val _nameExpense = MutableStateFlow(TextFieldValue(""))
+    val nameExpense: MutableStateFlow<TextFieldValue> = _nameExpense
 
-    private val _amountExpense = MutableStateFlow("")
-    val amountExpense: MutableStateFlow<String> = _amountExpense
+    private val _amountExpense = MutableStateFlow(TextFieldValue(""))
+    val amountExpense: MutableStateFlow<TextFieldValue> = _amountExpense
 
     private val _categorySelected = MutableStateFlow(TagModel())
     val categorySelected: MutableStateFlow<TagModel> = _categorySelected
@@ -42,12 +46,22 @@ class CreateExpenseViewModel @Inject constructor(
     private val _hasNotification = MutableStateFlow(false)
     val hasNotification: MutableStateFlow<Boolean> = _hasNotification
 
-    fun onChaneNameExpense(name: String) {
+    fun onChaneNameExpense(name: TextFieldValue) {
         _nameExpense.value = name
     }
 
-    fun onChaneAmountExpense(amount: String) {
-        _amountExpense.value = amount
+    fun onChaneAmountExpense(amount: TextFieldValue) {
+        val newValue = if (amount.text.isNotBlank()) {
+            amount.text
+                .clearThousandFormat()
+                .toDouble()
+                .formatThousand()
+        } else amount.text
+
+        _amountExpense.value = amount.copy(
+            text = newValue,
+            selection = TextRange(newValue.length)
+        )
     }
 
     fun onChangeCategorySelected(category: TagModel) {
@@ -77,8 +91,8 @@ class CreateExpenseViewModel @Inject constructor(
     fun onClickSave(expenseGroupId: String?, navController: NavController) {
         viewModelScope.launch {
             val validateFieldsResult = verifyFieldsNewExpenseUseCase(
-                _nameExpense.value,
-                _amountExpense.value,
+                _nameExpense.value.text,
+                _amountExpense.value.text,
                 _categorySelected.value,
                 _dayPayString.value,
                 _hasDayPay.value
@@ -96,8 +110,8 @@ class CreateExpenseViewModel @Inject constructor(
             }
 
             val expenseModel = ExpenseModel(
-                expenseName = _nameExpense.value,
-                amount = _amountExpense.value.toDouble(),
+                expenseName = _nameExpense.value.text,
+                amount = _amountExpense.value.text.replace(",", "").toDouble(),
                 tag = _categorySelected.value,
                 day = if (!_hasDayPay.value) null else _dayPayString.value.toInt(),
                 hasNotification = _hasNotification.value

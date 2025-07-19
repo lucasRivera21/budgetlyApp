@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.budgetlyapp.R
@@ -23,9 +24,9 @@ import com.example.budgetlyapp.ui.theme.AppTheme
 @Composable
 fun CustomTextField(
     textLabel: String,
-    textValue: String,
+    textValue: TextFieldValue,
     keyBoardType: KeyboardType = KeyboardType.Text,
-    onValueChange: (String) -> Unit,
+    onValueChange: (TextFieldValue) -> Unit,
     isPasswordField: Boolean = false,
     modifier: Modifier = Modifier
 ) {
@@ -61,7 +62,7 @@ fun CustomTextFieldPreview() {
     AppTheme {
         CustomTextField(
             textLabel = "Email",
-            textValue = "",
+            textValue = TextFieldValue("teste"),
             onValueChange = {}
         )
     }

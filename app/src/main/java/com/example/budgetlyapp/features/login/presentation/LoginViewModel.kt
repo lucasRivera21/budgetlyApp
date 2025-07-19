@@ -2,6 +2,7 @@ package com.example.budgetlyapp.features.login.presentation
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -21,27 +22,27 @@ class LoginViewModel @Inject constructor(
     @ApplicationContext private val context: Context
 ) :
     ViewModel() {
-    private val _email = MutableStateFlow("")
-    val email: MutableStateFlow<String> = _email
+    private val _email = MutableStateFlow(TextFieldValue(""))
+    val email: MutableStateFlow<TextFieldValue> = _email
 
-    private val _password = MutableStateFlow("")
-    val password: MutableStateFlow<String> = _password
+    private val _password = MutableStateFlow(TextFieldValue(""))
+    val password: MutableStateFlow<TextFieldValue> = _password
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: MutableStateFlow<Boolean> = _isLoading
 
-    fun onChangeEmail(email: String) {
+    fun onChangeEmail(email: TextFieldValue) {
         _email.value = email
     }
 
-    fun onChangePassword(password: String) {
+    fun onChangePassword(password: TextFieldValue) {
         _password.value = password
     }
 
     fun loginUser(navController: NavController) {
         viewModelScope.launch(Dispatchers.IO) {
             _isLoading.value = true
-            val resultLogin = loginUserUseCase(email.value, password.value)
+            val resultLogin = loginUserUseCase(email.value.text, password.value.text)
             withContext(Dispatchers.Main) {
                 if (resultLogin.isSuccess) {
                     navController.navigate(MainScreen.route)

@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.common.presentation.components.CustomTextField
@@ -18,8 +19,8 @@ import com.example.budgetlyapp.features.register.presentation.RegisterViewModel
 
 @Composable
 fun AboutYouScreen(
-    name: String,
-    lastName: String,
+    name: TextFieldValue,
+    lastName: TextFieldValue,
     dayBirth: String,
     monthBirth: String,
     yearBirth: String,

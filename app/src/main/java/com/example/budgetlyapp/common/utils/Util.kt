@@ -3,6 +3,7 @@ package com.example.budgetlyapp.common.utils
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.example.budgetlyapp.R
+import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -49,4 +50,13 @@ fun formatDecimal(value: Double): String {
     formatter.minimumFractionDigits = 2
     formatter.maximumFractionDigits = 2
     return formatter.format(value)
+}
+
+fun Double.formatThousand(): String {
+    val decimalFormatter = DecimalFormat("#,###")
+    return decimalFormatter.format(this)
+}
+
+fun String.clearThousandFormat(): String {
+    return this.replace(",", "").replace(" ", "").replace("-", "").replace(".", ".0")
 }

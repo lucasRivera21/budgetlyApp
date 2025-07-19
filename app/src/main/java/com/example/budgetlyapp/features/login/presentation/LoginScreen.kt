@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -65,8 +66,8 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = h
 
 @Composable
 fun BodyInputs(
-    email: String,
-    password: String,
+    email: TextFieldValue,
+    password: TextFieldValue,
     loginViewModel: LoginViewModel,
     navController: NavController,
     isLoading: Boolean

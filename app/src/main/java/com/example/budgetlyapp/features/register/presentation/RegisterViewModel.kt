@@ -3,6 +3,7 @@ package com.example.budgetlyapp.features.register.presentation
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -34,11 +35,11 @@ class RegisterViewModel @Inject constructor(
     val isLoadingFlow: MutableStateFlow<Boolean> = isLoading
 
     //About You
-    private val _name = MutableStateFlow("")
-    val name = _name
+    private val _name = MutableStateFlow(TextFieldValue(""))
+    val name: MutableStateFlow<TextFieldValue> = _name
 
-    private val _lastName = MutableStateFlow("")
-    val lastName = _lastName
+    private val _lastName = MutableStateFlow(TextFieldValue(""))
+    val lastName: MutableStateFlow<TextFieldValue> = _lastName
 
     private val _dayBirth = MutableStateFlow("1")
     val dayBirth = _dayBirth
@@ -77,11 +78,11 @@ class RegisterViewModel @Inject constructor(
         return (currentYear - 100..currentYear).toList().reversed()
     }
 
-    fun onNameChange(newName: String) {
+    fun onNameChange(newName: TextFieldValue) {
         _name.value = newName
     }
 
-    fun onLastNameChange(newLastName: String) {
+    fun onLastNameChange(newLastName: TextFieldValue) {
         _lastName.value = newLastName
     }
 
@@ -122,38 +123,38 @@ class RegisterViewModel @Inject constructor(
 
     //Account Info
 
-    private val _email = MutableStateFlow("")
-    val email = _email
+    private val _email = MutableStateFlow(TextFieldValue(""))
+    val email: MutableStateFlow<TextFieldValue> = _email
 
-    private val _password = MutableStateFlow("")
-    val password = _password
+    private val _password = MutableStateFlow(TextFieldValue(""))
+    val password: MutableStateFlow<TextFieldValue> = _password
 
-    private val _confirmPassword = MutableStateFlow("")
-    val confirmPassword = _confirmPassword
+    private val _confirmPassword = MutableStateFlow(TextFieldValue(""))
+    val confirmPassword: MutableStateFlow<TextFieldValue> = _confirmPassword
 
-    fun onChangeEmail(newEmail: String) {
+    fun onChangeEmail(newEmail: TextFieldValue) {
         _email.value = newEmail
     }
 
-    fun onChangePassword(newPassword: String) {
+    fun onChangePassword(newPassword: TextFieldValue) {
         _password.value = newPassword
     }
 
-    fun onChangeConfirmPassword(newConfirmPassword: String) {
+    fun onChangeConfirmPassword(newConfirmPassword: TextFieldValue) {
         _confirmPassword.value = newConfirmPassword
     }
 
     //Validate Form
     private fun validateAboutYou(changePage: () -> Unit) {
-        if (_name.value.isEmpty() || _lastName.value.isEmpty()) {
+        if (_name.value.text.isEmpty() || _lastName.value.text.isEmpty()) {
             Toast.makeText(context, "Completa los campos", Toast.LENGTH_SHORT).show()
             return
         }
         val birthDate =
             LocalDate.of(_yearBirth.value.toInt(), selectedMonthBirth, _dayBirth.value.toInt())
 
-        registerUser.name = _name.value
-        registerUser.lastName = _lastName.value
+        registerUser.name = _name.value.text
+        registerUser.lastName = _lastName.value.text
         registerUser.birthDate = birthDate.toString()
 
         changePage()
@@ -172,7 +173,7 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun validateAccountInfo(changePage: () -> Unit, navController: NavController) {
-        if (_email.value.isEmpty() || _password.value.isEmpty() || _confirmPassword.value.isEmpty()) {
+        if (_email.value.text.isEmpty() || _password.value.text.isEmpty() || _confirmPassword.value.text.isEmpty()) {
             Toast.makeText(context, "Completa los campos", Toast.LENGTH_SHORT).show()
             return
         }
@@ -186,7 +187,7 @@ class RegisterViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             isLoading.value = true
-            val resultUser = registerUserUseCase(_email.value, _password.value, registerUser)
+            val resultUser = registerUserUseCase(_email.value.text, _password.value.text, registerUser)
 
             withContext(Dispatchers.Main) {
                 if (resultUser.isSuccess) {
