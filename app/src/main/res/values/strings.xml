@@ -42,6 +42,12 @@
     <string name="main_expense_title">Gastos</string>
     <string name="main_profile_title">Perfil</string>
 
+    <!-- Home Screen -->
+    <string name="home_title">Bienvenido,</string>"
+    <string name="home_summary_title">Resumen de gastos mensual</string>"
+    <string name="home_free_money">Presupuesto libre</string>"
+    <string name="home_next_expense_title">Proximos pagos:</string>"
+
     <!-- Expense -->
     <string name="expense_title">Gastos</string>
     <string name="expense_unknown_month">En el mes</string>

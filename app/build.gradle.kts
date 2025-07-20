@@ -80,6 +80,9 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.firestore)
+
+    //Compose charts
+    implementation (libs.compose.charts)
 }
 
 kapt {
