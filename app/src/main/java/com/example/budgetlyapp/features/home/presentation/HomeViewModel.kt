@@ -13,19 +13,26 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val fetchHomeDataUseCase: FetchHomeDataUseCase) :
     ViewModel() {
+    private val _homeData = MutableStateFlow(HomeDataModel())
+    val homeData: MutableStateFlow<HomeDataModel> = _homeData
+
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading: MutableStateFlow<Boolean> = _isLoading
+
     init {
         fetchHomeData()
     }
 
-    private val _homeData = MutableStateFlow<HomeDataModel?>(HomeDataModel())
-    val homeData: MutableStateFlow<HomeDataModel?> = _homeData
-
     private fun fetchHomeData() {
         viewModelScope.launch(Dispatchers.IO) {
+            _isLoading.value = true
+
             val result = fetchHomeDataUseCase()
             if (result.isSuccess) {
-                _homeData.value = result.getOrNull()
+                _homeData.value = result.getOrNull() ?: HomeDataModel()
             }
+
+            _isLoading.value = false
         }
     }
 }
