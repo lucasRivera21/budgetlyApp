@@ -12,7 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.budgetlyapp.R
-import com.example.budgetlyapp.features.home.domain.ExpenseHomeModel
+import com.example.budgetlyapp.features.home.domain.models.ExpenseHomeModel
 import com.example.budgetlyapp.ui.theme.AppTheme
 
 @Composable

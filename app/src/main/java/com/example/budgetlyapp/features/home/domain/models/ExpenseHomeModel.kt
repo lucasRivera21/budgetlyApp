@@ -1,4 +1,4 @@
-package com.example.budgetlyapp.features.home.domain
+package com.example.budgetlyapp.features.home.domain.models
 
 import androidx.compose.ui.graphics.Color
 

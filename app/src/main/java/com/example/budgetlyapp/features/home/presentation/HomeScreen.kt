@@ -16,13 +16,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.features.home.presentation.components.GraphContainerComponent
 import com.example.budgetlyapp.features.home.presentation.components.NextExpenseListComponent
 import com.example.budgetlyapp.ui.theme.AppTheme
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
