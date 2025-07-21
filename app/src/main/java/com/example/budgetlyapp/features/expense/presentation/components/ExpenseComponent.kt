@@ -114,7 +114,7 @@ fun ExpenseComponent(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            convertTagIdNameToTagName(expenseModel.tag.tagNameId),
+                            stringResource(convertTagIdNameToTagName(expenseModel.tag.tagNameId)),
                             style = MaterialTheme.typography.bodySmall,
                             color = Color.White
                         )
