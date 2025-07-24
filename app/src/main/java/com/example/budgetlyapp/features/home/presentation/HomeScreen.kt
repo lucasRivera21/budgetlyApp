@@ -31,7 +31,8 @@ import com.example.budgetlyapp.ui.theme.AppTheme
 fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
     val scrollState = rememberScrollState()
 
-    val homeData by homeViewModel.homeData.collectAsState()
+    val userName by homeViewModel.userName.collectAsState()
+    val expenseGroupList by homeViewModel.expenseGroupList.collectAsState()
     val pieList by homeViewModel.pieList.collectAsState()
 
     val isLoading by homeViewModel.isLoading.collectAsState()
@@ -48,7 +49,7 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
         ) {
 
             Text(
-                text = "${stringResource(R.string.home_title)} ${homeData.userName}",
+                text = "${stringResource(R.string.home_title)} $userName",
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.SemiBold

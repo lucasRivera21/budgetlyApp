@@ -20,7 +20,7 @@ fun SplashScreen(
     splashViewModel: SplashViewModel = hiltViewModel()
 ) {
     LaunchedEffect(Unit) {
-        splashViewModel.navigate(navController)
+        splashViewModel.saveUserInfo(navController)
     }
 
     Box(

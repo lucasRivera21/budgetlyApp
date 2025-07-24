@@ -83,6 +83,9 @@ dependencies {
 
     //Compose charts
     implementation (libs.compose.charts)
+
+    //Preferences datastore
+    implementation(libs.androidx.datastore.preferences)
 }
 
 kapt {
