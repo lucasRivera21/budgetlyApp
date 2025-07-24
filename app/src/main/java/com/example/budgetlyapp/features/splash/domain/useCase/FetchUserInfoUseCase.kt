@@ -15,8 +15,8 @@ class FetchUserInfoUseCase @Inject constructor(
         try {
             val userInfo = splashRepository.fetchUserInfo()
 
-            dataStoreRepository.putUserName(UserNameKey.key, userInfo.userName)
-            dataStoreRepository.putIncomeValue(IncomeValueKey.key, userInfo.incomeValue)
+            dataStoreRepository.setString(UserNameKey.key, userInfo.userName)
+            dataStoreRepository.setDouble(IncomeValueKey.key, userInfo.incomeValue)
         } catch (e: Exception) {
             Log.e("FetchUserInfo", "Error fetching user info", e)
         }

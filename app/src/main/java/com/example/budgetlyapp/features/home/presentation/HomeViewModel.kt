@@ -56,7 +56,7 @@ class HomeViewModel @Inject constructor(
                 expenseGroupList = result.getOrNull() ?: emptyList()
             }
 
-            incomeValue = dataStoreRepository.getIncomeValue(IncomeValueKey.key)
+            incomeValue = dataStoreRepository.getDouble(IncomeValueKey.key)
             _freeMoneyValue.value = getFreeMoneyValueUseCase(expenseGroupList, incomeValue)
 
             getPieList()
@@ -76,7 +76,7 @@ class HomeViewModel @Inject constructor(
 
     private fun getUserName() {
         viewModelScope.launch(Dispatchers.IO) {
-            _userName.value = dataStoreRepository.getUserName(UserNameKey.key)
+            _userName.value = dataStoreRepository.getString(UserNameKey.key)
         }
     }
 

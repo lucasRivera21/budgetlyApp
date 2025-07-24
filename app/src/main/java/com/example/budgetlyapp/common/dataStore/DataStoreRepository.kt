@@ -13,36 +13,36 @@ import javax.inject.Inject
 private val Context.dataStore by preferencesDataStore(name = PREFERENCES_NAME)
 
 interface DataStoreTask {
-    suspend fun putUserName(key: String, value: String)
-    suspend fun putIncomeValue(key: String, value: Double)
-    suspend fun getUserName(key: String): String
-    suspend fun getIncomeValue(key: String): Double
+    suspend fun setString(key: String, value: String)
+    suspend fun setDouble(key: String, value: Double)
+    suspend fun getString(key: String): String
+    suspend fun getDouble(key: String): Double
 }
 
 class DataStoreRepository @Inject constructor(@ApplicationContext private val context: Context) :
     DataStoreTask {
-    override suspend fun putUserName(key: String, value: String) {
+    override suspend fun setString(key: String, value: String) {
         val preferencesKey = stringPreferencesKey(key)
         context.dataStore.edit { preferences ->
             preferences[preferencesKey] = value
         }
     }
 
-    override suspend fun putIncomeValue(key: String, value: Double) {
+    override suspend fun setDouble(key: String, value: Double) {
         val preferencesKey = doublePreferencesKey(key)
         context.dataStore.edit { preferences ->
             preferences[preferencesKey] = value
         }
     }
 
-    override suspend fun getUserName(key: String): String {
+    override suspend fun getString(key: String): String {
         val preferenceKey = stringPreferencesKey(key)
         val preferences = context.dataStore.data.first()
 
         return preferences[preferenceKey] ?: ""
     }
 
-    override suspend fun getIncomeValue(key: String): Double {
+    override suspend fun getDouble(key: String): Double {
         val preferenceKey = doublePreferencesKey(key)
         val preferences = context.dataStore.data.first()
 
