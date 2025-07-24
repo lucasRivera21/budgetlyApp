@@ -32,9 +32,8 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
     val scrollState = rememberScrollState()
 
     val userName by homeViewModel.userName.collectAsState()
-    val expenseGroupList by homeViewModel.expenseGroupList.collectAsState()
+    val freeMoneyValue by homeViewModel.freeMoneyValue.collectAsState()
     val pieList by homeViewModel.pieList.collectAsState()
-
     val isLoading by homeViewModel.isLoading.collectAsState()
 
     if (!isLoading) {
@@ -55,7 +54,7 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
                 fontWeight = FontWeight.SemiBold
             )
 
-            GraphContainerComponent(pieList) {
+            GraphContainerComponent(pieList, freeMoneyValue) {
                 homeViewModel.onClickPie(it)
             }
 

@@ -20,12 +20,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.common.utils.convertTagIdNameToTagName
+import com.example.budgetlyapp.common.utils.formatThousand
 import com.example.budgetlyapp.ui.theme.AppTheme
 import ir.ehsannarmani.compose_charts.PieChart
 import ir.ehsannarmani.compose_charts.models.Pie
 
 @Composable
-fun GraphContainerComponent(pieList: List<Pie>, onClickPie: (Pie) -> Unit) {
+fun GraphContainerComponent(pieList: List<Pie>, freeMoneyValue: Double, onClickPie: (Pie) -> Unit) {
     val transformedPieList = pieList.map {
         val tagIdName = convertTagIdNameToTagName(it.label!!)
         it.copy(label = stringResource(tagIdName))
@@ -100,7 +101,7 @@ fun GraphContainerComponent(pieList: List<Pie>, onClickPie: (Pie) -> Unit) {
                 )
 
                 Text(
-                    "$1,000,000.00",
+                    "$ ${freeMoneyValue.formatThousand()}",
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     style = MaterialTheme.typography.bodyMedium
                 )
@@ -113,6 +114,6 @@ fun GraphContainerComponent(pieList: List<Pie>, onClickPie: (Pie) -> Unit) {
 @Composable
 fun GraphContainerComponentPreview() {
     AppTheme {
-        GraphContainerComponent(listOf()) {}
+        GraphContainerComponent(listOf(), 2000000.0) {}
     }
 }

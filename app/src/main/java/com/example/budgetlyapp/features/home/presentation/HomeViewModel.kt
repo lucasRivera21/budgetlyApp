@@ -8,6 +8,7 @@ import com.example.budgetlyapp.common.dataStore.IncomeValueKey
 import com.example.budgetlyapp.common.dataStore.UserNameKey
 import com.example.budgetlyapp.common.domain.models.ExpensesGroupModel
 import com.example.budgetlyapp.features.home.domain.useCase.FetchHomeDataUseCase
+import com.example.budgetlyapp.features.home.domain.useCase.GetFreeMoneyValueUseCase
 import com.example.budgetlyapp.features.home.domain.useCase.GetPieListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ir.ehsannarmani.compose_charts.models.Pie
@@ -22,12 +23,10 @@ private const val TAG = "HomeViewModel"
 class HomeViewModel @Inject constructor(
     private val fetchHomeDataUseCase: FetchHomeDataUseCase,
     private val getPieListUseCase: GetPieListUseCase,
-    private val dataStoreRepository: DataStoreRepository
+    private val dataStoreRepository: DataStoreRepository,
+    private val getFreeMoneyValueUseCase: GetFreeMoneyValueUseCase
 ) :
     ViewModel() {
-    private val _expenseGroupList = MutableStateFlow<List<ExpensesGroupModel>>(emptyList())
-    val expenseGroupList: MutableStateFlow<List<ExpensesGroupModel>> = _expenseGroupList
-
     private val _pieList = MutableStateFlow(listOf<Pie>())
     val pieList: MutableStateFlow<List<Pie>> = _pieList
 
@@ -37,10 +36,11 @@ class HomeViewModel @Inject constructor(
     private val _userName = MutableStateFlow("")
     val userName: MutableStateFlow<String> = _userName
 
-    private val _freeMoney = MutableStateFlow(0.0)
-    val freeMoney: MutableStateFlow<Double> = _freeMoney
+    private val _freeMoneyValue = MutableStateFlow(0.0)
+    val freeMoneyValue: MutableStateFlow<Double> = _freeMoneyValue
 
     private var incomeValue = 0.0
+    private var expenseGroupList = listOf<ExpensesGroupModel>()
 
     init {
         getUserName()
@@ -53,8 +53,11 @@ class HomeViewModel @Inject constructor(
 
             val result = fetchHomeDataUseCase()
             if (result.isSuccess) {
-                _expenseGroupList.value = result.getOrNull() ?: emptyList()
+                expenseGroupList = result.getOrNull() ?: emptyList()
             }
+
+            incomeValue = dataStoreRepository.getIncomeValue(IncomeValueKey.key)
+            _freeMoneyValue.value = getFreeMoneyValueUseCase(expenseGroupList, incomeValue)
 
             getPieList()
 
@@ -62,11 +65,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getPieList() {
+    private fun getPieList() {
         try {
-            incomeValue = dataStoreRepository.getIncomeValue(IncomeValueKey.key)
             _pieList.value =
-                getPieListUseCase(_expenseGroupList.value, incomeValue)
+                getPieListUseCase(expenseGroupList, incomeValue)
         } catch (e: Exception) {
             Log.e(TAG, "getPieList: ${e.message}", e)
         }
