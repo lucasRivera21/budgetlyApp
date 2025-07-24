@@ -59,3 +59,6 @@ fun Double.formatThousand(): String {
 fun String.clearThousandFormat(): String {
     return this.replace(",", "").replace(" ", "").replace("-", "").replace(".", ".0")
 }
+
+fun String.upperFirstChar(): String =
+    this.mapIndexed { index, c -> if (index == 0) c.uppercaseChar() else c }.joinToString("")

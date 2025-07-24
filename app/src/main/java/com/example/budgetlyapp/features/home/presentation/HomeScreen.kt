@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.budgetlyapp.R
+import com.example.budgetlyapp.common.utils.upperFirstChar
 import com.example.budgetlyapp.features.home.presentation.components.GraphContainerComponent
 import com.example.budgetlyapp.features.home.presentation.components.NextExpenseListComponent
 import com.example.budgetlyapp.ui.theme.AppTheme
@@ -48,7 +49,7 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
         ) {
 
             Text(
-                text = "${stringResource(R.string.home_title)} $userName",
+                text = "${stringResource(R.string.home_title)} ${userName.upperFirstChar()}",
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.SemiBold
