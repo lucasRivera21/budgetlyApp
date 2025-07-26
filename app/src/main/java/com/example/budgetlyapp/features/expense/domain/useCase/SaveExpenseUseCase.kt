@@ -5,7 +5,7 @@ import com.example.budgetlyapp.features.expense.data.repository.CreateExpenseTas
 import javax.inject.Inject
 
 class SaveExpenseUseCase @Inject constructor(private val createExpenseTask: CreateExpenseTask) {
-    suspend operator fun invoke(expenseModel: ExpenseModel, expenseGroupId: String?): Result<String> {
-        return createExpenseTask.createTask(expenseModel, expenseGroupId)
+    suspend operator fun invoke(expenseModel: ExpenseModel): Result<String> {
+        return createExpenseTask.createTask(expenseModel)
     }
 }

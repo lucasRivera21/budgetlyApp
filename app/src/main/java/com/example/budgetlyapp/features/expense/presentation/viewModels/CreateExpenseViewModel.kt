@@ -11,6 +11,7 @@ import com.example.budgetlyapp.common.domain.models.ExpenseModel
 import com.example.budgetlyapp.common.domain.models.TagModel
 import com.example.budgetlyapp.common.utils.clearThousandFormat
 import com.example.budgetlyapp.common.utils.formatThousand
+import com.example.budgetlyapp.common.utils.getNewUuid
 import com.example.budgetlyapp.features.expense.domain.useCase.SaveExpenseUseCase
 import com.example.budgetlyapp.features.expense.domain.useCase.VerifyFieldsNewExpenseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -110,6 +111,7 @@ class CreateExpenseViewModel @Inject constructor(
             }
 
             val expenseModel = ExpenseModel(
+                expenseGroupId = if (!expenseGroupId.isNullOrEmpty()) expenseGroupId else getNewUuid(),
                 expenseName = _nameExpense.value.text,
                 amount = _amountExpense.value.text.replace(",", "").toDouble(),
                 tag = _categorySelected.value,
@@ -117,7 +119,7 @@ class CreateExpenseViewModel @Inject constructor(
                 hasNotification = _hasNotification.value
             )
 
-            val saveExpenseResult = saveExpenseUseCase(expenseModel, expenseGroupId)
+            val saveExpenseResult = saveExpenseUseCase(expenseModel)
 
             if (saveExpenseResult.isSuccess) {
                 withContext(Dispatchers.Main) {

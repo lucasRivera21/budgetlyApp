@@ -3,6 +3,7 @@ package com.example.budgetlyapp.common.domain.models
 import com.example.budgetlyapp.common.utils.getTodayDate
 
 data class ExpenseModel(
+    val expenseGroupId: String,
     val expenseName: String,
     val amount: Double,
     val tag: TagModel,

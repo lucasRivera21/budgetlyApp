@@ -6,6 +6,7 @@ import java.text.NumberFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import java.util.UUID
 
 enum class MoneyType {
     USD {
@@ -62,3 +63,5 @@ fun String.clearThousandFormat(): String {
 
 fun String.upperFirstChar(): String =
     this.mapIndexed { index, c -> if (index == 0) c.uppercaseChar() else c }.joinToString("")
+
+fun getNewUuid(): String = UUID.randomUUID().toString()

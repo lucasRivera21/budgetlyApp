@@ -4,8 +4,7 @@ import android.util.Log
 import com.example.budgetlyapp.ExpenseCollection
 import com.example.budgetlyapp.ExpenseGroupCollection
 import com.example.budgetlyapp.UsersCollection
-import com.example.budgetlyapp.common.domain.models.ExpenseModelFromDb
-import com.example.budgetlyapp.common.domain.models.ExpensesGroupModel
+import com.example.budgetlyapp.common.domain.models.ExpenseModelResponse
 import com.example.budgetlyapp.common.domain.models.TagModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -15,7 +14,7 @@ import javax.inject.Inject
 private const val TAG = "ExpenseRepository"
 
 interface ExpenseTask {
-    suspend fun getExpenseGroupList(): Result<List<ExpensesGroupModel>>
+    suspend fun getExpenseGroupList(): Result<List<ExpenseModelResponse>>
     suspend fun updateExpenseNotification(
         expenseGroupId: String,
         expenseId: String,
@@ -29,57 +28,52 @@ class ExpenseRepository @Inject constructor(
     private val db: FirebaseFirestore,
     private val auth: FirebaseAuth
 ) : ExpenseTask {
-    override suspend fun getExpenseGroupList(): Result<List<ExpensesGroupModel>> {
+    override suspend fun getExpenseGroupList(): Result<List<ExpenseModelResponse>> {
         val userId = auth.currentUser?.uid ?: return Result.failure(Exception("User not found"))
-        val expenseGroupList = mutableListOf<ExpensesGroupModel>()
+        val expenseModelResponseList = mutableListOf<ExpenseModelResponse>()
         return try {
-            val expenseGroupRef = db.collection(UsersCollection.collectionName)
+            val expenseRef = db.collection(UsersCollection.collectionName)
                 .document(userId)
-                .collection(ExpenseGroupCollection.collectionName)
+                .collection(ExpenseCollection.collectionName)
 
-            val groupSnapshot = expenseGroupRef.get().await()
+            val expenseSnapshot = expenseRef.get().await()
 
-            for (document in groupSnapshot) {
-                val expenseGroupId = document.id
-                val createdAt = document.getString("createdAt") ?: ""
+            for (document in expenseSnapshot) {
+                val expenseId = document.id
+                val expense = document.data as Map<String, Any>
+                val expenseGroupId = expense["expenseGroupId"] as String
+                val amount = expense["amount"] as Double
+                val dayPay = expense["day"] as Long?
+                val expenseName = expense["expenseName"] as String
+                val hasNotification = expense["hasNotification"] as Boolean
+                val createdAt = expense["createdAt"] as String
 
-                val expenseModelFromDb = mutableListOf<ExpenseModelFromDb>()
+                val tag = expense["tag"] as Map<*, *>
+                val tagIconId = tag["iconId"] as String
+                val tagId = tag["tagId"] as Long
+                val tagName = tag["tagNameId"] as String
+                val tagColor = tag["color"] as String
 
-                val expenseRef = document.reference.collection(ExpenseCollection.collectionName)
-                val expenseSnapshot = expenseRef.get().await()
-
-                for (expense in expenseSnapshot) {
-                    val expenseId = expense.id
-                    val expenseMap = expense.data
-                    val tagMap = expenseMap["tag"] as? Map<*, *> ?: emptyMap<String, Any>()
-
-                    val model = ExpenseModelFromDb(
+                expenseModelResponseList.add(
+                    ExpenseModelResponse(
                         expenseId = expenseId,
-                        amount = expenseMap["amount"].toString().toDouble(),
-                        dayPay = expenseMap["day"].toString().toIntOrNull(),
-                        expenseName = expenseMap["expenseName"].toString(),
-                        hasNotification = expenseMap["hasNotification"].toString().toBoolean(),
-                        createdAt = expenseMap["createdAt"].toString(),
-                        tag = TagModel(
-                            tagId = tagMap["tagId"].toString().toInt(),
-                            tagNameId = tagMap["tagNameId"].toString(),
-                            color = tagMap["color"].toString(),
-                            iconId = tagMap["iconId"].toString()
-                        )
-                    )
-                    expenseModelFromDb.add(model)
-                }
-
-                expenseGroupList.add(
-                    ExpensesGroupModel(
-                        expensesGroupId = expenseGroupId,
+                        expenseGroupId = expenseGroupId,
+                        amount = amount,
+                        dayPay = dayPay?.toInt(),
+                        expenseName = expenseName,
+                        hasNotification = hasNotification,
                         createdAt = createdAt,
-                        expenseList = expenseModelFromDb.sortedBy { it.createdAt }
+                        tag = TagModel(
+                            tagId = tagId.toInt(),
+                            tagNameId = tagName,
+                            color = tagColor,
+                            iconId = tagIconId
+                        )
                     )
                 )
             }
 
-            Result.success(expenseGroupList)
+            Result.success(expenseModelResponseList)
         } catch (e: Exception) {
             Log.e(TAG, "getExpenseGroupList: ${e.message}", e)
             Result.failure(e)
