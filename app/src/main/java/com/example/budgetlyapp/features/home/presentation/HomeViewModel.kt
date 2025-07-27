@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.budgetlyapp.common.dataStore.DataStoreRepository
 import com.example.budgetlyapp.common.dataStore.IncomeValueKey
 import com.example.budgetlyapp.common.dataStore.UserNameKey
-import com.example.budgetlyapp.common.domain.models.ExpensesGroupModel
+import com.example.budgetlyapp.common.domain.models.ExpenseModelResponse
 import com.example.budgetlyapp.features.home.domain.useCase.FetchHomeDataUseCase
 import com.example.budgetlyapp.features.home.domain.useCase.GetFreeMoneyValueUseCase
 import com.example.budgetlyapp.features.home.domain.useCase.GetPieListUseCase
@@ -40,7 +40,6 @@ class HomeViewModel @Inject constructor(
     val freeMoneyValue: MutableStateFlow<Double> = _freeMoneyValue
 
     private var incomeValue = 0.0
-    private var expenseGroupList = listOf<ExpensesGroupModel>()
 
     init {
         getUserName()
@@ -50,25 +49,22 @@ class HomeViewModel @Inject constructor(
     private fun fetchHomeData() {
         viewModelScope.launch(Dispatchers.IO) {
             _isLoading.value = true
+            fetchHomeDataUseCase().collect { expenseModelResponseList ->
+                incomeValue = dataStoreRepository.getDouble(IncomeValueKey.key)
+                _freeMoneyValue.value =
+                    getFreeMoneyValueUseCase(expenseModelResponseList, incomeValue)
 
-            val result = fetchHomeDataUseCase()
-            if (result.isSuccess) {
-                expenseGroupList = result.getOrNull() ?: emptyList()
+                getPieList(expenseModelResponseList)
+
+                _isLoading.value = false
             }
-
-            incomeValue = dataStoreRepository.getDouble(IncomeValueKey.key)
-            _freeMoneyValue.value = getFreeMoneyValueUseCase(expenseGroupList, incomeValue)
-
-            getPieList()
-
-            _isLoading.value = false
         }
     }
 
-    private fun getPieList() {
+    private fun getPieList(expenseModelResponseList: List<ExpenseModelResponse>) {
         try {
             _pieList.value =
-                getPieListUseCase(expenseGroupList, incomeValue)
+                getPieListUseCase(expenseModelResponseList, incomeValue)
         } catch (e: Exception) {
             Log.e(TAG, "getPieList: ${e.message}", e)
         }
