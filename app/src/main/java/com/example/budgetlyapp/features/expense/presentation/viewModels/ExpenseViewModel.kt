@@ -48,12 +48,11 @@ class ExpenseViewModel @Inject constructor(
     }
 
     fun updateExpenseNotification(
-        expenseGroupId: String,
         expenseId: String,
         hasNotification: Boolean
     ) {
         viewModelScope.launch {
-            updateExpenseNotificationUseCase(expenseGroupId, expenseId, hasNotification)
+            updateExpenseNotificationUseCase(expenseId, hasNotification)
         }
     }
 

@@ -5,10 +5,9 @@ import javax.inject.Inject
 
 class UpdateExpenseNotificationUseCase @Inject constructor(private val expenseRepository: ExpenseRepository) {
     suspend operator fun invoke(
-        expenseGroupId: String,
         expenseId: String,
         hasNotification: Boolean
     ) {
-        expenseRepository.updateExpenseNotification(expenseGroupId, expenseId, hasNotification)
+        expenseRepository.updateExpenseNotification(expenseId, hasNotification)
     }
 }

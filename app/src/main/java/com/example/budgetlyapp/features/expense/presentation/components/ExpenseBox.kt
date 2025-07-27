@@ -53,7 +53,6 @@ fun ExpenseBox(
                     expenseModel = expenseModel,
                     onClickNotificationSwitch = {
                         viewModel.updateExpenseNotification(
-                            expensesGroupModel.expensesGroupId,
                             expenseModel.expenseId,
                             it
                         )

@@ -2,7 +2,6 @@ package com.example.budgetlyapp.features.expense.data.repository
 
 import android.util.Log
 import com.example.budgetlyapp.ExpenseCollection
-import com.example.budgetlyapp.ExpenseGroupCollection
 import com.example.budgetlyapp.UsersCollection
 import com.example.budgetlyapp.common.domain.models.ExpenseModelResponse
 import com.example.budgetlyapp.common.domain.models.TagModel
@@ -19,7 +18,6 @@ interface ExpenseTask {
     suspend fun getExpenseGroupList(): Flow<List<ExpenseModelResponse>>
 
     suspend fun updateExpenseNotification(
-        expenseGroupId: String,
         expenseId: String,
         hasNotification: Boolean
     )
@@ -91,7 +89,6 @@ class ExpenseRepository @Inject constructor(
     }
 
     override suspend fun updateExpenseNotification(
-        expenseGroupId: String,
         expenseId: String,
         hasNotification: Boolean
     ) {
@@ -100,9 +97,8 @@ class ExpenseRepository @Inject constructor(
             try {
                 val expenseRef =
                     db.collection(UsersCollection.collectionName).document(userId)
-                        .collection(ExpenseGroupCollection.collectionName)
-                        .document(expenseGroupId)
-                        .collection(ExpenseCollection.collectionName).document(expenseId)
+                        .collection(ExpenseCollection.collectionName)
+                        .document(expenseId)
 
                 expenseRef.update("hasNotification", hasNotification)
             } catch (e: Exception) {
