@@ -19,7 +19,7 @@ import com.example.budgetlyapp.ui.theme.AppTheme
 fun NextExpenseListComponent() {
     val expenseHomeModel = listOf(
         ExpenseHomeModel(
-            0,
+            "0",
             "1 ene 2025",
             "Retrasado",
             R.drawable.ic_savings_category,
@@ -28,7 +28,7 @@ fun NextExpenseListComponent() {
             "$1,000,000.00"
         ),
         ExpenseHomeModel(
-            1,
+            "1",
             "2 ene 2025",
             "Retrasado",
             R.drawable.ic_health_category,
@@ -37,7 +37,7 @@ fun NextExpenseListComponent() {
             "$500,000"
         ),
         ExpenseHomeModel(
-            2,
+            "2",
             "3 ene 2025",
             "",
             R.drawable.ic_market_category,
@@ -46,7 +46,7 @@ fun NextExpenseListComponent() {
             "$180,000"
         ),
         ExpenseHomeModel(
-            3,
+            "3",
             "3 ene 2025",
             "",
             R.drawable.ic_market_category,
@@ -55,7 +55,7 @@ fun NextExpenseListComponent() {
             "$180,000"
         ),
         ExpenseHomeModel(
-            4,
+            "4",
             "3 ene 2025",
             "",
             R.drawable.ic_market_category,
@@ -76,7 +76,7 @@ fun NextExpenseListComponent() {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             expenseHomeModel.forEach { expenseHomeModel ->
-                ExpenseHomeBox(expenseHomeModel)
+                ExpenseHomeBox(expenseHomeModel) {}
             }
         }
     }

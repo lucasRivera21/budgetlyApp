@@ -9,11 +9,6 @@ object UsersCollection : Collections {
         get() = "users"
 }
 
-object ExpenseGroupCollection : Collections {
-    override val collectionName: String
-        get() = "expenseGroup"
-}
-
 object ExpenseCollection : Collections {
     override val collectionName: String
         get() = "expense"
