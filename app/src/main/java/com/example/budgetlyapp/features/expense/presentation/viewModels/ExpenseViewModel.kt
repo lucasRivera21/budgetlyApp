@@ -65,8 +65,7 @@ class ExpenseViewModel @Inject constructor(
 
     fun acceptDialog() {
         viewModelScope.launch {
-            deleteExpenseUseCase(expenseGroupIdToDelete!!, expenseIdToDelete!!)
-            //getExpenseGroupList()
+            deleteExpenseUseCase(expenseIdToDelete!!)
         }
 
         resetDialogDelete()

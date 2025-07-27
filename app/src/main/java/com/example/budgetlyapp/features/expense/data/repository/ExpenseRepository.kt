@@ -11,20 +11,20 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 private const val TAG = "ExpenseRepository"
 
 interface ExpenseTask {
     suspend fun getExpenseGroupList(): Flow<List<ExpenseModelResponse>>
+
     suspend fun updateExpenseNotification(
         expenseGroupId: String,
         expenseId: String,
         hasNotification: Boolean
     )
 
-    suspend fun deleteExpense(expenseGroupId: String, expenseId: String)
+    suspend fun deleteExpense(expenseId: String)
 }
 
 class ExpenseRepository @Inject constructor(
@@ -111,23 +111,16 @@ class ExpenseRepository @Inject constructor(
         }
     }
 
-    override suspend fun deleteExpense(expenseGroupId: String, expenseId: String) {
+    override suspend fun deleteExpense(expenseId: String) {
         val userId = auth.currentUser?.uid
         if (userId != null) {
             try {
-                val expenseGroupRef =
-                    db.collection(UsersCollection.collectionName).document(userId)
-                        .collection(ExpenseGroupCollection.collectionName)
-                        .document(expenseGroupId)
                 val expenseRef =
-                    expenseGroupRef.collection(ExpenseCollection.collectionName)
+                    db.collection(UsersCollection.collectionName).document(userId)
+                        .collection(ExpenseCollection.collectionName)
+                        .document(expenseId)
 
-                val expenseSnapshot = expenseRef.get().await()
-
-                expenseRef.document(expenseId).delete()
-                if (expenseSnapshot.size() == 1) {
-                    expenseGroupRef.delete()
-                }
+                expenseRef.delete()
             } catch (e: Exception) {
                 Log.e(TAG, "deleteExpense: ${e.message}", e)
             }
