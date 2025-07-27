@@ -3,6 +3,7 @@ package com.example.budgetlyapp.features.expense.presentation.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.budgetlyapp.common.domain.models.ExpensesGroupModel
+import com.example.budgetlyapp.features.expense.domain.useCase.ConvertExpenseResponseToExpenseGroupUseCase
 import com.example.budgetlyapp.features.expense.domain.useCase.DeleteExpenseUseCase
 import com.example.budgetlyapp.features.expense.domain.useCase.GetExpenseGroupListUseCase
 import com.example.budgetlyapp.features.expense.domain.useCase.UpdateExpenseNotificationUseCase
@@ -15,7 +16,8 @@ import javax.inject.Inject
 class ExpenseViewModel @Inject constructor(
     private val getExpenseGroupListUseCase: GetExpenseGroupListUseCase,
     private val updateExpenseNotificationUseCase: UpdateExpenseNotificationUseCase,
-    private val deleteExpenseUseCase: DeleteExpenseUseCase
+    private val deleteExpenseUseCase: DeleteExpenseUseCase,
+    private val convertExpenseResponseToExpenseGroupUseCase: ConvertExpenseResponseToExpenseGroupUseCase
 ) :
     ViewModel() {
     private val _expenseGroupList = MutableStateFlow<List<ExpensesGroupModel>>(emptyList())
@@ -30,11 +32,18 @@ class ExpenseViewModel @Inject constructor(
     private var expenseGroupIdToDelete: String? = null
     private var expenseIdToDelete: String? = null
 
-    fun getExpenseGroupList() {
+    init {
+        getExpenseGroupList()
+    }
+
+    private fun getExpenseGroupList() {
         viewModelScope.launch {
             _isLoading.value = true
-            _expenseGroupList.value = getExpenseGroupListUseCase().sortedBy { it.createdAt }
-            _isLoading.value = false
+            getExpenseGroupListUseCase().collect { expenseModelResponseList ->
+                _expenseGroupList.value =
+                    convertExpenseResponseToExpenseGroupUseCase(expenseModelResponseList)
+                _isLoading.value = false
+            }
         }
     }
 
@@ -57,7 +66,7 @@ class ExpenseViewModel @Inject constructor(
     fun acceptDialog() {
         viewModelScope.launch {
             deleteExpenseUseCase(expenseGroupIdToDelete!!, expenseIdToDelete!!)
-            getExpenseGroupList()
+            //getExpenseGroupList()
         }
 
         resetDialogDelete()

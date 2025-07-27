@@ -15,7 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -39,10 +38,6 @@ fun ExpenseScreen(
     val expenseGroupList by viewModel.expenseGroupList.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val showDialog by viewModel.showDialog.collectAsState()
-
-    LaunchedEffect(Unit) {
-        viewModel.getExpenseGroupList()
-    }
 
     Column(
         modifier = Modifier
