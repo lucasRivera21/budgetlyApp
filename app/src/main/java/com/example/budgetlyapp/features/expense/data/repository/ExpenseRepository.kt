@@ -2,6 +2,7 @@ package com.example.budgetlyapp.features.expense.data.repository
 
 import android.util.Log
 import com.example.budgetlyapp.ExpenseCollection
+import com.example.budgetlyapp.TaskCollection
 import com.example.budgetlyapp.UsersCollection
 import com.example.budgetlyapp.common.domain.models.ExpenseModelResponse
 import com.example.budgetlyapp.common.domain.models.TagModel
@@ -10,6 +11,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 private const val TAG = "ExpenseRepository"
@@ -111,12 +113,19 @@ class ExpenseRepository @Inject constructor(
         val userId = auth.currentUser?.uid
         if (userId != null) {
             try {
-                val expenseRef =
-                    db.collection(UsersCollection.collectionName).document(userId)
-                        .collection(ExpenseCollection.collectionName)
-                        .document(expenseId)
+                val userRef = db.collection(UsersCollection.collectionName).document(userId)
+                val expenseRef = userRef.collection(ExpenseCollection.collectionName)
+                    .document(expenseId)
 
                 expenseRef.delete()
+
+                val taskCollectRef = userRef.collection(TaskCollection.collectionName)
+                val query = taskCollectRef.whereEqualTo("expenseId", expenseId)
+                val taskSnapshot = query.get().await()
+                for (taskDocument in taskSnapshot.documents) {
+                    taskDocument.reference.delete()
+                }
+
             } catch (e: Exception) {
                 Log.e(TAG, "deleteExpense: ${e.message}", e)
             }
