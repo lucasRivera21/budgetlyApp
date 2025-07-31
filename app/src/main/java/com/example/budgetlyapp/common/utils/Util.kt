@@ -3,7 +3,9 @@ package com.example.budgetlyapp.common.utils
 import com.example.budgetlyapp.R
 import java.text.DecimalFormat
 import java.text.NumberFormat
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import java.util.UUID
@@ -25,6 +27,18 @@ enum class MoneyType {
 fun getTodayDate(format: String = "yyyy-MM-dd HH:mm:ss"): String {
     val formatter = DateTimeFormatter.ofPattern(format, Locale.getDefault())
     return LocalDateTime.now().format(formatter)
+}
+
+fun convertDayMonthYearToDate(day: Int, month: Int, year: Int): String {
+    val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy", Locale.getDefault())
+
+    val yearMonth = YearMonth.of(year, month)
+    val lastDayOfMonth = yearMonth.lengthOfMonth()
+
+    val safeDay = minOf(day, lastDayOfMonth)
+
+    val date = LocalDate.of(year, month, safeDay)
+    return date.format(formatter)
 }
 
 fun convertTagIdNameToTagName(tagIdName: String): Int {

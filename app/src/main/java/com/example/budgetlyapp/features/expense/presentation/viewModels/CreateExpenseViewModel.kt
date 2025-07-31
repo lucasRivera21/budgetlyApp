@@ -119,12 +119,10 @@ class CreateExpenseViewModel @Inject constructor(
                 hasNotification = _hasNotification.value
             )
 
-            val saveExpenseResult = saveExpenseUseCase(expenseModel)
+            saveExpenseUseCase(expenseModel)
 
-            if (saveExpenseResult.isSuccess) {
-                withContext(Dispatchers.Main) {
-                    navController.popBackStack()
-                }
+            withContext(Dispatchers.Main) {
+                navController.popBackStack()
             }
         }
     }

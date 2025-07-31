@@ -12,5 +12,9 @@ object UsersCollection : Collections {
 object ExpenseCollection : Collections {
     override val collectionName: String
         get() = "expense"
+}
 
+object TaskCollection : Collections {
+    override val collectionName: String
+        get() = "task"
 }

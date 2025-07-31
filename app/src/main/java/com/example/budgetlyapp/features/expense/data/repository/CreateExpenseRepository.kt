@@ -1,18 +1,18 @@
 package com.example.budgetlyapp.features.expense.data.repository
 
-import android.util.Log
 import com.example.budgetlyapp.ExpenseCollection
+import com.example.budgetlyapp.TaskCollection
 import com.example.budgetlyapp.UsersCollection
 import com.example.budgetlyapp.common.domain.models.ExpenseModel
+import com.example.budgetlyapp.features.expense.domain.models.TaskUpload
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-private const val TAG = "CreateExpenseRepository"
-
 interface CreateExpenseTask {
-    suspend fun createTask(expenseModel: ExpenseModel): Result<String>
+    suspend fun createExpense(expenseModel: ExpenseModel): String
+    suspend fun createTask(taskList: List<TaskUpload>)
 }
 
 class CreateExpenseRepository @Inject constructor(
@@ -20,22 +20,25 @@ class CreateExpenseRepository @Inject constructor(
     private val auth: FirebaseAuth
 ) :
     CreateExpenseTask {
-    override suspend fun createTask(
+    override suspend fun createExpense(
         expenseModel: ExpenseModel
-    ): Result<String> {
+    ): String {
         val userId = auth.currentUser?.uid
 
-        val expenseRef =
-            db.collection(UsersCollection.collectionName).document(userId!!).collection(
-                ExpenseCollection.collectionName
-            )
+        val userRef = db.collection(UsersCollection.collectionName).document(userId!!)
+        val expenseRef = userRef.collection(ExpenseCollection.collectionName)
 
-        return try {
-            val expenseSnapshot = expenseRef.add(expenseModel).await()
-            Result.success(expenseSnapshot.id)
-        } catch (e: Exception) {
-            Log.e(TAG, e.message, e)
-            Result.failure(e)
+        val expenseSnapshot = expenseRef.add(expenseModel).await()
+        return expenseSnapshot.id
+    }
+
+    override suspend fun createTask(taskList: List<TaskUpload>) {
+        val userId = auth.currentUser?.uid
+        val userRef = db.collection(UsersCollection.collectionName).document(userId!!)
+        val taskRef = userRef.collection(TaskCollection.collectionName)
+
+        taskList.forEach { task ->
+            taskRef.add(task)
         }
     }
 }
