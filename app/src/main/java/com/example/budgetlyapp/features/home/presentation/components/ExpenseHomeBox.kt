@@ -1,5 +1,6 @@
 package com.example.budgetlyapp.features.home.presentation.components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,17 +25,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.budgetlyapp.R
-import com.example.budgetlyapp.features.home.domain.models.ExpenseHomeModel
+import com.example.budgetlyapp.common.utils.changeFormatDate
+import com.example.budgetlyapp.common.utils.formatThousand
+import com.example.budgetlyapp.common.utils.getTodayDate
+import com.example.budgetlyapp.features.home.domain.models.NextTaskModel
 import com.example.budgetlyapp.ui.theme.AppTheme
+import android.graphics.Color as AndroidColor
 
+@SuppressLint("DiscouragedApi")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExpenseHomeBox(expenseHomeModel: ExpenseHomeModel, onSwipeCard: () -> Unit) {
-    val expenseColor = expenseHomeModel.color
+fun ExpenseHomeBox(nextTaskModel: NextTaskModel, onSwipeCard: () -> Unit) {
+    val context = LocalContext.current
+    val icon = context.resources.getIdentifier(nextTaskModel.icon, "drawable", context.packageName)
+    val expenseColor = Color(AndroidColor.parseColor(nextTaskModel.color))
+    val formatDateDue = if (!nextTaskModel.hasDayDue) "MMMM yyyy" else "d MMMM yyyy"
+    val expenseState =
+        if (nextTaskModel.dateDue < getTodayDate("yyyy-MM-dd")) stringResource(R.string.home_next_expense_delayed) else ""
+
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = {
             if (it == SwipeToDismissBoxValue.StartToEnd) {
@@ -87,8 +101,11 @@ fun ExpenseHomeBox(expenseHomeModel: ExpenseHomeModel, onSwipeCard: () -> Unit) 
                     )
                     .padding(horizontal = 12.dp, vertical = 4.dp)
             ) {
-                Text(expenseHomeModel.expenseDate, color = Color.White)
-                Text(expenseHomeModel.expenseState, color = Color.White)
+                Text(
+                    changeFormatDate(nextTaskModel.dateDue, "yyyy-MM-dd", formatDateDue),
+                    color = Color.White
+                )
+                Text(expenseState, color = Color.White)
             }
 
             Row(
@@ -109,7 +126,7 @@ fun ExpenseHomeBox(expenseHomeModel: ExpenseHomeModel, onSwipeCard: () -> Unit) 
                             .padding(4.dp)
                     ) {
                         Icon(
-                            painter = painterResource(expenseHomeModel.icon),
+                            painter = painterResource(icon),
                             contentDescription = null,
                             tint = Color.White,
                             modifier = Modifier.size(24.dp)
@@ -117,14 +134,14 @@ fun ExpenseHomeBox(expenseHomeModel: ExpenseHomeModel, onSwipeCard: () -> Unit) 
                     }
 
                     Text(
-                        expenseHomeModel.expenseName,
+                        nextTaskModel.taskName,
                         color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
 
                 Text(
-                    expenseHomeModel.amount,
+                    "$ ${nextTaskModel.amount.formatThousand()}",
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.bodyLarge
                 )
@@ -137,16 +154,6 @@ fun ExpenseHomeBox(expenseHomeModel: ExpenseHomeModel, onSwipeCard: () -> Unit) 
 @Composable
 fun ExpenseHomeBoxPreview() {
     AppTheme {
-        ExpenseHomeBox(
-            ExpenseHomeModel(
-                "0",
-                "1 ene 2025",
-                "Retrasado",
-                R.drawable.ic_savings_category,
-                Color.Blue,
-                "Arriendo",
-                "$1,000,000.00"
-            )
-        ) {}
+
     }
 }

@@ -36,6 +36,7 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
     val freeMoneyValue by homeViewModel.freeMoneyValue.collectAsState()
     val pieList by homeViewModel.pieList.collectAsState()
     val isLoading by homeViewModel.isLoading.collectAsState()
+    val nextTaskList by homeViewModel.nextTaskList.collectAsState()
 
     if (!isLoading) {
         Column(
@@ -59,7 +60,7 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
                 homeViewModel.onClickPie(it)
             }
 
-            NextExpenseListComponent()
+            NextExpenseListComponent(nextTaskList)
         }
     } else {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

@@ -30,7 +30,7 @@ fun getTodayDate(format: String = "yyyy-MM-dd HH:mm:ss"): String {
 }
 
 fun convertDayMonthYearToDate(day: Int, month: Int, year: Int): String {
-    val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy", Locale.getDefault())
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.getDefault())
 
     val yearMonth = YearMonth.of(year, month)
     val lastDayOfMonth = yearMonth.lengthOfMonth()
@@ -39,6 +39,13 @@ fun convertDayMonthYearToDate(day: Int, month: Int, year: Int): String {
 
     val date = LocalDate.of(year, month, safeDay)
     return date.format(formatter)
+}
+
+fun changeFormatDate(date: String, oldFormat: String, newFormat: String): String {
+    val formatterOld = DateTimeFormatter.ofPattern(oldFormat, Locale.getDefault())
+    val formatterNew = DateTimeFormatter.ofPattern(newFormat, Locale.getDefault())
+    val localDate = LocalDate.parse(date, formatterOld)
+    return localDate.format(formatterNew)
 }
 
 fun convertTagIdNameToTagName(tagIdName: String): Int {
@@ -52,8 +59,7 @@ fun convertTagIdNameToTagName(tagIdName: String): Int {
         "tag_sure" -> R.string.tag_sure
         "tag_study" -> R.string.tag_study
         "tag_subscription" -> R.string.tag_subscription
-        "tag_other" -> R.string.tag_other
-        else -> tagIdName.length
+        else -> R.string.tag_other
     }
 }
 

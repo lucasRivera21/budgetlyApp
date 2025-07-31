@@ -7,7 +7,10 @@ import com.example.budgetlyapp.common.dataStore.DataStoreRepository
 import com.example.budgetlyapp.common.dataStore.IncomeValueKey
 import com.example.budgetlyapp.common.dataStore.UserNameKey
 import com.example.budgetlyapp.common.domain.models.ExpenseModelResponse
+import com.example.budgetlyapp.features.home.domain.models.NextTaskModel
+import com.example.budgetlyapp.features.home.domain.models.toNextTaskModel
 import com.example.budgetlyapp.features.home.domain.useCase.FetchHomeDataUseCase
+import com.example.budgetlyapp.features.home.domain.useCase.FetchNextExpensesUseCase
 import com.example.budgetlyapp.features.home.domain.useCase.GetFreeMoneyValueUseCase
 import com.example.budgetlyapp.features.home.domain.useCase.GetPieListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +27,8 @@ class HomeViewModel @Inject constructor(
     private val fetchHomeDataUseCase: FetchHomeDataUseCase,
     private val getPieListUseCase: GetPieListUseCase,
     private val dataStoreRepository: DataStoreRepository,
-    private val getFreeMoneyValueUseCase: GetFreeMoneyValueUseCase
+    private val getFreeMoneyValueUseCase: GetFreeMoneyValueUseCase,
+    private val fetchNextExpensesUseCase: FetchNextExpensesUseCase
 ) :
     ViewModel() {
     private val _pieList = MutableStateFlow(listOf<Pie>())
@@ -39,11 +43,24 @@ class HomeViewModel @Inject constructor(
     private val _freeMoneyValue = MutableStateFlow(0.0)
     val freeMoneyValue: MutableStateFlow<Double> = _freeMoneyValue
 
+    private val _nextTaskList = MutableStateFlow(listOf<NextTaskModel>())
+    val nextTaskList: MutableStateFlow<List<NextTaskModel>> = _nextTaskList
+
     private var incomeValue = 0.0
 
     init {
         getUserName()
         fetchHomeData()
+        fetchNextExpenses()
+    }
+
+    private fun fetchNextExpenses() {
+        viewModelScope.launch(Dispatchers.IO) {
+            fetchNextExpensesUseCase().collect { taskResponseList ->
+                _nextTaskList.value =
+                    taskResponseList.map { it.toNextTaskModel() }.sortedBy { it.dateDue }
+            }
+        }
     }
 
     private fun fetchHomeData() {
