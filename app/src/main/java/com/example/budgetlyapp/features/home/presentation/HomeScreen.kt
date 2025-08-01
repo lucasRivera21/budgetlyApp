@@ -3,12 +3,10 @@ package com.example.budgetlyapp.features.home.presentation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -30,8 +28,6 @@ import com.example.budgetlyapp.ui.theme.AppTheme
 
 @Composable
 fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
-    val scrollState = rememberScrollState()
-
     val userName by homeViewModel.userName.collectAsState()
     val freeMoneyValue by homeViewModel.freeMoneyValue.collectAsState()
     val pieList by homeViewModel.pieList.collectAsState()
@@ -39,28 +35,34 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
     val nextTaskList by homeViewModel.nextTaskList.collectAsState()
 
     if (!isLoading) {
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surface)
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .verticalScroll(scrollState),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(36.dp)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(36.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            Text(
-                text = "${stringResource(R.string.home_title)} ${userName.upperFirstChar()}",
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.SemiBold
-            )
-
-            GraphContainerComponent(pieList, freeMoneyValue) {
-                homeViewModel.onClickPie(it)
+            item {
+                Text(
+                    text = "${stringResource(R.string.home_title)} ${userName.upperFirstChar()}",
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
 
-            NextExpenseListComponent(nextTaskList)
+            item {
+                GraphContainerComponent(pieList, freeMoneyValue) {
+                    homeViewModel.onClickPie(it)
+                }
+            }
+
+            item {
+                NextExpenseListComponent(nextTaskList) { taskId ->
+                    homeViewModel.updateIsCompleteTask(taskId)
+                }
+            }
         }
     } else {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

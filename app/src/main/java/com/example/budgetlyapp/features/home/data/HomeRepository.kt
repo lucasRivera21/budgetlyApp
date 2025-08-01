@@ -1,5 +1,6 @@
 package com.example.budgetlyapp.features.home.data
 
+import android.util.Log
 import com.example.budgetlyapp.ExpenseCollection
 import com.example.budgetlyapp.TaskCollection
 import com.example.budgetlyapp.UsersCollection
@@ -13,9 +14,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
+private const val TAG = "HomeRepository"
+
 interface HomeTask {
     suspend fun fetchHomeData(): Flow<List<ExpenseModelResponse>>
     suspend fun fetchNextExpensesUseCase(): Flow<List<TaskResponse>>
+    suspend fun updateIsCompleteTask(taskId: String)
 }
 
 class HomeRepository @Inject constructor(
@@ -133,6 +137,19 @@ class HomeRepository @Inject constructor(
             }
         } catch (e: Exception) {
             close(e)
+        }
+    }
+
+    override suspend fun updateIsCompleteTask(taskId: String) {
+        val userId = auth.currentUser?.uid ?: return
+
+        try {
+            val userRef = db.collection(UsersCollection.collectionName).document(userId)
+
+            val taskRef = userRef.collection(TaskCollection.collectionName).document(taskId)
+            taskRef.update("completed", true)
+        } catch (e: Exception) {
+            Log.e(TAG, "updateIsCompleteTask: ${e.message}", e)
         }
     }
 }

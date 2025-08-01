@@ -13,6 +13,7 @@ import com.example.budgetlyapp.features.home.domain.useCase.FetchHomeDataUseCase
 import com.example.budgetlyapp.features.home.domain.useCase.FetchNextExpensesUseCase
 import com.example.budgetlyapp.features.home.domain.useCase.GetFreeMoneyValueUseCase
 import com.example.budgetlyapp.features.home.domain.useCase.GetPieListUseCase
+import com.example.budgetlyapp.features.home.domain.useCase.UpdateIsCompleteTaskUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ir.ehsannarmani.compose_charts.models.Pie
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +29,8 @@ class HomeViewModel @Inject constructor(
     private val getPieListUseCase: GetPieListUseCase,
     private val dataStoreRepository: DataStoreRepository,
     private val getFreeMoneyValueUseCase: GetFreeMoneyValueUseCase,
-    private val fetchNextExpensesUseCase: FetchNextExpensesUseCase
+    private val fetchNextExpensesUseCase: FetchNextExpensesUseCase,
+    private val updateIsCompleteTaskUseCase: UpdateIsCompleteTaskUseCase
 ) :
     ViewModel() {
     private val _pieList = MutableStateFlow(listOf<Pie>())
@@ -90,6 +92,12 @@ class HomeViewModel @Inject constructor(
     private fun getUserName() {
         viewModelScope.launch(Dispatchers.IO) {
             _userName.value = dataStoreRepository.getString(UserNameKey.key)
+        }
+    }
+
+    fun updateIsCompleteTask(taskId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            updateIsCompleteTaskUseCase(taskId)
         }
     }
 

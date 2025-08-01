@@ -41,7 +41,7 @@ import android.graphics.Color as AndroidColor
 @SuppressLint("DiscouragedApi")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExpenseHomeBox(nextTaskModel: NextTaskModel, onSwipeCard: () -> Unit) {
+fun ExpenseHomeBox(nextTaskModel: NextTaskModel, onSwipeCard: (String) -> Unit) {
     val context = LocalContext.current
     val icon = context.resources.getIdentifier(nextTaskModel.icon, "drawable", context.packageName)
     val expenseColor = Color(AndroidColor.parseColor(nextTaskModel.color))
@@ -52,7 +52,7 @@ fun ExpenseHomeBox(nextTaskModel: NextTaskModel, onSwipeCard: () -> Unit) {
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = {
             if (it == SwipeToDismissBoxValue.StartToEnd) {
-                onSwipeCard()
+                onSwipeCard(nextTaskModel.taskId)
             }
 
             false
