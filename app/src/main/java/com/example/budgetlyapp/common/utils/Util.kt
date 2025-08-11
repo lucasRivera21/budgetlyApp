@@ -1,5 +1,10 @@
 package com.example.budgetlyapp.common.utils
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.core.content.ContextCompat
 import com.example.budgetlyapp.R
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -85,3 +90,12 @@ fun String.upperFirstChar(): String =
     this.mapIndexed { index, c -> if (index == 0) c.uppercaseChar() else c }.joinToString("")
 
 fun getNewUuid(): String = UUID.randomUUID().toString()
+
+fun hasNotificationPermission(context: Context): Boolean {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return true
+
+    return ContextCompat.checkSelfPermission(
+        context,
+        Manifest.permission.POST_NOTIFICATIONS
+    ) == PackageManager.PERMISSION_GRANTED
+}

@@ -14,3 +14,9 @@ object IncomeValueKey : PreferencesKey {
     override val key: String
         get() = "income_value"
 }
+
+object IsFirstTimeKey : PreferencesKey {
+    override val key: String
+        get() = "is_first_time"
+
+}

@@ -1,5 +1,9 @@
 package com.example.budgetlyapp.features.home.presentation
 
+import android.Manifest
+import android.annotation.SuppressLint
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,21 +15,25 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.budgetlyapp.R
+import com.example.budgetlyapp.common.utils.hasNotificationPermission
 import com.example.budgetlyapp.common.utils.upperFirstChar
 import com.example.budgetlyapp.features.home.presentation.components.GraphContainerComponent
 import com.example.budgetlyapp.features.home.presentation.components.NextExpenseListComponent
 import com.example.budgetlyapp.ui.theme.AppTheme
 
+@SuppressLint("InlinedApi")
 @Composable
 fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
     val userName by homeViewModel.userName.collectAsState()
@@ -33,6 +41,21 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
     val pieList by homeViewModel.pieList.collectAsState()
     val isLoading by homeViewModel.isLoading.collectAsState()
     val nextTaskList by homeViewModel.nextTaskList.collectAsState()
+    val isFirstTime by homeViewModel.isFirstTime.collectAsState()
+
+    val context = LocalContext.current
+    val requestPermissionLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { _ ->
+            homeViewModel.putFirstTimeFalse()
+        }
+
+    LaunchedEffect(isFirstTime) {
+        if (isFirstTime) {
+            if (!hasNotificationPermission(context)) {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
 
     if (!isLoading) {
         LazyColumn(

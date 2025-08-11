@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.budgetlyapp.common.dataStore.DataStoreRepository
 import com.example.budgetlyapp.common.dataStore.IncomeValueKey
+import com.example.budgetlyapp.common.dataStore.IsFirstTimeKey
 import com.example.budgetlyapp.common.dataStore.UserNameKey
 import com.example.budgetlyapp.common.domain.models.ExpenseModelResponse
 import com.example.budgetlyapp.features.home.domain.models.NextTaskModel
@@ -48,12 +49,25 @@ class HomeViewModel @Inject constructor(
     private val _nextTaskList = MutableStateFlow(listOf<NextTaskModel>())
     val nextTaskList: MutableStateFlow<List<NextTaskModel>> = _nextTaskList
 
+    private val _isFirstTime = MutableStateFlow(false)
+    val isFirstTime: MutableStateFlow<Boolean> = _isFirstTime
+
     private var incomeValue = 0.0
 
     init {
         getUserName()
         fetchHomeData()
         fetchNextExpenses()
+        requestNotificationPermission()
+    }
+
+    private fun requestNotificationPermission() {
+        viewModelScope.launch {
+            val isFirstTime = dataStoreRepository.getBoolean(IsFirstTimeKey.key)
+            if (isFirstTime) {
+                _isFirstTime.value = true
+            }
+        }
     }
 
     private fun fetchNextExpenses() {
@@ -92,6 +106,12 @@ class HomeViewModel @Inject constructor(
     private fun getUserName() {
         viewModelScope.launch(Dispatchers.IO) {
             _userName.value = dataStoreRepository.getString(UserNameKey.key)
+        }
+    }
+
+    fun putFirstTimeFalse() {
+        viewModelScope.launch {
+            dataStoreRepository.setBoolean(IsFirstTimeKey.key, false)
         }
     }
 
