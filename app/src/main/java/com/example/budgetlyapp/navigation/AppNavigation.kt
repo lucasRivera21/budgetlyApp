@@ -3,10 +3,10 @@ package com.example.budgetlyapp.navigation
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.budgetlyapp.features.expense.presentation.CreateExpenseScreen
 import com.example.budgetlyapp.features.splash.presentation.SplashScreen
@@ -15,8 +15,7 @@ import com.example.budgetlyapp.features.main.presentation.MainScreen
 import com.example.budgetlyapp.features.register.presentation.RegisterScreen
 
 @Composable
-fun AppNavigation() {
-    val navController = rememberNavController()
+fun AppNavigation(navController: NavHostController) {
     NavHost(
         navController = navController,
         startDestination = SplashScreen.route,
