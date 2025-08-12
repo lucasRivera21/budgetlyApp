@@ -7,6 +7,7 @@ data class TaskUpload(
     val taskName: String,
     val expenseId: String,
     val expenseGroupId: String,
+    val requestCode: Int?,
     val dateDue: String?,
     val hasDayDue: Boolean,
     val createdAt: String = getTodayDate(),

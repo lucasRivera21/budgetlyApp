@@ -11,13 +11,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.example.budgetlyapp.alarm.AlarmSchedulerImpl
-import com.example.budgetlyapp.common.domain.models.AlarmItem
 import com.example.budgetlyapp.navigation.AppNavigation
 import com.example.budgetlyapp.navigation.MainScreen
 import com.example.budgetlyapp.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.LocalDateTime
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -26,8 +23,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
-            val alarmScheduler = AlarmSchedulerImpl(applicationContext)
-            alarmScheduler.schedule(AlarmItem(0, LocalDateTime.now(), "Mensaje notificacion"))
 
             LaunchedEffect(Unit) {
                 intent.getStringExtra("destination")?.let {

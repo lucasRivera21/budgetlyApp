@@ -5,5 +5,6 @@ import java.time.LocalDateTime
 data class AlarmItem(
     val requestCode: Int,
     val alarmTime: LocalDateTime,
+    val title: String,
     val message: String
 )

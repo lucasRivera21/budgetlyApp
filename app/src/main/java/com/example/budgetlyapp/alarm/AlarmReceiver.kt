@@ -13,22 +13,30 @@ import com.example.budgetlyapp.features.MainActivity
 class AlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent?) {
-        createNotification(context)
+        val title = intent?.getStringExtra("NOTIFICATION_TITLE") ?: ""
+        val message = intent?.getStringExtra("NOTIFICATION_MESSAGE") ?: ""
+        val requestCode = intent?.getIntExtra("NOTIFICATION_REQUEST_CODE", 0) ?: 0
+        createNotification(context, title, message, requestCode)
     }
 
-    private fun createNotification(context: Context) {
+    private fun createNotification(
+        context: Context,
+        title: String,
+        message: String,
+        requestCode: Int
+    ) {
         if (!hasNotificationPermission(context)) return
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             putExtra("destination", "notification")
         }
         val pendingIntent: PendingIntent =
-            PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            PendingIntent.getActivity(context, requestCode, intent, PendingIntent.FLAG_IMMUTABLE)
 
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_menu_agenda)
-            .setContentTitle("Titulo notificacion")
-            .setContentText("Mensaje notificacion")
+            .setContentTitle(title)
+            .setContentText(message)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
         val notification = builder.build()

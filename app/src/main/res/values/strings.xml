@@ -91,4 +91,9 @@
     <string name="dialog_text_delete">¿Deseas eliminar este gasto permanentemente?</string>
     <string name="dialog_accept">Aceptar</string>
     <string name="dialog_cancel">Cancelar</string>
+
+    <!-- Notification -->
+    <string name="notification_title">Tienes un gasto pendiente</string>"
+    <string name="notification_message">Hoy debes pagar</string>"
+    <string name="notification_for">Por</string>"
 </resources>

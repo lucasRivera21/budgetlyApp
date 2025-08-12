@@ -1,17 +1,30 @@
 package com.example.budgetlyapp.features.expense.domain.useCase
 
+import android.content.Context
 import android.util.Log
+import androidx.core.content.ContextCompat.getString
+import com.example.budgetlyapp.R
+import com.example.budgetlyapp.alarm.AlarmScheduler
+import com.example.budgetlyapp.common.domain.models.AlarmItem
 import com.example.budgetlyapp.common.domain.models.ExpenseModel
 import com.example.budgetlyapp.common.utils.AMOUNT_TASK_TO_SHOW
 import com.example.budgetlyapp.common.utils.convertDayMonthYearToDate
+import com.example.budgetlyapp.common.utils.getNewUuid
 import com.example.budgetlyapp.common.utils.getTodayDate
 import com.example.budgetlyapp.features.expense.data.repository.CreateExpenseTask
 import com.example.budgetlyapp.features.expense.domain.models.TaskUpload
+import dagger.hilt.android.qualifiers.ApplicationContext
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 private const val TAG = "SaveExpenseUseCase"
 
-class SaveExpenseUseCase @Inject constructor(private val createExpenseTask: CreateExpenseTask) {
+class SaveExpenseUseCase @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val createExpenseTask: CreateExpenseTask,
+    private val alarmScheduler: AlarmScheduler
+) {
     suspend operator fun invoke(expenseModel: ExpenseModel) {
         try {
             val expenseId = createExpenseTask.createExpense(expenseModel)
@@ -39,10 +52,17 @@ class SaveExpenseUseCase @Inject constructor(private val createExpenseTask: Crea
 
             val dateDue = convertDayMonthYearToDate(dayDue, newMonth, newYear)
 
+            var requestCode: Int? = null
+            if (expenseModel.hasNotification) {
+                requestCode =
+                    scheduleNotification(dateDue, expenseModel.expenseName, expenseModel.amount)
+            }
+
             val task = TaskUpload(
                 taskName = expenseModel.expenseName,
                 expenseId = expenseId,
                 expenseGroupId = expenseModel.expenseGroupId,
+                requestCode = requestCode,
                 dateDue = dateDue,
                 hasDayDue = hasDayDue,
                 tag = expenseModel.tag,
@@ -54,5 +74,21 @@ class SaveExpenseUseCase @Inject constructor(private val createExpenseTask: Crea
         }
 
         return taskList
+    }
+
+    private fun scheduleNotification(dateDue: String, expenseName: String, amount: Double): Int {
+        val requestCode = getNewUuid().hashCode()
+        val title = getString(context, R.string.notification_title)
+        val message = getString(
+            context,
+            R.string.notification_message
+        ) + " $expenseName " + getString(context, R.string.notification_for) + " $amount"
+
+        val localDate = LocalDate.parse(dateDue, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        val localDateTime = localDate.atStartOfDay()
+
+        val alarmItem = AlarmItem(requestCode, localDateTime, title, message)
+        alarmScheduler.schedule(alarmItem)
+        return requestCode
     }
 }
