@@ -10,6 +10,7 @@ data class TaskResponse(
     val dateDue: String,
     val expenseGroupId: String,
     val expenseId: String,
+    val requestCode: Int? = null,
     val hasDayDue: Boolean,
     val hasNotification: Boolean,
     val taskName: String,

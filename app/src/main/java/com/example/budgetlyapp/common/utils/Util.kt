@@ -5,7 +5,10 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getString
 import com.example.budgetlyapp.R
+import com.example.budgetlyapp.alarm.AlarmScheduler
+import com.example.budgetlyapp.common.domain.models.AlarmItem
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.time.LocalDate
@@ -14,6 +17,7 @@ import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import java.util.UUID
+import kotlin.math.absoluteValue
 
 enum class MoneyType {
     USD {
@@ -98,4 +102,26 @@ fun hasNotificationPermission(context: Context): Boolean {
         context,
         Manifest.permission.POST_NOTIFICATIONS
     ) == PackageManager.PERMISSION_GRANTED
+}
+
+fun scheduleNewNotification(
+    dateDue: String,
+    expenseName: String,
+    amount: Double,
+    context: Context,
+    alarmScheduler: AlarmScheduler
+): Int {
+    val requestCode = getNewUuid().hashCode().absoluteValue
+    val title = getString(context, R.string.notification_title)
+    val message = getString(
+        context,
+        R.string.notification_message
+    ) + " $expenseName " + getString(context, R.string.notification_for) + " $amount"
+
+    val localDate = LocalDate.parse(dateDue, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+    val localDateTime = localDate.atStartOfDay()
+
+    val alarmItem = AlarmItem(requestCode, localDateTime, title, message)
+    alarmScheduler.schedule(alarmItem)
+    return requestCode
 }

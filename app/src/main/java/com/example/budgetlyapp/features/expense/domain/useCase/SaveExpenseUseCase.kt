@@ -2,20 +2,15 @@ package com.example.budgetlyapp.features.expense.domain.useCase
 
 import android.content.Context
 import android.util.Log
-import androidx.core.content.ContextCompat.getString
-import com.example.budgetlyapp.R
 import com.example.budgetlyapp.alarm.AlarmScheduler
-import com.example.budgetlyapp.common.domain.models.AlarmItem
 import com.example.budgetlyapp.common.domain.models.ExpenseModel
 import com.example.budgetlyapp.common.utils.AMOUNT_TASK_TO_SHOW
 import com.example.budgetlyapp.common.utils.convertDayMonthYearToDate
-import com.example.budgetlyapp.common.utils.getNewUuid
 import com.example.budgetlyapp.common.utils.getTodayDate
+import com.example.budgetlyapp.common.utils.scheduleNewNotification
 import com.example.budgetlyapp.features.expense.data.repository.CreateExpenseTask
 import com.example.budgetlyapp.features.expense.domain.models.TaskUpload
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 private const val TAG = "SaveExpenseUseCase"
@@ -55,7 +50,13 @@ class SaveExpenseUseCase @Inject constructor(
             var requestCode: Int? = null
             if (expenseModel.hasNotification) {
                 requestCode =
-                    scheduleNotification(dateDue, expenseModel.expenseName, expenseModel.amount)
+                    scheduleNewNotification(
+                        dateDue,
+                        expenseModel.expenseName,
+                        expenseModel.amount,
+                        context,
+                        alarmScheduler
+                    )
             }
 
             val task = TaskUpload(
@@ -76,19 +77,5 @@ class SaveExpenseUseCase @Inject constructor(
         return taskList
     }
 
-    private fun scheduleNotification(dateDue: String, expenseName: String, amount: Double): Int {
-        val requestCode = getNewUuid().hashCode()
-        val title = getString(context, R.string.notification_title)
-        val message = getString(
-            context,
-            R.string.notification_message
-        ) + " $expenseName " + getString(context, R.string.notification_for) + " $amount"
 
-        val localDate = LocalDate.parse(dateDue, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-        val localDateTime = localDate.atStartOfDay()
-
-        val alarmItem = AlarmItem(requestCode, localDateTime, title, message)
-        alarmScheduler.schedule(alarmItem)
-        return requestCode
-    }
 }

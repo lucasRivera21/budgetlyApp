@@ -6,6 +6,7 @@ import com.example.budgetlyapp.TaskCollection
 import com.example.budgetlyapp.UsersCollection
 import com.example.budgetlyapp.common.domain.models.ExpenseModelResponse
 import com.example.budgetlyapp.common.domain.models.TagModel
+import com.example.budgetlyapp.features.expense.domain.models.TaskToUploadNotificationResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
@@ -19,10 +20,14 @@ private const val TAG = "ExpenseRepository"
 interface ExpenseTask {
     suspend fun getExpenseGroupList(): Flow<List<ExpenseModelResponse>>
 
+    suspend fun getTaskList(expenseId: String): List<TaskToUploadNotificationResponse>
+
     suspend fun updateExpenseNotification(
         expenseId: String,
         hasNotification: Boolean
     )
+
+    suspend fun updateRequestCode(expenseId: String, requestCode: Int?, dateDue: String)
 
     suspend fun deleteExpense(expenseId: String)
 }
@@ -90,6 +95,41 @@ class ExpenseRepository @Inject constructor(
         }
     }
 
+    override suspend fun getTaskList(expenseId: String): List<TaskToUploadNotificationResponse> {
+        val userId = auth.currentUser?.uid
+        val taskResponseList = mutableListOf<TaskToUploadNotificationResponse>()
+        if (userId != null) {
+            try {
+                val userRef = db.collection(UsersCollection.collectionName).document(userId)
+                val taskRef = userRef.collection(TaskCollection.collectionName)
+                val query =
+                    taskRef.whereEqualTo("expenseId", expenseId).whereEqualTo("completed", false)
+                val taskSnapshot = query.get().await()
+                for (taskDocument in taskSnapshot.documents) {
+                    val taskData = taskDocument.data as Map<String, Any>
+
+                    val amount = taskData["amount"] as Double
+                    val dateDue = taskData["dateDue"] as String
+                    val requestCode = taskData["requestCode"] as Long?
+                    val taskName = taskData["taskName"] as String
+                    taskResponseList.add(
+                        TaskToUploadNotificationResponse(
+                            requestCode = requestCode?.toInt(),
+                            taskName = taskName,
+                            amount = amount,
+                            dateDue = dateDue
+                        )
+                    )
+                }
+
+            } catch (e: Exception) {
+                Log.e(TAG, "getTaskList: ${e.message}", e)
+            }
+        }
+
+        return taskResponseList
+    }
+
     override suspend fun updateExpenseNotification(
         expenseId: String,
         hasNotification: Boolean
@@ -105,6 +145,24 @@ class ExpenseRepository @Inject constructor(
                 expenseRef.update("hasNotification", hasNotification)
             } catch (e: Exception) {
                 Log.e(TAG, "updateExpenseNotification: ${e.message}", e)
+            }
+        }
+    }
+
+    override suspend fun updateRequestCode(expenseId: String, requestCode: Int?, dateDue: String) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            try {
+                val userRef = db.collection(UsersCollection.collectionName).document(userId)
+                val taskCollectRef = userRef.collection(TaskCollection.collectionName)
+                val query = taskCollectRef.whereEqualTo("expenseId", expenseId)
+                    .whereEqualTo("dateDue", dateDue)
+                val taskSnapshot = query.get().await()
+                for (taskDocument in taskSnapshot.documents) {
+                    taskDocument.reference.update("requestCode", requestCode)
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "updateRequestCode: ${e.message}", e)
             }
         }
     }

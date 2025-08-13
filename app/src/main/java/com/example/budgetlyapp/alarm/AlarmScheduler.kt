@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 interface AlarmScheduler {
     fun schedule(alarmItem: AlarmItem)
-    fun cancel(alarmItem: AlarmItem)
+    fun cancel(requestCode: Int)
 }
 
 class AlarmSchedulerImpl @Inject constructor(
@@ -44,7 +44,15 @@ class AlarmSchedulerImpl @Inject constructor(
         )
     }
 
-    override fun cancel(alarmItem: AlarmItem) {
-        TODO("Not yet implemented")
+    override fun cancel(requestCode: Int) {
+        val alarmIntent = Intent(context, AlarmReceiver::class.java).let { intent ->
+            PendingIntent.getBroadcast(
+                context,
+                requestCode,
+                intent,
+                PendingIntent.FLAG_IMMUTABLE
+            )
+        }
+        alarmManager.cancel(alarmIntent)
     }
 }
