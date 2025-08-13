@@ -12,6 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 private const val TAG = "HomeRepository"
@@ -19,6 +20,7 @@ private const val TAG = "HomeRepository"
 interface HomeTask {
     suspend fun fetchHomeData(): Flow<List<ExpenseModelResponse>>
     suspend fun fetchNextExpensesUseCase(): Flow<List<TaskResponse>>
+    suspend fun fetchRequestCode(taskId: String): Int?
     suspend fun updateIsCompleteTask(taskId: String)
 }
 
@@ -137,6 +139,22 @@ class HomeRepository @Inject constructor(
             }
         } catch (e: Exception) {
             close(e)
+        }
+    }
+
+    override suspend fun fetchRequestCode(taskId: String): Int? {
+        val userId = auth.currentUser?.uid ?: return null
+
+        try {
+            val userRef = db.collection(UsersCollection.collectionName).document(userId)
+            val taskRef = userRef.collection(TaskCollection.collectionName).document(taskId)
+            val documentSnapshot = taskRef.get().await()
+            val taskData = documentSnapshot.data ?: return null
+            val requestCode = taskData["requestCode"] as Long?
+            return requestCode?.toInt()
+        } catch (e: Exception) {
+            Log.e(TAG, "fetchRequestCode: ${e.message}", e)
+            return null
         }
     }
 
