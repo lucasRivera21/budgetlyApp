@@ -7,8 +7,10 @@ import com.example.budgetlyapp.UsersCollection
 import com.example.budgetlyapp.common.domain.models.ExpenseModelResponse
 import com.example.budgetlyapp.common.domain.models.TagModel
 import com.example.budgetlyapp.features.expense.domain.models.TaskToUploadNotificationResponse
+import com.example.budgetlyapp.features.home.domain.models.TaskResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -21,6 +23,8 @@ interface ExpenseTask {
     suspend fun getExpenseGroupList(): Flow<List<ExpenseModelResponse>>
 
     suspend fun getTaskList(expenseId: String): List<TaskToUploadNotificationResponse>
+
+    suspend fun getTaskWithMostCurrentDate(): List<TaskResponse>
 
     suspend fun updateExpenseNotification(
         expenseId: String,
@@ -125,6 +129,66 @@ class ExpenseRepository @Inject constructor(
             } catch (e: Exception) {
                 Log.e(TAG, "getTaskList: ${e.message}", e)
             }
+        }
+
+        return taskResponseList
+    }
+
+    override suspend fun getTaskWithMostCurrentDate(): List<TaskResponse> {
+        val userId = auth.currentUser?.uid
+        val taskResponseList = mutableListOf<TaskResponse>()
+
+        try {
+            val userRef = db.collection(UsersCollection.collectionName).document(userId!!)
+            val expenseRef = userRef.collection(ExpenseCollection.collectionName)
+            val taskRef = userRef.collection(TaskCollection.collectionName)
+            val expenseSnapshot = expenseRef.get().await()
+
+            for (expenseDocument in expenseSnapshot.documents) {
+                val expenseId = expenseDocument.id
+                val taskSnapshot = taskRef.whereEqualTo("expenseId", expenseId)
+                    .orderBy("dateDue", Query.Direction.DESCENDING).limit(1).get().await()
+
+                for (taskDocument in taskSnapshot.documents) {
+                    val taskData = taskDocument.data as Map<String, Any>
+
+                    val amount = taskData["amount"].toString().toDouble()
+                    val completed = taskData["completed"].toString().toBoolean()
+                    val createdAt = taskData["createdAt"].toString()
+                    val dateDue = taskData["dateDue"].toString()
+                    val expenseGroupId = taskData["expenseGroupId"].toString()
+                    val hasDayDue = taskData["hasDayDue"].toString().toBoolean()
+                    val hasNotification = taskData["hasNotification"].toString().toBoolean()
+                    val taskName = taskData["taskName"].toString()
+
+                    val tagMap = taskData["tag"] as? Map<*, *> ?: emptyMap<String, Any>()
+                    val tag = TagModel(
+                        tagId = tagMap["tagId"].toString().toInt(),
+                        tagNameId = tagMap["tagNameId"].toString(),
+                        color = tagMap["color"].toString(),
+                        iconId = tagMap["iconId"].toString()
+                    )
+
+                    taskResponseList.add(
+                        TaskResponse(
+                            taskId = taskDocument.id,
+                            amount = amount,
+                            completed = completed,
+                            createdAt = createdAt,
+                            dateDue = dateDue,
+                            expenseGroupId = expenseGroupId,
+                            expenseId = expenseId,
+                            hasDayDue = hasDayDue,
+                            hasNotification = hasNotification,
+                            taskName = taskName,
+                            tag = tag
+                        )
+                    )
+                }
+            }
+
+        } catch (e: Exception) {
+            Log.e(TAG, "getExpenseList: ${e.message}", e)
         }
 
         return taskResponseList

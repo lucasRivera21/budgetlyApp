@@ -82,10 +82,15 @@ dependencies {
     implementation(libs.firebase.firestore)
 
     //Compose charts
-    implementation (libs.compose.charts)
+    implementation(libs.compose.charts)
 
     //Preferences datastore
     implementation(libs.androidx.datastore.preferences)
+
+    //WorkManager
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.hilt.work)
+    kapt(libs.androidx.hilt.compiler)
 }
 
 kapt {
