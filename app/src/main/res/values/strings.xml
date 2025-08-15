@@ -96,4 +96,9 @@
     <string name="notification_title">Tienes un gasto pendiente</string>"
     <string name="notification_message">Hoy debes pagar</string>"
     <string name="notification_for">Por</string>"
+
+    <!-- Profile -->
+    <string name="profile_personal_data">Datos personales</string>
+    <string name="profile_change_password">Cambiar contraseña</string>
+    <string name="profile_logout">Cerrar sesion</string>
 </resources>
