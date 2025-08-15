@@ -72,6 +72,14 @@ fun convertTagIdNameToTagName(tagIdName: String): Int {
     }
 }
 
+fun getDrawableIdByName(context: Context, iconName: String): Int {
+    return context.resources.getIdentifier(
+        iconName,
+        "drawable",
+        context.packageName
+    )
+}
+
 fun getPercentage(value: Double, total: Double): Double = value * 100 / total
 
 fun formatDecimal(value: Double): String {
@@ -106,6 +114,7 @@ fun hasNotificationPermission(context: Context): Boolean {
 
 fun scheduleNewNotification(
     dateDue: String,
+    icon: Int,
     expenseName: String,
     amount: Double,
     context: Context,
@@ -116,12 +125,15 @@ fun scheduleNewNotification(
     val message = getString(
         context,
         R.string.notification_message
-    ) + " $expenseName " + getString(context, R.string.notification_for) + " $amount"
+    ) + " $expenseName " + getString(
+        context,
+        R.string.notification_for
+    ) + " ${amount.formatThousand()}"
 
     val localDate = LocalDate.parse(dateDue, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
     val localDateTime = localDate.atStartOfDay()
 
-    val alarmItem = AlarmItem(requestCode, localDateTime, title, message)
+    val alarmItem = AlarmItem(requestCode, localDateTime, icon, title, message)
     alarmScheduler.schedule(alarmItem)
     return requestCode
 }

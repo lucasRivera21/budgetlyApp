@@ -6,6 +6,7 @@ import com.example.budgetlyapp.alarm.AlarmScheduler
 import com.example.budgetlyapp.common.domain.models.ExpenseModel
 import com.example.budgetlyapp.common.utils.AMOUNT_TASK_TO_SHOW
 import com.example.budgetlyapp.common.utils.convertDayMonthYearToDate
+import com.example.budgetlyapp.common.utils.getDrawableIdByName
 import com.example.budgetlyapp.common.utils.getTodayDate
 import com.example.budgetlyapp.common.utils.scheduleNewNotification
 import com.example.budgetlyapp.features.expense.data.repository.CreateExpenseTask
@@ -52,6 +53,7 @@ class SaveExpenseUseCase @Inject constructor(
                 requestCode =
                     scheduleNewNotification(
                         dateDue,
+                        getDrawableIdByName(context, expenseModel.tag.iconId),
                         expenseModel.expenseName,
                         expenseModel.amount,
                         context,

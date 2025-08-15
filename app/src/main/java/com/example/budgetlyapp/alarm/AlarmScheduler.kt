@@ -25,6 +25,7 @@ class AlarmSchedulerImpl @Inject constructor(
         val dateInMillis =
             alarmItem.alarmTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
         val alarmIntent = Intent(context, AlarmReceiver::class.java).apply {
+            putExtra("NOTIFICATION_ICON", alarmItem.icon)
             putExtra("NOTIFICATION_TITLE", alarmItem.title)
             putExtra("NOTIFICATION_MESSAGE", alarmItem.message)
             putExtra("NOTIFICATION_REQUEST_CODE", alarmItem.requestCode)

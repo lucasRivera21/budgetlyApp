@@ -2,6 +2,7 @@ package com.example.budgetlyapp.features.expense.domain.useCase
 
 import android.content.Context
 import com.example.budgetlyapp.alarm.AlarmScheduler
+import com.example.budgetlyapp.common.utils.getDrawableIdByName
 import com.example.budgetlyapp.common.utils.scheduleNewNotification
 import com.example.budgetlyapp.features.expense.data.repository.ExpenseRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -26,6 +27,7 @@ class UpdateExpenseNotificationUseCase @Inject constructor(
                     //This function return a new requestCode
                     scheduleNewNotification(
                         it.dateDue,
+                        getDrawableIdByName(context, it.iconId),
                         it.taskName,
                         it.amount,
                         context,

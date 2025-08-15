@@ -116,9 +116,14 @@ class ExpenseRepository @Inject constructor(
                     val dateDue = taskData["dateDue"] as String
                     val requestCode = taskData["requestCode"] as Long?
                     val taskName = taskData["taskName"] as String
+
+                    val tagMap = taskData["tag"] as? Map<*, *> ?: emptyMap<String, Any>()
+                    val iconId = tagMap["iconId"].toString()
+
                     taskResponseList.add(
                         TaskToUploadNotificationResponse(
                             requestCode = requestCode?.toInt(),
+                            iconId = iconId,
                             taskName = taskName,
                             amount = amount,
                             dateDue = dateDue

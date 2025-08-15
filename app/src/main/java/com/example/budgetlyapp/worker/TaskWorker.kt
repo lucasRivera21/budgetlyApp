@@ -9,6 +9,7 @@ import com.example.budgetlyapp.alarm.AlarmScheduler
 import com.example.budgetlyapp.common.dataStore.DataStoreRepository
 import com.example.budgetlyapp.common.dataStore.LastExecuteTaskWorkerKey
 import com.example.budgetlyapp.common.utils.AMOUNT_TASK_TO_SHOW
+import com.example.budgetlyapp.common.utils.getDrawableIdByName
 import com.example.budgetlyapp.common.utils.scheduleNewNotification
 import com.example.budgetlyapp.features.expense.data.repository.CreateExpenseRepository
 import com.example.budgetlyapp.features.expense.data.repository.ExpenseRepository
@@ -99,6 +100,7 @@ class TaskWorker @AssistedInject constructor(
             if (taskUpload.hasNotification) {
                 requestCode = scheduleNewNotification(
                     taskUpload.dateDue!!,
+                    getDrawableIdByName(applicationContext, taskUpload.tag.iconId),
                     taskUpload.taskName,
                     taskUpload.amount,
                     applicationContext,
