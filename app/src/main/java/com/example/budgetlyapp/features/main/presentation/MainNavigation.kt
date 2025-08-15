@@ -34,7 +34,7 @@ fun MainNavigation(localNavController: NavHostController, globalNavController: N
         }
 
         composable(ProfileScreen.route) {
-            ProfileScreen()
+            ProfileScreen(globalNavController)
         }
     }
 }

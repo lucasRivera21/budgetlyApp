@@ -1,0 +1,76 @@
+package com.example.budgetlyapp.features.profile.presentation.viewModel
+
+import android.content.Context
+import androidx.core.content.ContextCompat.getString
+import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
+import com.example.budgetlyapp.R
+import com.example.budgetlyapp.features.profile.domain.models.ChangePassword
+import com.example.budgetlyapp.features.profile.domain.models.ElementProfileModel
+import com.example.budgetlyapp.features.profile.domain.models.Logout
+import com.example.budgetlyapp.features.profile.domain.models.PersonalData
+import com.example.budgetlyapp.navigation.LoginScreen
+import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import javax.inject.Inject
+
+@HiltViewModel
+class ProfileViewModel @Inject constructor(
+    @ApplicationContext context: Context,
+    private val auth: FirebaseAuth
+) : ViewModel() {
+    val elementProfileList = listOf(
+        ElementProfileModel(
+            PersonalData.id,
+            R.drawable.ic_personal_data,
+            getString(context, R.string.profile_personal_data)
+        ),
+        ElementProfileModel(
+            ChangePassword.id,
+            R.drawable.ic_shield,
+            getString(context, R.string.profile_change_password)
+        ),
+        ElementProfileModel(
+            Logout.id,
+            R.drawable.ic_logout,
+            getString(context, R.string.profile_logout),
+            null
+        ),
+    )
+
+    private val _showLogoutDialog = MutableStateFlow(false)
+    val showLogoutDialog: MutableStateFlow<Boolean> = _showLogoutDialog
+
+
+    fun onClickElementProfile(id: String) {
+        when (id) {
+            PersonalData.id -> {}
+            ChangePassword.id -> {}
+            Logout.id -> {
+                showLogoutDialog()
+            }
+
+            else -> Unit
+        }
+    }
+
+    fun onDismissLogoutDialog() {
+        _showLogoutDialog.value = false
+    }
+
+    private fun showLogoutDialog() {
+        _showLogoutDialog.value = true
+    }
+
+    fun logout(navController: NavController) {
+        auth.signOut()
+        onDismissLogoutDialog()
+        navController.navigate(LoginScreen.route) {
+            popUpTo(LoginScreen.route) {
+                inclusive = true
+            }
+        }
+    }
+}
