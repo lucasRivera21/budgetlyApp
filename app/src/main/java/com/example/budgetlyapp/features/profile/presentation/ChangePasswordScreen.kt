@@ -10,32 +10,36 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.common.presentation.components.CustomTextField
+import com.example.budgetlyapp.features.profile.presentation.viewModel.ChangePasswordViewModel
 
 @Composable
-fun ChangePasswordScreen(navController: NavHostController) {
-    var currentPassword by remember { mutableStateOf(TextFieldValue()) }
-    var newPassword by remember { mutableStateOf(TextFieldValue()) }
-    var confirmPassword by remember { mutableStateOf(TextFieldValue()) }
+fun ChangePasswordScreen(
+    navController: NavHostController,
+    changePasswordViewModel: ChangePasswordViewModel = hiltViewModel()
+) {
+    val currentPassword by changePasswordViewModel.currentPassword.collectAsState()
+    val newPassword by changePasswordViewModel.newPassword.collectAsState()
+    val confirmPassword by changePasswordViewModel.confirmPassword.collectAsState()
+    val isLoading by changePasswordViewModel.isLoading.collectAsState()
 
     Column(
         modifier = Modifier
@@ -77,7 +81,7 @@ fun ChangePasswordScreen(navController: NavHostController) {
                 keyBoardType = KeyboardType.Password,
                 isPasswordField = true,
                 onValueChange = {
-                    currentPassword = it
+                    changePasswordViewModel.onCurrentPasswordChange(it)
                 })
 
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
@@ -88,7 +92,7 @@ fun ChangePasswordScreen(navController: NavHostController) {
                 keyBoardType = KeyboardType.Password,
                 isPasswordField = true,
                 onValueChange = {
-                    newPassword = it
+                    changePasswordViewModel.onNewPasswordChange(it)
                 })
 
             CustomTextField(
@@ -97,17 +101,24 @@ fun ChangePasswordScreen(navController: NavHostController) {
                 keyBoardType = KeyboardType.Password,
                 isPasswordField = true,
                 onValueChange = {
-                    confirmPassword = it
+                    changePasswordViewModel.onConfirmPasswordChange(it)
                 }
             )
         }
 
         //Footer
         Button(
-            onClick = {}, modifier = Modifier
+            onClick = { changePasswordViewModel.savePassword(navController) }, modifier = Modifier
                 .fillMaxWidth()
         ) {
-            Text(stringResource(R.string.profile_save))
+            if (!isLoading) {
+                Text(stringResource(R.string.profile_save))
+            } else {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
         }
 
     }

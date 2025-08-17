@@ -137,3 +137,7 @@ fun scheduleNewNotification(
     alarmScheduler.schedule(alarmItem)
     return requestCode
 }
+
+fun isValidatePassword(password: String): Boolean {
+    return password.length !in 17 downTo 7
+}

@@ -108,4 +108,13 @@
     <string name="profile_new_password">Nueva contraseña</string>
     <string name="profile_repeat_new_password">Repetir nueva contraseña</string>
     <string name="profile_save">Guardar</string>
+    <string name="profile_password_updated">Contraseña actualizada</string>
+
+    <!-- Errors -->
+    <string name="error_value_empty">Campo vacio</string>
+    <string name="error_short_password">La contraseña debe tener al menos 8 caracteres</string>
+    <string name="error_different_password">Las contraseñas deben ser iguales</string>
+    <string name="error_user_not_found">Usuario no encontrado</string>
+    <string name="error_wrong_password">Contraseña incorrecta</string>
+    <string name="error_error_unknown">Ocurrio un error inesperado</string>
 </resources>
