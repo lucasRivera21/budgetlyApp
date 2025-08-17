@@ -104,4 +104,8 @@
     <string name="profile_dialog_title">Cierre de sesion</string>
     <string name="profile_dialog_description">¿Estas seguro de cerrar sesion?</string>
     <string name="profile_close_session">Cerrar sesion</string>
+    <string name="profile_current_password">contraseña actual</string>
+    <string name="profile_new_password">Nueva contraseña</string>
+    <string name="profile_repeat_new_password">Repetir nueva contraseña</string>
+    <string name="profile_save">Guardar</string>
 </resources>
