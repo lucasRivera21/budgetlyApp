@@ -39,7 +39,7 @@ fun ProfileScreen(
 
         elementProfileList.forEach {
             ElementProfileComponent(it) { id ->
-                profileViewModel.onClickElementProfile(id)
+                profileViewModel.onClickElementProfile(id, navController)
             }
         }
     }

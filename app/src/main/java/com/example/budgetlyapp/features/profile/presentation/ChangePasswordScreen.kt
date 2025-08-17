@@ -26,14 +26,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.common.presentation.components.CustomTextField
-import com.example.budgetlyapp.ui.theme.AppTheme
 
 @Composable
-fun ChangePasswordScreen() {
+fun ChangePasswordScreen(navController: NavHostController) {
     var currentPassword by remember { mutableStateOf(TextFieldValue()) }
     var newPassword by remember { mutableStateOf(TextFieldValue()) }
     var confirmPassword by remember { mutableStateOf(TextFieldValue()) }
@@ -47,7 +46,9 @@ fun ChangePasswordScreen() {
     ) {
         //Header
         Row(modifier = Modifier.fillMaxWidth()) {
-            IconButton(onClick = { }, modifier = Modifier) {
+            IconButton(onClick = {
+                navController.popBackStack()
+            }, modifier = Modifier) {
                 Icon(
                     painterResource(R.drawable.ic_arrow_back),
                     contentDescription = "arrow back",
@@ -109,13 +110,5 @@ fun ChangePasswordScreen() {
             Text(stringResource(R.string.profile_save))
         }
 
-    }
-}
-
-@Preview(showBackground = true, apiLevel = 34)
-@Composable
-fun ChangePasswordScreenPreview() {
-    AppTheme {
-        ChangePasswordScreen()
     }
 }

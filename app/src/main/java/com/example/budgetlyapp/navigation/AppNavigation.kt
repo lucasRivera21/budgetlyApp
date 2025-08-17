@@ -12,6 +12,7 @@ import com.example.budgetlyapp.features.expense.presentation.CreateExpenseScreen
 import com.example.budgetlyapp.features.splash.presentation.SplashScreen
 import com.example.budgetlyapp.features.login.presentation.LoginScreen
 import com.example.budgetlyapp.features.main.presentation.MainScreen
+import com.example.budgetlyapp.features.profile.presentation.ChangePasswordScreen
 import com.example.budgetlyapp.features.register.presentation.RegisterScreen
 
 @Composable
@@ -46,6 +47,10 @@ fun AppNavigation(navController: NavHostController) {
 
         composable(MainScreen.route) {
             MainScreen(navController)
+        }
+
+        composable(ChangePasswordScreen.route) {
+            ChangePasswordScreen(navController)
         }
 
         composable(

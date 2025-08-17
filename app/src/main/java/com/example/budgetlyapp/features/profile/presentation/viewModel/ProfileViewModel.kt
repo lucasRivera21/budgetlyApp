@@ -9,6 +9,7 @@ import com.example.budgetlyapp.features.profile.domain.models.ChangePassword
 import com.example.budgetlyapp.features.profile.domain.models.ElementProfileModel
 import com.example.budgetlyapp.features.profile.domain.models.Logout
 import com.example.budgetlyapp.features.profile.domain.models.PersonalData
+import com.example.budgetlyapp.navigation.ChangePasswordScreen
 import com.example.budgetlyapp.navigation.LoginScreen
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -44,10 +45,13 @@ class ProfileViewModel @Inject constructor(
     val showLogoutDialog: MutableStateFlow<Boolean> = _showLogoutDialog
 
 
-    fun onClickElementProfile(id: String) {
+    fun onClickElementProfile(id: String, navController: NavController) {
         when (id) {
             PersonalData.id -> {}
-            ChangePassword.id -> {}
+            ChangePassword.id -> {
+                navController.navigate(ChangePasswordScreen.route)
+            }
+
             Logout.id -> {
                 showLogoutDialog()
             }
