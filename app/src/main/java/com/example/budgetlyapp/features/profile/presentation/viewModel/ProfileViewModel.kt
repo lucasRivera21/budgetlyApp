@@ -10,6 +10,7 @@ import com.example.budgetlyapp.features.profile.domain.models.ElementProfileMode
 import com.example.budgetlyapp.features.profile.domain.models.Logout
 import com.example.budgetlyapp.features.profile.domain.models.PersonalData
 import com.example.budgetlyapp.navigation.ChangePasswordScreen
+import com.example.budgetlyapp.navigation.EditPersonalDataScreen
 import com.example.budgetlyapp.navigation.LoginScreen
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -47,7 +48,10 @@ class ProfileViewModel @Inject constructor(
 
     fun onClickElementProfile(id: String, navController: NavController) {
         when (id) {
-            PersonalData.id -> {}
+            PersonalData.id -> {
+                navController.navigate(EditPersonalDataScreen.route)
+            }
+
             ChangePassword.id -> {
                 navController.navigate(ChangePasswordScreen.route)
             }

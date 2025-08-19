@@ -24,6 +24,11 @@ object MainScreen : Destinations {
         get() = "MainScreen"
 }
 
+object EditPersonalDataScreen : Destinations {
+    override val route: String
+        get() = "EditPersonalDataScreen"
+}
+
 object ChangePasswordScreen : Destinations {
     override val route: String
         get() = "ChangePasswordScreen"

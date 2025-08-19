@@ -23,13 +23,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.budgetlyapp.R
-import com.example.budgetlyapp.ui.theme.AppTheme
 
 @Composable
-fun EditPersonalDataScreen() {
+fun EditPersonalDataScreen(navController: NavHostController) {
 
     Column(
         modifier = Modifier
@@ -103,13 +102,5 @@ fun EditPersonalDataScreen() {
                 )
             }*/
         }
-    }
-}
-
-@Preview(showBackground = true, apiLevel = 34)
-@Composable
-fun EditPersonalDataScreenPreview() {
-    AppTheme {
-        EditPersonalDataScreen()
     }
 }
