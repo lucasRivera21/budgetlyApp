@@ -9,14 +9,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -24,11 +25,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.budgetlyapp.R
+import com.example.budgetlyapp.common.presentation.components.CustomTextField
+import com.example.budgetlyapp.features.profile.presentation.viewModel.EditPersonalDataViewModel
 
 @Composable
-fun EditPersonalDataScreen(navController: NavHostController) {
+fun EditPersonalDataScreen(
+    navController: NavHostController,
+    editPersonalDataViewModel: EditPersonalDataViewModel = hiltViewModel()
+) {
+    val incomeValue by editPersonalDataViewModel.incomeValue.collectAsState()
+    val isLoading by editPersonalDataViewModel.isLoading.collectAsState()
 
     Column(
         modifier = Modifier
@@ -41,7 +50,7 @@ fun EditPersonalDataScreen(navController: NavHostController) {
         //Header
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = {
-
+                editPersonalDataViewModel.onBack(navController)
             }, modifier = Modifier) {
                 Icon(
                     painterResource(R.drawable.ic_arrow_back),
@@ -71,36 +80,30 @@ fun EditPersonalDataScreen(navController: NavHostController) {
                 style = MaterialTheme.typography.bodyLarge
             )
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.Bottom,
+            CustomTextField(
+                textLabel = stringResource(R.string.register_income_input),
+                textValue = incomeValue,
+                keyBoardType = KeyboardType.Number,
+                onValueChange = { editPersonalDataViewModel.onChangeIncomeValue(it) },
                 modifier = Modifier.fillMaxWidth()
-            ) {
-                OutlinedTextField(
-                    value = "",
-                    onValueChange = {
-                    },
-                    label = { Text(stringResource(R.string.register_income_input)) },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                    modifier = Modifier.weight(1f)
-                )
-            }
+            )
         }
 
         //Bottom
         Button(
-            onClick = { }, modifier = Modifier
+            onClick = {
+                editPersonalDataViewModel.saveIncomeValueChange(navController)
+            }, modifier = Modifier
                 .fillMaxWidth()
         ) {
-            Text(stringResource(R.string.profile_save))
-            /*if (!isLoading) {
+            if (!isLoading) {
                 Text(stringResource(R.string.profile_save))
             } else {
                 CircularProgressIndicator(
                     color = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.size(24.dp)
                 )
-            }*/
+            }
         }
     }
 }
