@@ -98,7 +98,7 @@
     <string name="notification_for">Por</string>"
 
     <!-- Profile -->
-    <string name="profile_personal_data">Datos personales</string>
+    <string name="profile_edit_personal_data">Editar datos personales</string>
     <string name="profile_change_password">Cambiar contraseña</string>
     <string name="profile_logout">Cerrar sesion</string>
     <string name="profile_dialog_title">Cierre de sesion</string>
@@ -109,6 +109,8 @@
     <string name="profile_repeat_new_password">Repetir nueva contraseña</string>
     <string name="profile_save">Guardar</string>
     <string name="profile_password_updated">Contraseña actualizada</string>
+    <string name="profile_edit_data">Editar datos</string>
+    <string name="profile_edita_data_description">De momento solo puedes cambiar esta informacion</string>
 
     <!-- Errors -->
     <string name="error_value_empty">Campo vacio</string>

@@ -26,7 +26,7 @@ class ProfileViewModel @Inject constructor(
         ElementProfileModel(
             PersonalData.id,
             R.drawable.ic_personal_data,
-            getString(context, R.string.profile_personal_data)
+            getString(context, R.string.profile_edit_personal_data)
         ),
         ElementProfileModel(
             ChangePassword.id,
