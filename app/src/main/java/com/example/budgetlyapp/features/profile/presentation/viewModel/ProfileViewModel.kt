@@ -6,11 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.budgetlyapp.R
+import com.example.budgetlyapp.common.dataStore.DataStoreTask
+import com.example.budgetlyapp.common.dataStore.EmailKey
+import com.example.budgetlyapp.common.dataStore.UserLastNameKey
+import com.example.budgetlyapp.common.dataStore.UserNameKey
 import com.example.budgetlyapp.features.profile.domain.models.ChangePassword
 import com.example.budgetlyapp.features.profile.domain.models.ElementProfileModel
 import com.example.budgetlyapp.features.profile.domain.models.Logout
 import com.example.budgetlyapp.features.profile.domain.models.PersonalData
-import com.example.budgetlyapp.features.profile.domain.useCase.GetUserInfoUseCase
 import com.example.budgetlyapp.navigation.ChangePasswordScreen
 import com.example.budgetlyapp.navigation.EditPersonalDataScreen
 import com.example.budgetlyapp.navigation.LoginScreen
@@ -26,7 +29,7 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     @ApplicationContext context: Context,
     private val auth: FirebaseAuth,
-    private val getUserInfoUseCase: GetUserInfoUseCase
+    private val dataStore: DataStoreTask
 
 ) : ViewModel() {
     val elementProfileList = listOf(
@@ -48,8 +51,8 @@ class ProfileViewModel @Inject constructor(
         ),
     )
 
-    private val _userName = MutableStateFlow("")
-    val userName: MutableStateFlow<String> = _userName
+    private val _fullUserName = MutableStateFlow("")
+    val fullUserName: MutableStateFlow<String> = _fullUserName
 
     private val _email = MutableStateFlow("")
     val email: MutableStateFlow<String> = _email
@@ -59,13 +62,11 @@ class ProfileViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val userInfoResult = getUserInfoUseCase()
-            if (userInfoResult.isSuccess) {
-                val profileModel = userInfoResult.getOrNull()!!
+            val userName = dataStore.getString(UserNameKey.key)
+            val lastName = dataStore.getString(UserLastNameKey.key)
 
-                _userName.value = "${profileModel.name} ${profileModel.lastName}"
-                _email.value = profileModel.email
-            }
+            _fullUserName.value = "$userName $lastName"
+            _email.value = dataStore.getString(EmailKey.key)
         }
     }
 

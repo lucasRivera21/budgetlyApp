@@ -17,15 +17,23 @@ class SplashRepository @Inject constructor(
 ) :
     SplashTask {
     override suspend fun fetchUserInfo(): UserInfoModule {
-        val userId = auth.currentUser?.uid ?: return UserInfoModule("", 0.0)
+        val firebaseUser = auth.currentUser ?: return UserInfoModule()
+        val userId = firebaseUser.uid
+        val email = firebaseUser.email ?: ""
 
         val userRef = db.collection(UsersCollection.collectionName).document(userId)
 
         val userSnapshot = userRef.get().await()
         val userData = userSnapshot.data
         val userName = userData?.get("name") as? String ?: ""
+        val userLastName = userData?.get("lastName") as? String ?: ""
         val incomeValue = userData?.get("incomeValue") as? String ?: "0.0"
 
-        return UserInfoModule(userName, incomeValue.toDouble())
+        return UserInfoModule(
+            email = email,
+            userName = userName,
+            userLastName = userLastName,
+            incomeValue = incomeValue.toDouble()
+        )
     }
 }

@@ -4,9 +4,19 @@ interface PreferencesKey {
     val key: String
 }
 
+object EmailKey : PreferencesKey {
+    override val key: String
+        get() = "email"
+}
+
 object UserNameKey : PreferencesKey {
     override val key: String
         get() = "user_name"
+}
+
+object UserLastNameKey : PreferencesKey {
+    override val key: String
+        get() = "user_last_name"
 }
 
 object IncomeValueKey : PreferencesKey {

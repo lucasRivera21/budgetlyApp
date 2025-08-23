@@ -27,7 +27,7 @@ fun ProfileScreen(
     profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
     val elementProfileList = profileViewModel.elementProfileList
-    val userName by profileViewModel.userName.collectAsState()
+    val fullUserName by profileViewModel.fullUserName.collectAsState()
     val email by profileViewModel.email.collectAsState()
     val showLogoutDialog by profileViewModel.showLogoutDialog.collectAsState()
 
@@ -37,7 +37,7 @@ fun ProfileScreen(
             .background(MaterialTheme.colorScheme.surface)
             .verticalScroll(rememberScrollState())
     ) {
-        HeaderProfileComponent(userName, email)
+        HeaderProfileComponent(fullUserName, email)
 
         elementProfileList.forEach {
             ElementProfileComponent(it) { id ->
