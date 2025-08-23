@@ -7,10 +7,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -58,33 +60,28 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
     }
 
     if (!isLoading) {
-        LazyColumn(
-            modifier = Modifier
+        Column(
+            Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surface)
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(36.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            item {
-                Text(
-                    text = "${stringResource(R.string.home_title)} ${userName.upperFirstChar()}",
-                    color = MaterialTheme.colorScheme.onSurface,
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.SemiBold
-                )
+            Text(
+                text = "${stringResource(R.string.home_title)} ${userName.upperFirstChar()}",
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.SemiBold
+            )
+
+            GraphContainerComponent(pieList, freeMoneyValue) {
+                homeViewModel.onClickPie(it)
             }
 
-            item {
-                GraphContainerComponent(pieList, freeMoneyValue) {
-                    homeViewModel.onClickPie(it)
-                }
-            }
-
-            item {
-                NextExpenseListComponent(nextTaskList) { taskId ->
-                    homeViewModel.updateIsCompleteTask(taskId)
-                }
+            NextExpenseListComponent(nextTaskList, Modifier.weight(1f)) { taskId ->
+                homeViewModel.updateIsCompleteTask(taskId)
             }
         }
     } else {
