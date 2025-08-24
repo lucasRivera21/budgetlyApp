@@ -1,10 +1,18 @@
 package com.example.budgetlyapp.features.register.domain.usecase
 
+import com.example.budgetlyapp.common.dataStore.DataStoreTask
+import com.example.budgetlyapp.common.dataStore.EmailKey
+import com.example.budgetlyapp.common.dataStore.IncomeValueKey
+import com.example.budgetlyapp.common.dataStore.UserLastNameKey
+import com.example.budgetlyapp.common.dataStore.UserNameKey
 import com.example.budgetlyapp.features.register.data.repository.RegisterTask
 import com.example.budgetlyapp.features.register.domain.model.RegisterUserModel
 import javax.inject.Inject
 
-class RegisterUserUseCase @Inject constructor(private val registerTask: RegisterTask) {
+class RegisterUserUseCase @Inject constructor(
+    private val registerTask: RegisterTask,
+    private val dataStore: DataStoreTask
+) {
     suspend operator fun invoke(
         email: String,
         password: String,
@@ -20,6 +28,11 @@ class RegisterUserUseCase @Inject constructor(private val registerTask: Register
         if (resultUserInfo.isFailure) {
             return Result.failure(resultUserInfo.exceptionOrNull()!!)
         }
+
+        dataStore.setString(EmailKey.key, email)
+        dataStore.setString(UserNameKey.key, registerUser.name!!)
+        dataStore.setString(UserLastNameKey.key, registerUser.lastName!!)
+        dataStore.setDouble(IncomeValueKey.key, registerUser.incomeValue!!.toDouble())
 
         return Result.success(Unit)
     }
