@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
@@ -42,7 +43,10 @@ fun CustomTextField(
         label = { Text(textLabel) },
         modifier = modifier.fillMaxWidth(),
         singleLine = true,
-        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyBoardType),
+        keyboardOptions = KeyboardOptions(
+            capitalization = KeyboardCapitalization.Sentences,
+            keyboardType = keyBoardType
+        ),
         visualTransformation = if (!isPasswordVisible && isPasswordField) PasswordVisualTransformation() else VisualTransformation.None,
         trailingIcon = {
             if (isPasswordField) {

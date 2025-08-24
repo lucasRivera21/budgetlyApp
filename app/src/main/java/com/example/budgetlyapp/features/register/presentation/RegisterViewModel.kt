@@ -3,6 +3,7 @@ package com.example.budgetlyapp.features.register.presentation
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,6 +11,8 @@ import androidx.navigation.NavController
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.features.register.domain.model.RegisterUserModel
 import com.example.budgetlyapp.common.utils.MoneyType
+import com.example.budgetlyapp.common.utils.clearThousandFormat
+import com.example.budgetlyapp.common.utils.formatThousand
 import com.example.budgetlyapp.features.register.domain.usecase.RegisterUserUseCase
 import com.example.budgetlyapp.navigation.MainScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -103,7 +106,7 @@ class RegisterViewModel @Inject constructor(
     }
 
     //Incoming Info
-    private val _incomeValue = MutableStateFlow("")
+    private val _incomeValue = MutableStateFlow(TextFieldValue(""))
     val incomeValue = _incomeValue
 
     private val _moneyType = MutableStateFlow(MoneyType.entries[0].returnMoneyType())
@@ -113,8 +116,12 @@ class RegisterViewModel @Inject constructor(
         return MoneyType.entries.map { it.returnMoneyType() }
     }
 
-    fun onIncomeValueChange(newIncomeValue: String) {
-        _incomeValue.value = newIncomeValue
+    fun onIncomeValueChange(newIncomeValue: TextFieldValue) {
+        val newValue = if (newIncomeValue.text.isNotBlank()) {
+            newIncomeValue.text.clearThousandFormat().toDouble().formatThousand()
+        } else newIncomeValue.text
+        _incomeValue.value =
+            newIncomeValue.copy(text = newValue, selection = TextRange(newValue.length))
     }
 
     fun onMoneyTypeChange(newMoneyType: String) {
@@ -161,12 +168,12 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun validateIncomingInfo(changePage: () -> Unit) {
-        if (_incomeValue.value.isEmpty()) {
+        if (_incomeValue.value.text.isEmpty()) {
             Toast.makeText(context, "Completa los campos", Toast.LENGTH_SHORT).show()
             return
         }
 
-        registerUser.incomeValue = _incomeValue.value
+        registerUser.incomeValue = _incomeValue.value.text.replace(",", "")
         registerUser.moneyType = _moneyType.value
 
         changePage()
@@ -175,6 +182,20 @@ class RegisterViewModel @Inject constructor(
     private fun validateAccountInfo(changePage: () -> Unit, navController: NavController) {
         if (_email.value.text.isEmpty() || _password.value.text.isEmpty() || _confirmPassword.value.text.isEmpty()) {
             Toast.makeText(context, "Completa los campos", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (!_email.value.text.contains("@")) {
+            Toast.makeText(context, "El email no es válido", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (_password.value.text.length < 8) {
+            Toast.makeText(
+                context,
+                "La contraseña debe tener al menos 8 caracteres",
+                Toast.LENGTH_SHORT
+            ).show()
             return
         }
 
@@ -187,7 +208,8 @@ class RegisterViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             isLoading.value = true
-            val resultUser = registerUserUseCase(_email.value.text, _password.value.text, registerUser)
+            val resultUser =
+                registerUserUseCase(_email.value.text, _password.value.text, registerUser)
 
             withContext(Dispatchers.Main) {
                 if (resultUser.isSuccess) {

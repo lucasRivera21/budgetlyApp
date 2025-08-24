@@ -11,14 +11,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,13 +28,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.example.budgetlyapp.R
+import com.example.budgetlyapp.common.presentation.components.CustomTextField
 import com.example.budgetlyapp.features.register.presentation.RegisterViewModel
 
 @Composable
 fun IncomingInfoScreen(
-    incomeValue: String,
+    incomeValue: TextFieldValue,
     moneyType: String,
     registerViewModel: RegisterViewModel
 ) {
@@ -53,13 +53,13 @@ fun IncomingInfoScreen(
             verticalAlignment = Alignment.Bottom,
             modifier = Modifier.fillMaxWidth()
         ) {
-            OutlinedTextField(
-                value = incomeValue,
+            CustomTextField(
+                textLabel = stringResource(R.string.register_income_input),
+                textValue = incomeValue,
+                keyBoardType = KeyboardType.Decimal,
                 onValueChange = {
                     registerViewModel.onIncomeValueChange(it)
                 },
-                label = { Text(stringResource(R.string.register_income_input)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 modifier = Modifier.weight(1f)
             )
 

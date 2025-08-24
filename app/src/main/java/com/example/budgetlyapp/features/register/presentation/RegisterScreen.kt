@@ -156,7 +156,7 @@ private fun ViewPager(
     dayBirth: String,
     monthBirth: String,
     yearBirth: String,
-    incomeValue: String,
+    incomeValue: TextFieldValue,
     moneyType: String,
     email: TextFieldValue,
     password: TextFieldValue,
