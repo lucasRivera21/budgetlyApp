@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.budgetlyapp.features.expense.presentation.CreateExpenseScreen
+import com.example.budgetlyapp.features.forgetPassword.presentation.ForgotPasswordScreen
 import com.example.budgetlyapp.features.splash.presentation.SplashScreen
 import com.example.budgetlyapp.features.login.presentation.LoginScreen
 import com.example.budgetlyapp.features.main.presentation.MainScreen
@@ -56,6 +57,10 @@ fun AppNavigation(navController: NavHostController) {
 
         composable(ChangePasswordScreen.route) {
             ChangePasswordScreen(navController)
+        }
+
+        composable(ForgotPasswordScreen.route) {
+            ForgotPasswordScreen(navController)
         }
 
         composable(

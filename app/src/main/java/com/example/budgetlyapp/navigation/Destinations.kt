@@ -53,3 +53,8 @@ object ProfileScreen : Destinations {
     override val route: String
         get() = "ProfileScreen"
 }
+
+object ForgotPasswordScreen : Destinations {
+    override val route: String
+        get() = "ForgotPasswordScreen"
+}

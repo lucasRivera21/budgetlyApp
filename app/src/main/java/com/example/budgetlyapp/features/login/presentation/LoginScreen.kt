@@ -32,6 +32,7 @@ import androidx.navigation.NavController
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.navigation.RegisterScreen
 import com.example.budgetlyapp.common.presentation.components.CustomTextField
+import com.example.budgetlyapp.navigation.ForgotPasswordScreen
 import com.example.budgetlyapp.ui.theme.AppTheme
 
 @Composable
@@ -138,7 +139,9 @@ fun RegisterForgetBox(navController: NavController) {
             style = MaterialTheme.typography.labelLarge,
             textAlign = TextAlign.Center,
             textDecoration = TextDecoration.Underline,
-            modifier = Modifier.clickable { }
+            modifier = Modifier.clickable {
+                navController.navigate(ForgotPasswordScreen.route)
+            }
         )
     }
 }

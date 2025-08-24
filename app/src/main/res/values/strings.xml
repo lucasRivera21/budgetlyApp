@@ -113,6 +113,11 @@
     <string name="profile_edit_data">Editar datos</string>
     <string name="profile_edita_data_description">De momento solo puedes cambiar esta informacion</string>
 
+    <!-- Forgot Password -->
+    <string name="forgot_password_title">Recuperar contraseña</string>
+    <string name="forgot_password_description">Ingresa el correo electronico asociado a tu cuenta</string>
+    <string name="forgot_password_send">Enviar</string>
+
     <!-- Errors -->
     <string name="error_value_empty">Campo vacio</string>
     <string name="error_short_password">La contraseña debe tener al menos 8 caracteres</string>
