@@ -38,7 +38,7 @@ class CreateExpenseRepository @Inject constructor(
         val taskRef = userRef.collection(TaskCollection.collectionName)
 
         taskList.forEach { task ->
-            taskRef.add(task)
+            taskRef.add(task).await()
         }
     }
 }

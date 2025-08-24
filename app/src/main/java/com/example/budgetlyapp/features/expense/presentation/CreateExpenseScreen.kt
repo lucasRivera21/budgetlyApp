@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -47,6 +49,7 @@ fun CreateExpenseScreen(
     val dayPayString by viewModel.dayPayString.collectAsState()
     val hasDayPay by viewModel.hasDayPay.collectAsState()
     val hasNotification by viewModel.hasNotification.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
     Scaffold(floatingActionButton = {
         ExtendedFloatingActionButton(
@@ -57,7 +60,12 @@ fun CreateExpenseScreen(
                 )
             },
             icon = {
-                Icon(imageVector = Icons.Default.Check, "save")
+                if (!isLoading) {
+                    Icon(imageVector = Icons.Default.Check, "save")
+                } else {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                }
+
             },
             onClick = { viewModel.onClickSave(expenseGroupId, navController) },
         )

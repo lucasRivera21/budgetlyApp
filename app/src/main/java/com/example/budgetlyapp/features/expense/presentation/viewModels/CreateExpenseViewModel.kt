@@ -47,6 +47,9 @@ class CreateExpenseViewModel @Inject constructor(
     private val _hasNotification = MutableStateFlow(false)
     val hasNotification: MutableStateFlow<Boolean> = _hasNotification
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: MutableStateFlow<Boolean> = _isLoading
+
     fun onChaneNameExpense(name: TextFieldValue) {
         _nameExpense.value = name
     }
@@ -91,6 +94,9 @@ class CreateExpenseViewModel @Inject constructor(
 
     fun onClickSave(expenseGroupId: String?, navController: NavController) {
         viewModelScope.launch {
+            if (_isLoading.value) return@launch
+            _isLoading.value = true
+
             val validateFieldsResult = verifyFieldsNewExpenseUseCase(
                 _nameExpense.value.text,
                 _amountExpense.value.text,
@@ -120,6 +126,8 @@ class CreateExpenseViewModel @Inject constructor(
             )
 
             saveExpenseUseCase(expenseModel)
+
+            _isLoading.value = false
 
             withContext(Dispatchers.Main) {
                 navController.popBackStack()
