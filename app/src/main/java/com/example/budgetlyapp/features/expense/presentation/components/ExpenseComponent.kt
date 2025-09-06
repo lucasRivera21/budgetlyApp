@@ -17,6 +17,7 @@ import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -53,7 +54,11 @@ fun ExpenseComponent(
             false
         }
     )
-    var isChecked by rememberSaveable { mutableStateOf(expenseModel.hasNotification) }
+    var isChecked by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(expenseModel.hasNotification) {
+        isChecked = expenseModel.hasNotification
+    }
 
     val notificationIcon =
         if (!isChecked) R.drawable.ic_notification_off else R.drawable.ic_notification_active
