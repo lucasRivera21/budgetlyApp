@@ -89,7 +89,7 @@ class ExpenseRepository @Inject constructor(
                         )
                     )
                 }
-                trySend(expenseModelResponseList)
+                trySend(expenseModelResponseList.sortedBy { it.createdAt })
             }
 
             awaitClose { expenseListener.remove() }
