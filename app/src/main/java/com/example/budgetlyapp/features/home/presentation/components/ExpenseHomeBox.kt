@@ -50,14 +50,15 @@ fun ExpenseHomeBox(nextTaskModel: NextTaskModel, onSwipeCard: (String) -> Unit) 
         if (nextTaskModel.dateDue < getTodayDate("yyyy-MM-dd")) stringResource(R.string.home_next_expense_delayed) else ""
 
     val dismissState = rememberSwipeToDismissBoxState(
-        confirmValueChange = {
-            if (it == SwipeToDismissBoxValue.StartToEnd) {
+        confirmValueChange = { value ->
+            if (value == SwipeToDismissBoxValue.StartToEnd) {
                 onSwipeCard(nextTaskModel.taskId)
             }
-
             false
-        }
+        },
+        positionalThreshold = { totalDistance -> totalDistance * 0.6f }
     )
+
     SwipeToDismissBox(
         state = dismissState,
         enableDismissFromEndToStart = false,
