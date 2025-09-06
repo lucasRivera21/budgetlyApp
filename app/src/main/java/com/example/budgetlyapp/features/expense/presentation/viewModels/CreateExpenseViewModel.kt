@@ -113,6 +113,8 @@ class CreateExpenseViewModel @Inject constructor(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+
+                _isLoading.value = false
                 return@launch
             }
 
