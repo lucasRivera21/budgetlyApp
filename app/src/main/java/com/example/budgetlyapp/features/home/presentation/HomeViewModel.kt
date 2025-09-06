@@ -115,9 +115,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun updateIsCompleteTask(taskId: String) {
+    fun updateIsCompleteTask(nextTaskModel: NextTaskModel, showSnackBar: suspend () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
-            updateIsCompleteTaskUseCase(taskId)
+            updateIsCompleteTaskUseCase(nextTaskModel.taskId)
+            showSnackBar()
         }
     }
 
@@ -125,5 +126,9 @@ class HomeViewModel @Inject constructor(
         val pieIndex = _pieList.value.indexOf(pieSelected)
         _pieList.value =
             _pieList.value.mapIndexed { mapIndex, pie -> pie.copy(selected = pieIndex == mapIndex) }
+    }
+
+    fun onClickActionSnackBar() {
+        Log.d(TAG, "onClickActionSnackBar: ")
     }
 }

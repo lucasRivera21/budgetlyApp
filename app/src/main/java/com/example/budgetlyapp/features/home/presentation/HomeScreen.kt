@@ -15,11 +15,18 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -27,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.getString
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.budgetlyapp.R
 import com.example.budgetlyapp.common.utils.hasNotificationPermission
@@ -34,6 +42,7 @@ import com.example.budgetlyapp.common.utils.upperFirstChar
 import com.example.budgetlyapp.features.home.presentation.components.GraphContainerComponent
 import com.example.budgetlyapp.features.home.presentation.components.NextExpenseListComponent
 import com.example.budgetlyapp.ui.theme.AppTheme
+import kotlinx.coroutines.launch
 
 @SuppressLint("InlinedApi")
 @Composable
@@ -44,6 +53,9 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
     val isLoading by homeViewModel.isLoading.collectAsState()
     val nextTaskList by homeViewModel.nextTaskList.collectAsState()
     val isFirstTime by homeViewModel.isFirstTime.collectAsState()
+
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     val context = LocalContext.current
     val requestPermissionLauncher =
@@ -59,37 +71,52 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
         }
     }
 
-    if (!isLoading) {
-        Column(
-            Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(36.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "${stringResource(R.string.home_title)} ${userName.upperFirstChar()}",
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.SemiBold
-            )
+    Scaffold(snackbarHost = { SnackbarHost(hostState = snackbarHostState) }) { _ ->
+        if (!isLoading) {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(36.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "${stringResource(R.string.home_title)} ${userName.upperFirstChar()}",
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.SemiBold
+                )
 
-            GraphContainerComponent(pieList, freeMoneyValue) {
-                homeViewModel.onClickPie(it)
-            }
+                GraphContainerComponent(pieList, freeMoneyValue) {
+                    homeViewModel.onClickPie(it)
+                }
 
-            NextExpenseListComponent(nextTaskList, Modifier.weight(1f)) { taskId ->
-                homeViewModel.updateIsCompleteTask(taskId)
+                NextExpenseListComponent(
+                    nextTaskList = nextTaskList,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    homeViewModel.updateIsCompleteTask(it) {
+                        val result = snackbarHostState.showSnackbar(
+                            message = getString(context, R.string.home_snack_bar_title),
+                            actionLabel = getString(context, R.string.home_snack_bar_back),
+                            duration = SnackbarDuration.Long
+                        )
+
+                        if (result == SnackbarResult.ActionPerformed) {
+                            homeViewModel.onClickActionSnackBar()
+                        }
+                    }
+                }
             }
-        }
-    } else {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .size(50.dp)
-            )
+        } else {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(50.dp)
+                )
+            }
         }
     }
 }

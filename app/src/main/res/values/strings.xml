@@ -50,6 +50,8 @@
     <string name="home_next_expense_title">Proximos pagos:</string>
     <string name="home_next_expense_delayed">Atrasado</string>
     <string name="home_without_next_expenses">Relax, no tienes proximos gastos</string>
+    <string name="home_snack_bar_title">Gasto completado</string>
+    <string name="home_snack_bar_back">Devolver</string>
 
     <!-- Expense -->
     <string name="expense_title">Gastos</string>

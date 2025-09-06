@@ -23,7 +23,7 @@ import com.example.budgetlyapp.ui.theme.AppTheme
 fun NextExpenseListComponent(
     nextTaskList: List<NextTaskModel>,
     modifier: Modifier,
-    onSwipeCard: (String) -> Unit
+    onSwipeCard: (NextTaskModel) -> Unit
 ) {
     if (nextTaskList.isNotEmpty()) {
         Column(
@@ -44,7 +44,7 @@ fun NextExpenseListComponent(
                 nextTaskList.forEach { nextTaskModel ->
                     key(nextTaskModel.taskId) {
                         ExpenseHomeBox(nextTaskModel) {
-                            onSwipeCard(it)
+                            onSwipeCard(nextTaskModel)
                         }
                     }
                 }
