@@ -10,11 +10,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.budgetlyapp"
+    namespace = "com.lucasdev.budgetlyapp"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.budgetlyapp"
+        applicationId = "com.lucasdev.budgetlyapp"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
