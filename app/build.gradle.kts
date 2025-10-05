@@ -91,6 +91,9 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.hilt.work)
     kapt(libs.androidx.hilt.compiler)
+
+    //Room
+    implementation("androidx.room:room-runtime:2.8.1")
 }
 
 kapt {
