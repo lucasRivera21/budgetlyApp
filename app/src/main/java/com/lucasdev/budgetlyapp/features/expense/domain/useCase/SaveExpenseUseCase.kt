@@ -23,15 +23,17 @@ class SaveExpenseUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(expenseModel: ExpenseModel) {
         try {
-            val expenseId = createExpenseTask.createExpense(expenseModel)
+            val expenseId = createExpenseTask.saveExpense(expenseModel)
+            if(expenseId == null) return
+
             val taskList = createTaskList(expenseModel, expenseId)
-            createExpenseTask.createTask(taskList)
+            createExpenseTask.saveTask(taskList)
         } catch (e: Exception) {
             Log.e(TAG, "Error creating expense: ${e.message}")
         }
     }
 
-    private fun createTaskList(expenseModel: ExpenseModel, expenseId: String): List<TaskUpload> {
+    private fun createTaskList(expenseModel: ExpenseModel, expenseId: Int): List<TaskUpload> {
         val taskList = mutableListOf<TaskUpload>()
 
         val hasDayDue = expenseModel.day != null

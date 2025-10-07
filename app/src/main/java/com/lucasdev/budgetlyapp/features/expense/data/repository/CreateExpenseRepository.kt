@@ -1,44 +1,44 @@
 package com.lucasdev.budgetlyapp.features.expense.data.repository
 
-import com.lucasdev.budgetlyapp.ExpenseCollection
-import com.lucasdev.budgetlyapp.TaskCollection
-import com.lucasdev.budgetlyapp.UsersCollection
+import android.util.Log
 import com.lucasdev.budgetlyapp.common.domain.models.ExpenseModel
 import com.lucasdev.budgetlyapp.features.expense.domain.models.TaskUpload
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.tasks.await
+import com.lucasdev.budgetlyapp.common.data.AppDatabase
+import com.lucasdev.budgetlyapp.common.domain.models.toEntity
+import com.lucasdev.budgetlyapp.features.expense.domain.models.toEntity
 import javax.inject.Inject
 
+private const val TAG = "CreateExpenseRepository"
+
 interface CreateExpenseTask {
-    suspend fun createExpense(expenseModel: ExpenseModel): String
-    suspend fun createTask(taskList: List<TaskUpload>)
+    suspend fun saveExpense(expenseModel: ExpenseModel): Int?
+    suspend fun saveTask(taskList: List<TaskUpload>)
 }
 
 class CreateExpenseRepository @Inject constructor(
-    private val db: FirebaseFirestore,
-    private val auth: FirebaseAuth
+    private val room: AppDatabase
 ) :
     CreateExpenseTask {
-    override suspend fun createExpense(
-        expenseModel: ExpenseModel
-    ): String {
-        val userId = auth.currentUser?.uid
+    override suspend fun saveExpense(expenseModel: ExpenseModel): Int? {
+        try {
+            room.expenseDao().insertExpense(expenseModel.toEntity())
+            val lastExpenseId = room.expenseDao().getLastExpenseId()
 
-        val userRef = db.collection(UsersCollection.collectionName).document(userId!!)
-        val expenseRef = userRef.collection(ExpenseCollection.collectionName)
-
-        val expenseSnapshot = expenseRef.add(expenseModel).await()
-        return expenseSnapshot.id
+            return lastExpenseId
+        } catch (e: Exception) {
+            Log.d(TAG, "saveExpense error: ${e.message}")
+        }
+        return null
     }
 
-    override suspend fun createTask(taskList: List<TaskUpload>) {
-        val userId = auth.currentUser?.uid
-        val userRef = db.collection(UsersCollection.collectionName).document(userId!!)
-        val taskRef = userRef.collection(TaskCollection.collectionName)
-
-        taskList.forEach { task ->
-            taskRef.add(task).await()
+    override suspend fun saveTask(taskList: List<TaskUpload>) {
+        try {
+            val taskEntityList = taskList.map { task ->
+                task.toEntity()
+            }
+            room.taskDao().insertTasks(taskEntityList)
+        } catch (e: Exception) {
+            Log.d(TAG, "saveTask error: ${e.message}")
         }
     }
 }

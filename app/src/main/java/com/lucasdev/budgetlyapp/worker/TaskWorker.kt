@@ -46,8 +46,8 @@ class TaskWorker @AssistedInject constructor(
         }
 
         try {
-            val taskUploadList = generateTaskUploadList(currentMonthAndYear, formatter)
-            uploadTask(taskUploadList)
+            //val taskUploadList = generateTaskUploadList(currentMonthAndYear, formatter)
+            //uploadTask(taskUploadList)
             dataStoreRepository.setString(LastExecuteTaskWorkerKey.key, currentMonthAndYear)
         } catch (e: Exception) {
             Log.e(TAG, "doWork: ${e.message}", e)
@@ -70,7 +70,7 @@ class TaskWorker @AssistedInject constructor(
         val taskWithMostCurrentDate = expenseRepository.getTaskWithMostCurrentDate()
         val taskUploadList = mutableListOf<TaskUpload>()
 
-        taskWithMostCurrentDate.forEach { taskResponse ->
+        /*taskWithMostCurrentDate.forEach { taskResponse ->
             if (currentDatePlusExtraMonth > taskResponse.dateDue) {
                 val dateDueLocalDate =
                     LocalDate.parse(taskResponse.dateDue, formatter)
@@ -89,7 +89,7 @@ class TaskWorker @AssistedInject constructor(
                     )
                 )
             }
-        }
+        }*/
 
         return taskUploadList
     }
@@ -110,6 +110,6 @@ class TaskWorker @AssistedInject constructor(
             taskUpload.copy(requestCode = requestCode)
         }
 
-        createExpenseRepository.createTask(taskToUpload)
+        //createExpenseRepository.createTask(taskToUpload)
     }
 }

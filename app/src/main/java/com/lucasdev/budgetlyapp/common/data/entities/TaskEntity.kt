@@ -20,17 +20,17 @@ import androidx.room.PrimaryKey
 data class TaskEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "task_id")
-    val taskId: Int,
+    val taskId: Int = 0,
     @ColumnInfo(name = "is_complete")
-    val isComplete: Int,
+    val isComplete: Int = 0,
     @ColumnInfo(name = "created_at")
     val createdAt: String,
     @ColumnInfo(name = "date_due")
-    val dateDue: String,
+    val dateDue: String?,
     @ColumnInfo(name = "expense_id")
     val expenseId: Int,
     @ColumnInfo(name = "request_code")
-    val requestCode: Int,
+    val requestCode: Int?,
     @ColumnInfo(name = "is_upload")
-    val isUpload: Int
+    val isUpload: Int = 0
 )

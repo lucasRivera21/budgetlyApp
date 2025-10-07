@@ -2,23 +2,13 @@ package com.lucasdev.budgetlyapp.common.data.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(
-    tableName = "expenses",
-    foreignKeys = [ForeignKey(
-        entity = TagEntity::class,
-        parentColumns = ["tag_id"],
-        childColumns = ["tag_id"]
-    )],
-    indices = [Index(value = ["tag_id"])]
-)
+@Entity(tableName = "expenses")
 data class ExpenseEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "expense_id")
-    val expenseId: Int,
+    val expenseId: Int = 0,
     @ColumnInfo(name = "expense_name")
     val expenseName: String,
     @ColumnInfo(name = "expense_amount")
@@ -33,5 +23,5 @@ data class ExpenseEntity(
     @ColumnInfo(name = "tag_id")
     val tagId: Int,
     @ColumnInfo(name = "is_upload")
-    val isUpload: Int
+    val isUpload: Int = 0
 )
