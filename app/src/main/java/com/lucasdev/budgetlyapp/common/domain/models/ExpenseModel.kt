@@ -17,7 +17,7 @@ fun ExpenseModel.toEntity(): ExpenseEntity {
     return ExpenseEntity(
         expenseGroupId = expenseGroupId,
         expenseName = expenseName,
-        expenseAmount = amount.toString(),
+        expenseAmount = amount,
         tagId = tag.tagId,
         day = day,
         hasNotification = hasNotification,

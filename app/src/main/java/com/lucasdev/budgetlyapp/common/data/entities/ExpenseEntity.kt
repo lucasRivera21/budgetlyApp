@@ -12,7 +12,7 @@ data class ExpenseEntity(
     @ColumnInfo(name = "expense_name")
     val expenseName: String,
     @ColumnInfo(name = "expense_amount")
-    val expenseAmount: String,
+    val expenseAmount: Double,
     @ColumnInfo(name = "created_at")
     val createdAt: String,
     val day: Int?,

@@ -1,7 +1,7 @@
 package com.lucasdev.budgetlyapp.common.domain.models
 
 data class ExpenseModelFromDb(
-    val expenseId: String,
+    val expenseId: Int,
     val amount: Double,
     val dayPay: Int?,
     val expenseName: String,

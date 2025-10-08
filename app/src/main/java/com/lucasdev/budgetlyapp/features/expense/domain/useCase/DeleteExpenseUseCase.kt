@@ -8,7 +8,7 @@ class DeleteExpenseUseCase @Inject constructor(
     private val expenseRepository: ExpenseRepository,
     private val alarmScheduler: AlarmScheduler
 ) {
-    suspend operator fun invoke(expenseId: String) {
+    suspend operator fun invoke(expenseId: Int) {
         val taskToUploadNotificationResponse = expenseRepository.getTaskList(expenseId)
         taskToUploadNotificationResponse.forEach {
             if (it.requestCode != null) {

@@ -160,7 +160,7 @@ fun ExpenseComponentPreview() {
     AppTheme {
         ExpenseComponent(
             expenseModel = ExpenseModelFromDb(
-                expenseId = "1",
+                expenseId = 1,
                 0.0,
                 10,
                 "Gym",

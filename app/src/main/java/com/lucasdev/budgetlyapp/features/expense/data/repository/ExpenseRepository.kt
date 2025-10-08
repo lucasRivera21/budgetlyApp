@@ -11,6 +11,8 @@ import com.lucasdev.budgetlyapp.features.home.domain.models.TaskResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.lucasdev.budgetlyapp.common.data.AppDatabase
+import com.lucasdev.budgetlyapp.common.data.entities.ExpenseEntity
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -20,26 +22,30 @@ import javax.inject.Inject
 private const val TAG = "ExpenseRepository"
 
 interface ExpenseTask {
+    suspend fun getExpenseList(): Flow<List<ExpenseEntity>>
     suspend fun getExpenseGroupList(): Flow<List<ExpenseModelResponse>>
 
-    suspend fun getTaskList(expenseId: String): List<TaskToUploadNotificationResponse>
+    suspend fun getTaskList(expenseId: Int): List<TaskToUploadNotificationResponse>
 
     suspend fun getTaskWithMostCurrentDate(): List<TaskResponse>
 
     suspend fun updateExpenseNotification(
-        expenseId: String,
+        expenseId: Int,
         hasNotification: Boolean
     )
 
-    suspend fun updateRequestCode(expenseId: String, requestCode: Int?, dateDue: String)
+    suspend fun updateRequestCode(expenseId: Int, requestCode: Int?, dateDue: String)
 
-    suspend fun deleteExpense(expenseId: String)
+    suspend fun deleteExpense(expenseId: Int)
 }
 
 class ExpenseRepository @Inject constructor(
+    private val room: AppDatabase,
     private val db: FirebaseFirestore,
     private val auth: FirebaseAuth
 ) : ExpenseTask {
+    override suspend fun getExpenseList(): Flow<List<ExpenseEntity>> = room.expenseDao().getAllExpenses()
+
     override suspend fun getExpenseGroupList(): Flow<List<ExpenseModelResponse>> = callbackFlow {
         try {
             val userId = auth.currentUser!!.uid
@@ -99,7 +105,7 @@ class ExpenseRepository @Inject constructor(
         }
     }
 
-    override suspend fun getTaskList(expenseId: String): List<TaskToUploadNotificationResponse> {
+    override suspend fun getTaskList(expenseId: Int): List<TaskToUploadNotificationResponse> {
         val userId = auth.currentUser?.uid
         val taskResponseList = mutableListOf<TaskToUploadNotificationResponse>()
         if (userId != null) {
@@ -200,7 +206,7 @@ class ExpenseRepository @Inject constructor(
     }
 
     override suspend fun updateExpenseNotification(
-        expenseId: String,
+        expenseId: Int,
         hasNotification: Boolean
     ) {
         val userId = auth.currentUser?.uid
@@ -209,7 +215,7 @@ class ExpenseRepository @Inject constructor(
                 val expenseRef =
                     db.collection(UsersCollection.collectionName).document(userId)
                         .collection(ExpenseCollection.collectionName)
-                        .document(expenseId)
+                        .document(expenseId.toString())
 
                 expenseRef.update("hasNotification", hasNotification)
             } catch (e: Exception) {
@@ -218,7 +224,7 @@ class ExpenseRepository @Inject constructor(
         }
     }
 
-    override suspend fun updateRequestCode(expenseId: String, requestCode: Int?, dateDue: String) {
+    override suspend fun updateRequestCode(expenseId: Int, requestCode: Int?, dateDue: String) {
         val userId = auth.currentUser?.uid
         if (userId != null) {
             try {
@@ -236,13 +242,13 @@ class ExpenseRepository @Inject constructor(
         }
     }
 
-    override suspend fun deleteExpense(expenseId: String) {
+    override suspend fun deleteExpense(expenseId: Int) {
         val userId = auth.currentUser?.uid
         if (userId != null) {
             try {
                 val userRef = db.collection(UsersCollection.collectionName).document(userId)
                 val expenseRef = userRef.collection(ExpenseCollection.collectionName)
-                    .document(expenseId)
+                    .document(expenseId.toString())
 
                 expenseRef.delete()
 

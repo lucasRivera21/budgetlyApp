@@ -14,7 +14,7 @@ class UpdateExpenseNotificationUseCase @Inject constructor(
     private val alarmScheduler: AlarmScheduler
 ) {
     suspend operator fun invoke(
-        expenseId: String,
+        expenseId: Int,
         hasNotification: Boolean
     ) {
         val taskToUploadNotificationResponse = expenseRepository.getTaskList(expenseId)

@@ -3,7 +3,6 @@ package com.lucasdev.budgetlyapp.features.expense.presentation.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lucasdev.budgetlyapp.common.domain.models.ExpensesGroupModel
-import com.lucasdev.budgetlyapp.features.expense.domain.useCase.ConvertExpenseResponseToExpenseGroupUseCase
 import com.lucasdev.budgetlyapp.features.expense.domain.useCase.DeleteExpenseUseCase
 import com.lucasdev.budgetlyapp.features.expense.domain.useCase.GetExpenseGroupListUseCase
 import com.lucasdev.budgetlyapp.features.expense.domain.useCase.UpdateExpenseNotificationUseCase
@@ -17,7 +16,7 @@ class ExpenseViewModel @Inject constructor(
     private val getExpenseGroupListUseCase: GetExpenseGroupListUseCase,
     private val updateExpenseNotificationUseCase: UpdateExpenseNotificationUseCase,
     private val deleteExpenseUseCase: DeleteExpenseUseCase,
-    private val convertExpenseResponseToExpenseGroupUseCase: ConvertExpenseResponseToExpenseGroupUseCase
+    //private val convertExpenseResponseToExpenseGroupUseCase: ConvertExpenseResponseToExpenseGroupUseCase
 ) :
     ViewModel() {
     private val _expenseGroupList = MutableStateFlow<List<ExpensesGroupModel>>(emptyList())
@@ -30,7 +29,7 @@ class ExpenseViewModel @Inject constructor(
     val showDialog: MutableStateFlow<Boolean> = _showDialog
 
     private var expenseGroupIdToDelete: String? = null
-    private var expenseIdToDelete: String? = null
+    private var expenseIdToDelete: Int? = null
 
     init {
         getExpenseGroupList()
@@ -40,15 +39,16 @@ class ExpenseViewModel @Inject constructor(
         viewModelScope.launch {
             _isLoading.value = true
             getExpenseGroupListUseCase().collect { expenseModelResponseList ->
-                _expenseGroupList.value =
-                    convertExpenseResponseToExpenseGroupUseCase(expenseModelResponseList)
+                _expenseGroupList.value = expenseModelResponseList
+                //_expenseGroupList.value =
+                   // convertExpenseResponseToExpenseGroupUseCase(expenseModelResponseList)
                 _isLoading.value = false
             }
         }
     }
 
     fun updateExpenseNotification(
-        expenseId: String,
+        expenseId: Int,
         hasNotification: Boolean
     ) {
         viewModelScope.launch {
@@ -56,7 +56,7 @@ class ExpenseViewModel @Inject constructor(
         }
     }
 
-    fun showDialog(expenseGroupId: String, expenseId: String) {
+    fun showDialog(expenseGroupId: String, expenseId: Int) {
         expenseGroupIdToDelete = expenseGroupId
         expenseIdToDelete = expenseId
         _showDialog.value = true
