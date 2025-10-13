@@ -14,6 +14,12 @@ interface ExpenseDao {
     @Query("SELECT MAX(expense_id) FROM expenses")
     suspend fun getLastExpenseId(): Int?
 
-    @Query("SELECT * FROM expenses")
+    @Query("SELECT * FROM expenses WHERE is_upload >= 0 ORDER BY created_at DESC")
     fun getAllExpenses(): Flow<List<ExpenseEntity>>
+
+    @Query("SELECT is_upload FROM expenses WHERE expense_id = :expenseId")
+    suspend fun getIsUpload(expenseId: Int): Int
+
+    @Query("UPDATE expenses SET has_notification = :hasNotification, is_upload = :isUpload WHERE expense_id = :expenseId")
+    suspend fun updateExpenseNotification(expenseId: Int, hasNotification: Boolean, isUpload: Int)
 }

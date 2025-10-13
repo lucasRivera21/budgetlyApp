@@ -13,6 +13,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.lucasdev.budgetlyapp.common.data.AppDatabase
 import com.lucasdev.budgetlyapp.common.data.entities.ExpenseEntity
+import com.lucasdev.budgetlyapp.common.utils.UploadState
+import com.lucasdev.budgetlyapp.common.utils.UploadState.Companion.codeToUploadState
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -42,9 +44,10 @@ interface ExpenseTask {
 class ExpenseRepository @Inject constructor(
     private val room: AppDatabase,
     private val db: FirebaseFirestore,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
 ) : ExpenseTask {
-    override suspend fun getExpenseList(): Flow<List<ExpenseEntity>> = room.expenseDao().getAllExpenses()
+    override suspend fun getExpenseList(): Flow<List<ExpenseEntity>> =
+        room.expenseDao().getAllExpenses()
 
     override suspend fun getExpenseGroupList(): Flow<List<ExpenseModelResponse>> = callbackFlow {
         try {
@@ -209,18 +212,17 @@ class ExpenseRepository @Inject constructor(
         expenseId: Int,
         hasNotification: Boolean
     ) {
-        val userId = auth.currentUser?.uid
-        if (userId != null) {
-            try {
-                val expenseRef =
-                    db.collection(UsersCollection.collectionName).document(userId)
-                        .collection(ExpenseCollection.collectionName)
-                        .document(expenseId.toString())
-
-                expenseRef.update("hasNotification", hasNotification)
-            } catch (e: Exception) {
-                Log.e(TAG, "updateExpenseNotification: ${e.message}", e)
+        try {
+            val isUploadInt = room.expenseDao().getIsUpload(expenseId)
+            val uploadState = codeToUploadState(isUploadInt)
+            val newUploadState = when (uploadState) {
+                UploadState.UPLOADED -> UploadState.EDITED
+                else -> uploadState
             }
+            room.expenseDao()
+                .updateExpenseNotification(expenseId, hasNotification, newUploadState.code)
+        } catch (e: Exception) {
+            Log.e(TAG, "updateExpenseNotification: ${e.message}")
         }
     }
 
