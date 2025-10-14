@@ -4,6 +4,7 @@ import android.content.Context
 import com.lucasdev.budgetlyapp.alarm.AlarmScheduler
 import com.lucasdev.budgetlyapp.common.utils.getDrawableIdByName
 import com.lucasdev.budgetlyapp.common.utils.scheduleNewNotification
+import com.lucasdev.budgetlyapp.features.expense.data.dto.toTaskToUploadNotification
 import com.lucasdev.budgetlyapp.features.expense.data.repository.ExpenseRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -17,8 +18,10 @@ class UpdateExpenseNotificationUseCase @Inject constructor(
         expenseId: Int,
         hasNotification: Boolean
     ) {
-        val taskToUploadNotificationResponse = expenseRepository.getTaskList(expenseId)
-        taskToUploadNotificationResponse.forEach {
+        val taskToUploadNotificationDTOList = expenseRepository.getTaskList(expenseId)
+        val taskToUploadNotification =
+            taskToUploadNotificationDTOList.map { it.toTaskToUploadNotification() }
+        taskToUploadNotification.forEach {
             val requestCode =
                 if (!hasNotification) {
                     alarmScheduler.cancel(it.requestCode!!)
