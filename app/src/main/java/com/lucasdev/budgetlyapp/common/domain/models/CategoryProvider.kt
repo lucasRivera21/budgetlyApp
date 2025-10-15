@@ -13,4 +13,8 @@ object CategoryProvider {
         TagModel(9, "tag_subscription", "#43AA8B", "ic_subscription_category"),
         TagModel(10, "tag_other", "#F94144", "ic_other_category")
     )
+
+    fun getCategoryById(id: Int): TagModel {
+        return categories.find { it.tagId == id } ?: categories.first()
+    }
 }
