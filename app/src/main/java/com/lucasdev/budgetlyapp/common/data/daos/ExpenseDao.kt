@@ -22,4 +22,7 @@ interface ExpenseDao {
 
     @Query("UPDATE expenses SET has_notification = :hasNotification, is_upload = :isUpload WHERE expense_id = :expenseId")
     suspend fun updateExpenseNotification(expenseId: Int, hasNotification: Boolean, isUpload: Int)
+
+    @Query("UPDATE expenses SET is_upload = :isUpload WHERE expense_id = :expenseId")
+    suspend fun updateExpenseIsUpload(expenseId: Int, isUpload: Int)
 }

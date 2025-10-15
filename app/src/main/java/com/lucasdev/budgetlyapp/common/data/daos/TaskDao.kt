@@ -14,7 +14,8 @@ interface TaskDao {
     @Insert
     suspend fun insertTask(taskEntity: TaskEntity)
 
-    @Query("""
+    @Query(
+        """
         SELECT 
             t.task_id,
             t.request_code, 
@@ -24,9 +25,13 @@ interface TaskDao {
             t.date_due 
             FROM tasks t INNER JOIN expenses e ON t.expense_id = e.expense_id
             WHERE t.expense_id = :expenseId
-    """)
+    """
+    )
     suspend fun getTasks(expenseId: Int): List<TaskToUploadNotificationDTO>
 
     @Query("UPDATE tasks SET request_code = :requestCode WHERE expense_id = :expenseId AND date_due = :dateDue")
     suspend fun updateTaskRequestCode(expenseId: Int, requestCode: Int?, dateDue: String)
+
+    @Query("UPDATE tasks SET is_upload = :isUpload WHERE expense_id = :expenseId")
+    suspend fun updateTaskUploadState(expenseId: Int, isUpload: Int)
 }

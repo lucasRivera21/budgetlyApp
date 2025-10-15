@@ -204,25 +204,11 @@ class ExpenseRepository @Inject constructor(
     }
 
     override suspend fun deleteExpense(expenseId: Int) {
-        val userId = auth.currentUser?.uid
-        if (userId != null) {
-            try {
-                val userRef = db.collection(UsersCollection.collectionName).document(userId)
-                val expenseRef = userRef.collection(ExpenseCollection.collectionName)
-                    .document(expenseId.toString())
-
-                expenseRef.delete()
-
-                val taskCollectRef = userRef.collection(TaskCollection.collectionName)
-                val query = taskCollectRef.whereEqualTo("expenseId", expenseId)
-                val taskSnapshot = query.get().await()
-                for (taskDocument in taskSnapshot.documents) {
-                    taskDocument.reference.delete()
-                }
-
-            } catch (e: Exception) {
-                Log.e(TAG, "deleteExpense: ${e.message}", e)
-            }
+        try {
+            room.expenseDao().updateExpenseIsUpload(expenseId, UploadState.DELETED.code)
+            room.taskDao().updateTaskUploadState(expenseId, UploadState.DELETED.code)
+        } catch (e: Exception) {
+            Log.e(TAG, "deleteExpense: ${e.message}")
         }
     }
 }
