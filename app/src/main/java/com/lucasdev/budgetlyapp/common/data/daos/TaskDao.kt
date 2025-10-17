@@ -31,6 +31,9 @@ interface TaskDao {
     )
     suspend fun getTasks(expenseId: Int): List<TaskToUploadNotificationDTO>
 
+    @Query("SELECT request_code FROM tasks WHERE task_id = :taskId")
+    suspend fun getRequestCode(taskId: Int): Int?
+
     @Query("UPDATE tasks SET request_code = :requestCode WHERE expense_id = :expenseId AND date_due = :dateDue")
     suspend fun updateTaskRequestCode(expenseId: Int, requestCode: Int?, dateDue: String)
 
@@ -53,8 +56,11 @@ interface TaskDao {
             e.expense_name as expenseName,
             e.tag_id as tagId
         FROM tasks t INNER JOIN expenses e ON t.expense_id = e.expense_id
-        WHERE e.is_upload >= 0
+        WHERE e.is_upload >= 0 AND is_complete = 0
     """
     )
     fun getNextTask(): Flow<List<NextExpenseDTO>>
+
+    @Query("UPDATE tasks SET is_complete = :isCompleted WHERE task_id = :taskId")
+    suspend fun updateTaskCompletion(taskId: Int, isCompleted: Boolean)
 }
