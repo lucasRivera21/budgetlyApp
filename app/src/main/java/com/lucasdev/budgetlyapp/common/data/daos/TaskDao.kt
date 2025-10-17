@@ -5,6 +5,8 @@ import androidx.room.Insert
 import androidx.room.Query
 import com.lucasdev.budgetlyapp.common.data.entities.TaskEntity
 import com.lucasdev.budgetlyapp.features.expense.data.dto.TaskToUploadNotificationDTO
+import com.lucasdev.budgetlyapp.features.home.data.NextExpenseDTO
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TaskDao {
@@ -34,4 +36,25 @@ interface TaskDao {
 
     @Query("UPDATE tasks SET is_upload = :isUpload WHERE expense_id = :expenseId")
     suspend fun updateTaskUploadState(expenseId: Int, isUpload: Int)
+
+    @Query(
+        """
+        SELECT 
+            t.task_id as taskId,
+            e.expense_amount as amount,
+            t.is_complete as isCompleted,
+            t.created_at as createdAt,
+            t.date_due as dateDue,
+            e.expense_group_id as expenseGroupId,
+            e.expense_id as expenseId,
+            t.request_code as requestCode,
+            e.day as dayDue,
+            e.has_notification as hasNotification,
+            e.expense_name as expenseName,
+            e.tag_id as tagId
+        FROM tasks t INNER JOIN expenses e ON t.expense_id = e.expense_id
+        WHERE e.is_upload >= 0
+    """
+    )
+    fun getNextTask(): Flow<List<NextExpenseDTO>>
 }

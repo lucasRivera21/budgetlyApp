@@ -3,15 +3,11 @@ package com.lucasdev.budgetlyapp.features.home.data
 import android.util.Log
 import com.lucasdev.budgetlyapp.TaskCollection
 import com.lucasdev.budgetlyapp.UsersCollection
-import com.lucasdev.budgetlyapp.common.domain.models.TagModel
-import com.lucasdev.budgetlyapp.features.home.domain.models.TaskResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.lucasdev.budgetlyapp.common.data.AppDatabase
 import com.lucasdev.budgetlyapp.common.data.entities.ExpenseEntity
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -19,7 +15,7 @@ private const val TAG = "HomeRepository"
 
 interface HomeTask {
     suspend fun getHomeData(): Flow<List<ExpenseEntity>>
-    suspend fun fetchNextExpensesUseCase(): Flow<List<TaskResponse>>
+    suspend fun fetchNextExpensesUseCase(): Flow<List<NextExpenseDTO>>
     suspend fun fetchRequestCode(taskId: String): Int?
     suspend fun updateIsCompleteTask(taskId: String)
 }
@@ -29,68 +25,9 @@ class HomeRepository @Inject constructor(
     private val db: FirebaseFirestore,
     private val auth: FirebaseAuth
 ) : HomeTask {
-    override suspend fun getHomeData(): Flow<List<ExpenseEntity>> {
-        return room.expenseDao().getAllExpenses()
-    }
+    override suspend fun getHomeData() = room.expenseDao().getAllExpenses()
 
-    override suspend fun fetchNextExpensesUseCase(): Flow<List<TaskResponse>> = callbackFlow {
-        val userId = auth.currentUser?.uid
-
-        if (userId == null) {
-            close()
-            return@callbackFlow
-        }
-
-        try {
-            val userRef = db.collection(UsersCollection.collectionName).document(userId)
-            val taskRef = userRef.collection(TaskCollection.collectionName)
-
-            val query = taskRef.whereEqualTo("completed", false)
-            val taskListener = query.addSnapshotListener { snapshot, _ ->
-                if (snapshot == null) {
-                    return@addSnapshotListener
-                }
-
-                val taskResponseList = mutableListOf<TaskResponse>()
-                val taskDocuments = snapshot.documents
-
-                for (document in taskDocuments) {
-                    val taskId = document.id
-                    val taskData = document.data as Map<String, Any>
-
-                    val tagMap = taskData["tag"] as? Map<*, *> ?: emptyMap<String, Any>()
-                    val taskResponseModel = TaskResponse(
-                        taskId = taskId,
-                        amount = taskData["amount"].toString().toDouble(),
-                        completed = taskData["completed"].toString().toBoolean(),
-                        createdAt = taskData["createdAt"].toString(),
-                        dateDue = taskData["dateDue"].toString(),
-                        expenseGroupId = taskData["expenseGroupId"].toString(),
-                        expenseId = taskData["expenseId"].toString(),
-                        hasDayDue = taskData["hasDayDue"].toString().toBoolean(),
-                        hasNotification = taskData["hasNotification"].toString().toBoolean(),
-                        taskName = taskData["taskName"].toString(),
-                        tag = TagModel(
-                            tagId = tagMap["tagId"].toString().toInt(),
-                            tagNameId = tagMap["tagNameId"].toString(),
-                            color = tagMap["color"].toString(),
-                            iconId = tagMap["iconId"].toString()
-                        )
-                    )
-
-                    taskResponseList.add(taskResponseModel)
-                }
-
-                trySend(taskResponseList)
-            }
-
-            awaitClose {
-                taskListener.remove()
-            }
-        } catch (e: Exception) {
-            close(e)
-        }
-    }
+    override suspend fun fetchNextExpensesUseCase() = room.taskDao().getNextTask()
 
     override suspend fun fetchRequestCode(taskId: String): Int? {
         val userId = auth.currentUser?.uid ?: return null
