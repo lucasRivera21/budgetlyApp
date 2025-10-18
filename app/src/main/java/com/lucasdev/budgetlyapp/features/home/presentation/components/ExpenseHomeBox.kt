@@ -85,7 +85,7 @@ fun ExpenseHomeBox(nextTaskModel: NextTaskModel, onSwipeCard: (String) -> Unit) 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp)
+                .padding()
                 .shadow(
                     4.dp,
                     RoundedCornerShape(8.dp)
