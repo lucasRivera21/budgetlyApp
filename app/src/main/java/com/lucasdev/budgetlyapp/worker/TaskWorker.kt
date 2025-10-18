@@ -14,6 +14,7 @@ import com.lucasdev.budgetlyapp.common.utils.scheduleNewNotification
 import com.lucasdev.budgetlyapp.features.expense.data.repository.CreateExpenseRepository
 import com.lucasdev.budgetlyapp.features.expense.data.repository.ExpenseRepository
 import com.lucasdev.budgetlyapp.features.expense.domain.models.TaskUpload
+import com.lucasdev.budgetlyapp.features.home.data.toTaskResponse
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.time.LocalDate
@@ -46,8 +47,8 @@ class TaskWorker @AssistedInject constructor(
         }
 
         try {
-            //val taskUploadList = generateTaskUploadList(currentMonthAndYear, formatter)
-            //uploadTask(taskUploadList)
+            val taskUploadList = generateTaskUploadList(currentMonthAndYear, formatter)
+            uploadTask(taskUploadList)
             dataStoreRepository.setString(LastExecuteTaskWorkerKey.key, currentMonthAndYear)
         } catch (e: Exception) {
             Log.e(TAG, "doWork: ${e.message}", e)
@@ -70,7 +71,8 @@ class TaskWorker @AssistedInject constructor(
         val taskWithMostCurrentDate = expenseRepository.getTaskWithMostCurrentDate()
         val taskUploadList = mutableListOf<TaskUpload>()
 
-        /*taskWithMostCurrentDate.forEach { taskResponse ->
+        taskWithMostCurrentDate.forEach { nextExpense ->
+            val taskResponse = nextExpense.toTaskResponse()
             if (currentDatePlusExtraMonth > taskResponse.dateDue) {
                 val dateDueLocalDate =
                     LocalDate.parse(taskResponse.dateDue, formatter)
@@ -78,7 +80,7 @@ class TaskWorker @AssistedInject constructor(
                 taskUploadList.add(
                     TaskUpload(
                         taskName = taskResponse.taskName,
-                        expenseId = taskResponse.expenseId,
+                        expenseId = taskResponse.expenseId.toInt(),
                         expenseGroupId = taskResponse.expenseGroupId,
                         requestCode = null,
                         dateDue = newDateDue,
@@ -89,7 +91,7 @@ class TaskWorker @AssistedInject constructor(
                     )
                 )
             }
-        }*/
+        }
 
         return taskUploadList
     }
@@ -110,6 +112,6 @@ class TaskWorker @AssistedInject constructor(
             taskUpload.copy(requestCode = requestCode)
         }
 
-        //createExpenseRepository.createTask(taskToUpload)
+        createExpenseRepository.saveTask(taskToUpload)
     }
 }

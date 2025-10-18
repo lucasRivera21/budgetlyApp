@@ -2,23 +2,20 @@ package com.lucasdev.budgetlyapp.features.expense.data.repository
 
 import android.util.Log
 import com.lucasdev.budgetlyapp.ExpenseCollection
-import com.lucasdev.budgetlyapp.TaskCollection
 import com.lucasdev.budgetlyapp.UsersCollection
 import com.lucasdev.budgetlyapp.common.domain.models.ExpenseModelResponse
 import com.lucasdev.budgetlyapp.common.domain.models.TagModel
-import com.lucasdev.budgetlyapp.features.home.domain.models.TaskResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.lucasdev.budgetlyapp.common.data.AppDatabase
 import com.lucasdev.budgetlyapp.common.data.entities.ExpenseEntity
 import com.lucasdev.budgetlyapp.common.utils.UploadState
 import com.lucasdev.budgetlyapp.common.utils.UploadState.Companion.codeToUploadState
 import com.lucasdev.budgetlyapp.features.expense.data.dto.TaskToUploadNotificationDTO
+import com.lucasdev.budgetlyapp.features.home.data.NextExpenseDTO
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 private const val TAG = "ExpenseRepository"
@@ -29,7 +26,7 @@ interface ExpenseTask {
 
     suspend fun getTaskList(expenseId: Int): List<TaskToUploadNotificationDTO>
 
-    suspend fun getTaskWithMostCurrentDate(): List<TaskResponse>
+    suspend fun getTaskWithMostCurrentDate(): List<NextExpenseDTO>
 
     suspend fun updateExpenseNotification(
         expenseId: Int,
@@ -117,64 +114,13 @@ class ExpenseRepository @Inject constructor(
         }
     }
 
-    override suspend fun getTaskWithMostCurrentDate(): List<TaskResponse> {
-        val userId = auth.currentUser?.uid
-        val taskResponseList = mutableListOf<TaskResponse>()
-
-        try {
-            val userRef = db.collection(UsersCollection.collectionName).document(userId!!)
-            val expenseRef = userRef.collection(ExpenseCollection.collectionName)
-            val taskRef = userRef.collection(TaskCollection.collectionName)
-            val expenseSnapshot = expenseRef.get().await()
-
-            for (expenseDocument in expenseSnapshot.documents) {
-                val expenseId = expenseDocument.id
-                val taskSnapshot = taskRef.whereEqualTo("expenseId", expenseId)
-                    .orderBy("dateDue", Query.Direction.DESCENDING).limit(1).get().await()
-
-                for (taskDocument in taskSnapshot.documents) {
-                    val taskData = taskDocument.data as Map<String, Any>
-
-                    val amount = taskData["amount"].toString().toDouble()
-                    val completed = taskData["completed"].toString().toBoolean()
-                    val createdAt = taskData["createdAt"].toString()
-                    val dateDue = taskData["dateDue"].toString()
-                    val expenseGroupId = taskData["expenseGroupId"].toString()
-                    val hasDayDue = taskData["hasDayDue"].toString().toBoolean()
-                    val hasNotification = taskData["hasNotification"].toString().toBoolean()
-                    val taskName = taskData["taskName"].toString()
-
-                    val tagMap = taskData["tag"] as? Map<*, *> ?: emptyMap<String, Any>()
-                    val tag = TagModel(
-                        tagId = tagMap["tagId"].toString().toInt(),
-                        tagNameId = tagMap["tagNameId"].toString(),
-                        color = tagMap["color"].toString(),
-                        iconId = tagMap["iconId"].toString()
-                    )
-
-                    taskResponseList.add(
-                        TaskResponse(
-                            taskId = taskDocument.id,
-                            amount = amount,
-                            completed = completed,
-                            createdAt = createdAt,
-                            dateDue = dateDue,
-                            expenseGroupId = expenseGroupId,
-                            expenseId = expenseId,
-                            hasDayDue = hasDayDue,
-                            hasNotification = hasNotification,
-                            taskName = taskName,
-                            tag = tag
-                        )
-                    )
-                }
-            }
-
+    override suspend fun getTaskWithMostCurrentDate(): List<NextExpenseDTO> {
+        return try {
+            room.taskDao().getLatestTasks()
         } catch (e: Exception) {
-            Log.e(TAG, "getExpenseList: ${e.message}", e)
+            Log.e(TAG, "getTaskWithMostCurrentDate: ${e.message}")
+            emptyList()
         }
-
-        return taskResponseList
     }
 
     override suspend fun updateExpenseNotification(

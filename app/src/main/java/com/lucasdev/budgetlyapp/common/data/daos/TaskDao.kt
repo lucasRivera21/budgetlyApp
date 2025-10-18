@@ -61,6 +61,32 @@ interface TaskDao {
     )
     fun getNextTask(): Flow<List<NextExpenseDTO>>
 
+    @Query("""
+    SELECT 
+        t.task_id as taskId,
+        e.expense_amount as amount,
+        t.is_complete as isCompleted,
+        t.created_at as createdAt,
+        t.date_due as dateDue,
+        e.expense_group_id as expenseGroupId,
+        t.expense_id as expenseId,
+        t.request_code as requestCode,
+        e.day as dayDue,
+        e.has_notification as hasNotification,
+        e.expense_name as expenseName,
+        e.tag_id as tagId
+    FROM tasks t
+    JOIN expenses e ON e.expense_id = t.expense_id
+    WHERE t.expense_id IN (1, 2)
+    AND t.date_due = (
+        SELECT MAX(t2.date_due)
+        FROM tasks t2
+        WHERE t2.expense_id = t.expense_id
+    )
+    ORDER BY t.date_due DESC;
+    """)
+    fun getLatestTasks(): List<NextExpenseDTO>
+
     @Query("UPDATE tasks SET is_complete = :isCompleted WHERE task_id = :taskId")
     suspend fun updateTaskCompletion(taskId: Int, isCompleted: Boolean)
 }
