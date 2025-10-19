@@ -6,9 +6,11 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -31,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -99,46 +102,76 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
                 }
             }
 
-            item {
-                Text(
-                    stringResource(R.string.home_next_expense_title),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
+            if (nextTaskList.isNotEmpty()) {
+                item {
+                    Text(
+                        stringResource(R.string.home_next_expense_title),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
 
-            nextTaskList.forEach { initial, taskList ->
-                stickyHeader {
+                nextTaskList.forEach { initial, taskList ->
+                    stickyHeader {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(MaterialTheme.colorScheme.surface)
+                                .padding(vertical = 4.dp, horizontal = 16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            HorizontalDivider()
+                            Text(
+                                initial,
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier
+                                    .background(MaterialTheme.colorScheme.surface)
+                                    .padding(horizontal = 8.dp)
+                            )
+                        }
+                    }
+
+                    items(taskList) { nextTaskModel ->
+                        key(nextTaskModel.taskId) {
+                            var isVisible by remember(nextTaskModel.taskId) { mutableStateOf(true) }
+                            AnimatedVisibility(visible = isVisible, exit = shrinkVertically()) {
+                                ExpenseHomeBox(
+                                    nextTaskModel,
+                                    Modifier.padding(horizontal = 16.dp)
+                                ) {
+                                    coroutineScope.launch {
+                                        isVisible = false
+                                        delay(250)
+                                        homeViewModel.updateIsCompleteTask(it)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                item {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.surface)
-                            .padding(vertical = 4.dp, horizontal = 16.dp),
+                            .padding(horizontal = 16.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        HorizontalDivider()
-                        Text(
-                            initial,
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier
-                                .background(MaterialTheme.colorScheme.surface)
-                                .padding(horizontal = 8.dp)
-                        )
-                    }
-                }
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.img_relaxation),
+                                contentDescription = null
+                            )
 
-                items(taskList) { nextTaskModel ->
-                    key(nextTaskModel.taskId) {
-                        var isVisible by remember(nextTaskModel.taskId) { mutableStateOf(true) }
-                        AnimatedVisibility(visible = isVisible, exit = shrinkVertically()) {
-                            ExpenseHomeBox(nextTaskModel, Modifier.padding(horizontal = 16.dp)) {
-                                coroutineScope.launch {
-                                    isVisible = false
-                                    delay(250)
-                                    homeViewModel.updateIsCompleteTask(it)
-                                }
-                            }
+                            Text(
+                                stringResource(R.string.home_without_next_expenses),
+                                color = MaterialTheme.colorScheme.onSurface,
+                                style = MaterialTheme.typography.titleMedium
+                            )
                         }
                     }
                 }
