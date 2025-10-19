@@ -9,6 +9,7 @@ import com.lucasdev.budgetlyapp.common.dataStore.IsFirstTimeKey
 import com.lucasdev.budgetlyapp.common.dataStore.UserNameKey
 import com.lucasdev.budgetlyapp.common.domain.models.ExpenseModelResponse
 import com.lucasdev.budgetlyapp.features.home.domain.models.NextTaskModel
+import com.lucasdev.budgetlyapp.features.home.domain.useCase.DownloadDataUseCase
 import com.lucasdev.budgetlyapp.features.home.domain.useCase.FetchHomeDataUseCase
 import com.lucasdev.budgetlyapp.features.home.domain.useCase.FetchNextExpensesUseCase
 import com.lucasdev.budgetlyapp.features.home.domain.useCase.GetFreeMoneyValueUseCase
@@ -30,7 +31,8 @@ class HomeViewModel @Inject constructor(
     private val dataStoreRepository: DataStoreRepository,
     private val getFreeMoneyValueUseCase: GetFreeMoneyValueUseCase,
     private val fetchNextExpensesUseCase: FetchNextExpensesUseCase,
-    private val updateIsCompleteTaskUseCase: UpdateIsCompleteTaskUseCase
+    private val updateIsCompleteTaskUseCase: UpdateIsCompleteTaskUseCase,
+    private val downloadDataUseCase: DownloadDataUseCase
 ) :
     ViewModel() {
     private val _pieList = MutableStateFlow(listOf<Pie>())
@@ -80,6 +82,9 @@ class HomeViewModel @Inject constructor(
     private fun fetchHomeData() {
         viewModelScope.launch(Dispatchers.IO) {
             _isLoading.value = true
+
+            downloadDataUseCase()
+
             fetchHomeDataUseCase().collect { expenseModelResponseList ->
                 incomeValue = dataStoreRepository.getDouble(IncomeValueKey.key)
                 _freeMoneyValue.value =

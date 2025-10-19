@@ -11,8 +11,14 @@ interface ExpenseDao {
     @Insert
     suspend fun insertExpense(expenseEntity: ExpenseEntity)
 
+    @Insert
+    suspend fun insertExpenses(expenseEntities: List<ExpenseEntity>)
+
     @Query("SELECT MAX(expense_id) FROM expenses")
     suspend fun getLastExpenseId(): Int?
+
+    @Query("SELECT COUNT(*) FROM expenses")
+    suspend fun countExpenses(): Int
 
     @Query("SELECT * FROM expenses WHERE is_upload >= 0 ORDER BY created_at DESC")
     fun getAllExpenses(): Flow<List<ExpenseEntity>>
@@ -25,4 +31,7 @@ interface ExpenseDao {
 
     @Query("UPDATE expenses SET is_upload = :isUpload WHERE expense_id = :expenseId")
     suspend fun updateExpenseIsUpload(expenseId: Int, isUpload: Int)
+
+    @Query("DELETE FROM expenses")
+    suspend fun deleteAllExpenses()
 }
