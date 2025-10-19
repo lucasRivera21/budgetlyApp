@@ -1,6 +1,7 @@
 package com.lucasdev.budgetlyapp.features.home.data
 
 import com.lucasdev.budgetlyapp.common.domain.models.CategoryProvider.getCategoryById
+import com.lucasdev.budgetlyapp.features.home.domain.models.NextTaskModel
 import com.lucasdev.budgetlyapp.features.home.domain.models.TaskResponse
 
 data class NextExpenseDTO(
@@ -33,5 +34,18 @@ fun NextExpenseDTO.toTaskResponse(): TaskResponse {
         hasNotification = hasNotification,
         taskName = expenseName,
         tag = getCategoryById(tagId)
+    )
+}
+
+fun NextExpenseDTO.toNextTaskModel(): NextTaskModel {
+    val tag = getCategoryById(tagId)
+    return NextTaskModel(
+        taskId = taskId.toString(),
+        dateDue = dateDue,
+        hasDayDue = dayDue != null,
+        icon = tag.iconId,
+        color = tag.color,
+        taskName = expenseName,
+        amount = amount
     )
 }

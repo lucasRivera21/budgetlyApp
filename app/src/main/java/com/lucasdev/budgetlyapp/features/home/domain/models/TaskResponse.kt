@@ -16,15 +16,3 @@ data class TaskResponse(
     val taskName: String,
     val tag: TagModel
 )
-
-fun TaskResponse.toNextTaskModel(): NextTaskModel {
-    return NextTaskModel(
-        taskId = taskId,
-        dateDue = dateDue,
-        hasDayDue = hasDayDue,
-        icon = this.tag.iconId,
-        color = this.tag.color,
-        taskName = taskName,
-        amount = amount
-    )
-}

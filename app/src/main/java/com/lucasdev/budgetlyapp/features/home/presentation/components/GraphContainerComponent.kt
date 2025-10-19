@@ -29,13 +29,18 @@ import ir.ehsannarmani.compose_charts.PieChart
 import ir.ehsannarmani.compose_charts.models.Pie
 
 @Composable
-fun GraphContainerComponent(pieList: List<Pie>, freeMoneyValue: Double, onClickPie: (Pie) -> Unit) {
+fun GraphContainerComponent(
+    pieList: List<Pie>,
+    freeMoneyValue: Double,
+    modifier: Modifier,
+    onClickPie: (Pie) -> Unit
+) {
     val transformedPieList = pieList.map {
         val tagIdName = convertTagIdNameToTagName(it.label!!)
         it.copy(label = stringResource(tagIdName))
     }
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.secondaryContainer, MaterialTheme.shapes.medium)
             .padding(vertical = 16.dp, horizontal = 24.dp),
@@ -82,7 +87,11 @@ fun GraphContainerComponent(pieList: List<Pie>, freeMoneyValue: Double, onClickP
                     }
                 }
             } else {
-                Image(painterResource(R.drawable.img_pie_chart), contentDescription = null, modifier = Modifier.size(150.dp))
+                Image(
+                    painterResource(R.drawable.img_pie_chart),
+                    contentDescription = null,
+                    modifier = Modifier.size(150.dp)
+                )
                 Text(
                     stringResource(R.string.home_without_data),
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
@@ -119,6 +128,6 @@ fun GraphContainerComponent(pieList: List<Pie>, freeMoneyValue: Double, onClickP
 @Composable
 fun GraphContainerComponentPreview() {
     AppTheme {
-        GraphContainerComponent(listOf(), 2000000.0) {}
+        GraphContainerComponent(listOf(), 2000000.0, Modifier) {}
     }
 }

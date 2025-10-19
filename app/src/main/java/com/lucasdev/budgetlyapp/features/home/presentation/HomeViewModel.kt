@@ -9,7 +9,6 @@ import com.lucasdev.budgetlyapp.common.dataStore.IsFirstTimeKey
 import com.lucasdev.budgetlyapp.common.dataStore.UserNameKey
 import com.lucasdev.budgetlyapp.common.domain.models.ExpenseModelResponse
 import com.lucasdev.budgetlyapp.features.home.domain.models.NextTaskModel
-import com.lucasdev.budgetlyapp.features.home.domain.models.toNextTaskModel
 import com.lucasdev.budgetlyapp.features.home.domain.useCase.FetchHomeDataUseCase
 import com.lucasdev.budgetlyapp.features.home.domain.useCase.FetchNextExpensesUseCase
 import com.lucasdev.budgetlyapp.features.home.domain.useCase.GetFreeMoneyValueUseCase
@@ -46,8 +45,8 @@ class HomeViewModel @Inject constructor(
     private val _freeMoneyValue = MutableStateFlow(0.0)
     val freeMoneyValue: MutableStateFlow<Double> = _freeMoneyValue
 
-    private val _nextTaskList = MutableStateFlow(listOf<NextTaskModel>())
-    val nextTaskList: MutableStateFlow<List<NextTaskModel>> = _nextTaskList
+    private val _nextTaskList = MutableStateFlow(mapOf<String, List<NextTaskModel>>())
+    val nextTaskList: MutableStateFlow<Map<String, List<NextTaskModel>>> = _nextTaskList
 
     private val _isFirstTime = MutableStateFlow(false)
     val isFirstTime: MutableStateFlow<Boolean> = _isFirstTime
@@ -73,8 +72,7 @@ class HomeViewModel @Inject constructor(
     private fun fetchNextExpenses() {
         viewModelScope.launch(Dispatchers.IO) {
             fetchNextExpensesUseCase().collect { taskResponseList ->
-                _nextTaskList.value =
-                    taskResponseList.map { it.toNextTaskModel() }.sortedBy { it.dateDue }
+                _nextTaskList.value = taskResponseList
             }
         }
     }

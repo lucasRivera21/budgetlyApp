@@ -57,6 +57,7 @@ interface TaskDao {
             e.tag_id as tagId
         FROM tasks t INNER JOIN expenses e ON t.expense_id = e.expense_id
         WHERE e.is_upload >= 0 AND is_complete = 0
+        ORDER BY t.date_due ASC
     """
     )
     fun getNextTask(): Flow<List<NextExpenseDTO>>
