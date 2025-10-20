@@ -20,6 +20,9 @@ interface ExpenseDao {
     @Query("SELECT COUNT(*) FROM expenses")
     suspend fun countExpenses(): Int
 
+    @Query("SELECT * FROM expenses WHERE is_upload != :upLoadStateCode")
+    suspend fun getExpensesToUpload(upLoadStateCode: Int): List<ExpenseEntity>
+
     @Query("SELECT * FROM expenses WHERE is_upload >= 0 ORDER BY created_at DESC")
     fun getAllExpenses(): Flow<List<ExpenseEntity>>
 
@@ -31,6 +34,9 @@ interface ExpenseDao {
 
     @Query("UPDATE expenses SET is_upload = :isUpload WHERE expense_id = :expenseId")
     suspend fun updateExpenseIsUpload(expenseId: Int, isUpload: Int)
+
+    @Query("UPDATE expenses SET is_upload = :isUpload WHERE expense_id IN (:expenseIds)")
+    suspend fun updateExpensesIsUpload(expenseIds: List<Int>, isUpload: Int)
 
     @Query("DELETE FROM expenses")
     suspend fun deleteAllExpenses()
