@@ -21,6 +21,8 @@ data class TaskEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "task_id")
     val taskId: Int = 0,
+    @ColumnInfo(name = "task_id_remote")
+    val taskIdRemote: String? = null,
     @ColumnInfo(name = "is_complete")
     val isComplete: Int = 0,
     @ColumnInfo(name = "created_at")

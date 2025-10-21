@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.lucasdev.budgetlyapp.common.data.entities.TaskEntity
+import com.lucasdev.budgetlyapp.common.domain.models.TaskToUploadFromDb
 import com.lucasdev.budgetlyapp.features.expense.data.dto.TaskToUploadNotificationDTO
 import com.lucasdev.budgetlyapp.features.home.data.NextExpenseDTO
 import kotlinx.coroutines.flow.Flow
@@ -34,14 +35,17 @@ interface TaskDao {
     @Query("SELECT request_code FROM tasks WHERE task_id = :taskId")
     suspend fun getRequestCode(taskId: Int): Int?
 
-    @Query("SELECT * FROM tasks WHERE expense_id = :expenseId")
-    suspend fun getTaskByExpenseId(expenseId: Int): List<TaskEntity>
+    @Query("SELECT task_id, is_complete, created_at, date_due FROM tasks WHERE expense_id = :expenseId AND is_upload = :uploadState")
+    suspend fun getTaskByExpenseId(expenseId: Int, uploadState: Int): List<TaskToUploadFromDb>
 
     @Query("UPDATE tasks SET request_code = :requestCode WHERE expense_id = :expenseId AND date_due = :dateDue")
     suspend fun updateTaskRequestCode(expenseId: Int, requestCode: Int?, dateDue: String)
 
     @Query("UPDATE tasks SET is_upload = :isUpload WHERE expense_id = :expenseId")
     suspend fun updateTaskUploadState(expenseId: Int, isUpload: Int)
+
+    @Query("UPDATE tasks SET is_upload = :isUpload, task_id_remote = :taskIdRemote WHERE task_id = :taskId")
+    suspend fun updateTaskIsUploadedByTaskId(taskId: Int, taskIdRemote: String, isUpload: Int)
 
     @Query(
         """
