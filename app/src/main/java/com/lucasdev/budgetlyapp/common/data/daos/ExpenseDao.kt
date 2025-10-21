@@ -35,8 +35,8 @@ interface ExpenseDao {
     @Query("UPDATE expenses SET is_upload = :isUpload WHERE expense_id = :expenseId")
     suspend fun updateExpenseIsUpload(expenseId: Int, isUpload: Int)
 
-    @Query("UPDATE expenses SET is_upload = :isUpload WHERE expense_id IN (:expenseIds)")
-    suspend fun updateExpensesIsUpload(expenseIds: List<Int>, isUpload: Int)
+    @Query("UPDATE expenses SET is_upload = :isUpload, expense_id_remote = :expenseIdRemote WHERE expense_id = :expenseId")
+    suspend fun updateExpensesIsUpload(expenseId: Int, expenseIdRemote: String, isUpload: Int)
 
     @Query("DELETE FROM expenses")
     suspend fun deleteAllExpenses()

@@ -34,6 +34,9 @@ interface TaskDao {
     @Query("SELECT request_code FROM tasks WHERE task_id = :taskId")
     suspend fun getRequestCode(taskId: Int): Int?
 
+    @Query("SELECT * FROM tasks WHERE expense_id = :expenseId")
+    suspend fun getTaskByExpenseId(expenseId: Int): List<TaskEntity>
+
     @Query("UPDATE tasks SET request_code = :requestCode WHERE expense_id = :expenseId AND date_due = :dateDue")
     suspend fun updateTaskRequestCode(expenseId: Int, requestCode: Int?, dateDue: String)
 

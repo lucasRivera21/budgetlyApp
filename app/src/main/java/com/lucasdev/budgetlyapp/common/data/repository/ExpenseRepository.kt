@@ -16,9 +16,9 @@ import kotlinx.coroutines.tasks.await
 interface ExpenseRepository {
     suspend fun getExpensesToUpload(upLoadStateCode: Int = UploadState.UPLOADED.code): List<ExpenseEntity>
 
-    suspend fun updateExpenses(expenseList: List<ExpenseEntity>): List<Int>
+    suspend fun updateExpenses(expense: ExpenseEntity): String?
 
-    suspend fun updateIsUploaded(expenseIdList: List<Int>, isUploadStateCode: Int)
+    suspend fun updateIsUploaded(expenseId: Int, expenseIdRemote: String, isUploadStateCode: Int)
 }
 
 class ExpenseRepositoryImpl @Inject constructor(
@@ -29,43 +29,45 @@ class ExpenseRepositoryImpl @Inject constructor(
     override suspend fun getExpensesToUpload(upLoadStateCode: Int) =
         room.expenseDao().getExpensesToUpload(upLoadStateCode)
 
-    override suspend fun updateExpenses(expenseList: List<ExpenseEntity>): List<Int> {
-        val expenseIdUploadedList = mutableListOf<Int>()
-        try {
+    override suspend fun updateExpenses(expense: ExpenseEntity): String? {
+        return try {
             val user = auth.currentUser
             user?.let {
-                expenseList.forEach { expenseEntity ->
-                    val expenseToUpload = ExpenseToUpload(
-                        expenseId = expenseEntity.expenseId,
-                        expenseName = expenseEntity.expenseName,
-                        expenseAmount = expenseEntity.expenseAmount,
-                        createdAt = expenseEntity.createdAt,
-                        day = expenseEntity.day,
-                        expenseGroupId = expenseEntity.expenseGroupId,
-                        hasNotification = expenseEntity.hasNotification,
-                        tagId = expenseEntity.tagId
-                    )
+                val expenseToUpload = ExpenseToUpload(
+                    expenseId = expense.expenseId,
+                    expenseName = expense.expenseName,
+                    expenseAmount = expense.expenseAmount,
+                    createdAt = expense.createdAt,
+                    day = expense.day,
+                    expenseGroupId = expense.expenseGroupId,
+                    hasNotification = expense.hasNotification,
+                    tagId = expense.tagId
+                )
 
+                val docRef =
                     api.collection(UsersCollection.collectionName).document(it.uid).collection(
                         ExpenseCollection.collectionName
-                    ).document().set(expenseToUpload).await()
+                    ).add(expenseToUpload).await()
 
-                    expenseIdUploadedList.add(expenseEntity.expenseId)
-                }
+                docRef.id
             }
         } catch (e: Exception) {
             Log.e(TAG, "updateExpenses: ${e.message}")
+            null
         }
-
-        return expenseIdUploadedList
     }
 
     override suspend fun updateIsUploaded(
-        expenseIdList: List<Int>,
+        expenseId: Int,
+        expenseIdRemote: String,
         isUploadStateCode: Int
     ) {
         try {
-            room.expenseDao().updateExpensesIsUpload(expenseIdList, isUploadStateCode)
+            room.expenseDao().updateExpensesIsUpload(
+                expenseId = expenseId,
+                expenseIdRemote = expenseIdRemote,
+                isUpload = isUploadStateCode
+            )
         } catch (e: Exception) {
             Log.e(TAG, "updateIsUploaded: ${e.message}")
         }

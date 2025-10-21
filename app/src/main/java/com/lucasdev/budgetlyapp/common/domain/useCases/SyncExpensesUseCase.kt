@@ -39,9 +39,20 @@ class SyncExpensesUseCase @Inject constructor(private val repository: ExpenseRep
         // Upload expenses
     }
 
-    private suspend fun uploadExpensesWithOutUpload(expenses: List<ExpenseEntity>) {
-        val expenseIdUploadedList = repository.updateExpenses(expenses)
+    private suspend fun uploadExpensesWithOutUpload(expenseList: List<ExpenseEntity>) {
+        expenseList.forEach { expenseEntity ->
+            val expenseIdRemote = repository.updateExpenses(expenseEntity)
 
-        repository.updateIsUploaded(expenseIdUploadedList, UploadState.UPLOADED.code)
+            if (expenseIdRemote != null) {
+                val expenseId = expenseEntity.expenseId
+
+                repository.updateIsUploaded(
+                    expenseId = expenseId,
+                    expenseIdRemote = expenseIdRemote,
+                    isUploadStateCode = UploadState.UPLOADED.code
+                )
+            }
+        }
+
     }
 }

@@ -2,13 +2,16 @@ package com.lucasdev.budgetlyapp.common.data.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "expenses")
+@Entity(tableName = "expenses", indices = [Index(value = ["expense_id_remote"], unique = true)])
 data class ExpenseEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "expense_id")
     val expenseId: Int = 0,
+    @ColumnInfo(name = "expense_id_remote")
+    val expenseIdRemote: String? = null,
     @ColumnInfo(name = "expense_name")
     val expenseName: String,
     @ColumnInfo(name = "expense_amount")
