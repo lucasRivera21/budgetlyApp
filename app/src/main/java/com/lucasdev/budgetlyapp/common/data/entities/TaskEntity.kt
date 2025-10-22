@@ -15,7 +15,7 @@ import androidx.room.PrimaryKey
         childColumns = ["expense_id"],
         onDelete = CASCADE
     )],
-    indices = [Index(value = ["expense_id"])]
+    indices = [Index(value = ["task_id_remote"], unique = true)]
 )
 data class TaskEntity(
     @PrimaryKey(autoGenerate = true)
