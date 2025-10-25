@@ -3,7 +3,6 @@ package com.lucasdev.budgetlyapp.common.domain.useCases
 import android.util.Log
 import com.lucasdev.budgetlyapp.common.data.entities.ExpenseEntity
 import com.lucasdev.budgetlyapp.common.data.repository.ExpenseRepository
-import com.lucasdev.budgetlyapp.common.domain.models.toTaskToUpload
 import com.lucasdev.budgetlyapp.common.utils.UploadState
 import com.lucasdev.budgetlyapp.common.utils.UploadState.Companion.codeToUploadState
 import javax.inject.Inject
@@ -52,17 +51,6 @@ class SyncExpensesUseCase @Inject constructor(private val repository: ExpenseRep
                     expenseIdRemote = expenseIdRemote,
                     isUploadStateCode = UploadState.UPLOADED.code
                 )
-
-                val taskList = repository.getTasksToUpload(expenseId)
-                if (taskList.isNotEmpty()) {
-                    val taskToUploadList = taskList.map { it.toTaskToUpload(expenseIdRemote) }
-                    taskToUploadList.forEach { taskToUpload ->
-                        val taskIdRemote = repository.updateTask(taskToUpload)
-                        taskIdRemote?.let {
-                            repository.updateTaskIsUploaded(taskToUpload.taskId, it)
-                        }
-                    }
-                }
             }
         }
     }

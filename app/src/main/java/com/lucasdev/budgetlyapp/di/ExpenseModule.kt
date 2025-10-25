@@ -1,6 +1,8 @@
 package com.lucasdev.budgetlyapp.di
 
 import com.lucasdev.budgetlyapp.common.data.repository.ExpenseRepositoryImpl
+import com.lucasdev.budgetlyapp.common.data.repository.TaskWorkerRepository
+import com.lucasdev.budgetlyapp.common.data.repository.TaskWorkerRepositoryImpl
 import com.lucasdev.budgetlyapp.features.expense.data.repository.CreateExpenseRepository
 import com.lucasdev.budgetlyapp.features.expense.data.repository.CreateExpenseTask
 import com.lucasdev.budgetlyapp.features.expense.data.repository.ExpenseRepository
@@ -22,5 +24,8 @@ abstract class ExpenseModule {
 
     @Binds
     abstract fun bindExpenseTask(expenseRepository: ExpenseRepositoryImpl): com.lucasdev.budgetlyapp.common.data.repository.ExpenseRepository
+
+    @Binds
+    abstract fun bindTaskWorkerRepository(taskWorkerRepositoryImpl: TaskWorkerRepositoryImpl): TaskWorkerRepository
 
 }

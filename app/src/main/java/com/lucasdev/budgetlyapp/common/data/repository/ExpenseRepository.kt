@@ -10,7 +10,6 @@ import com.lucasdev.budgetlyapp.common.data.AppDatabase
 import com.lucasdev.budgetlyapp.common.data.entities.ExpenseEntity
 import com.lucasdev.budgetlyapp.common.domain.models.ExpenseToUpload
 import com.lucasdev.budgetlyapp.common.domain.models.TaskToUpload
-import com.lucasdev.budgetlyapp.common.domain.models.TaskToUploadFromDb
 import com.lucasdev.budgetlyapp.common.utils.UploadState
 import com.lucasdev.budgetlyapp.features.register.presentation.TAG
 import jakarta.inject.Inject
@@ -19,15 +18,11 @@ import kotlinx.coroutines.tasks.await
 interface ExpenseRepository {
     suspend fun getExpensesToUpload(upLoadStateCode: Int = UploadState.UPLOADED.code): List<ExpenseEntity>
 
-    suspend fun getTasksToUpload(expenseId: Int): List<TaskToUploadFromDb>
-
     suspend fun updateExpenses(expense: ExpenseEntity): String?
 
     suspend fun updateIsUploaded(expenseId: Int, expenseIdRemote: String, isUploadStateCode: Int)
 
     suspend fun updateTask(task: TaskToUpload): String?
-
-    suspend fun updateTaskIsUploaded(taskId: Int, taskIdRemote: String)
 }
 
 class ExpenseRepositoryImpl @Inject constructor(
@@ -37,9 +32,6 @@ class ExpenseRepositoryImpl @Inject constructor(
 ) : ExpenseRepository {
     override suspend fun getExpensesToUpload(upLoadStateCode: Int) =
         room.expenseDao().getExpensesToUpload(upLoadStateCode)
-
-    override suspend fun getTasksToUpload(expenseId: Int) =
-        room.taskDao().getTaskByExpenseId(expenseId, UploadState.DO_NOT_UPLOAD.code)
 
     override suspend fun updateExpenses(expense: ExpenseEntity): String? {
         return try {
@@ -103,11 +95,4 @@ class ExpenseRepositoryImpl @Inject constructor(
             null
         }
     }
-
-    override suspend fun updateTaskIsUploaded(taskId: Int, taskIdRemote: String) =
-        room.taskDao().updateTaskIsUploadedByTaskId(
-            taskId = taskId,
-            taskIdRemote = taskIdRemote,
-            isUpload = UploadState.UPLOADED.code
-        )
 }

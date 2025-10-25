@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.lucasdev.budgetlyapp.common.data.entities.TaskEntity
-import com.lucasdev.budgetlyapp.common.domain.models.TaskToUploadFromDb
+import com.lucasdev.budgetlyapp.common.domain.models.TaskByUploadStateDTO
 import com.lucasdev.budgetlyapp.features.expense.data.dto.TaskToUploadNotificationDTO
 import com.lucasdev.budgetlyapp.features.home.data.NextExpenseDTO
 import kotlinx.coroutines.flow.Flow
@@ -35,8 +35,25 @@ interface TaskDao {
     @Query("SELECT request_code FROM tasks WHERE task_id = :taskId")
     suspend fun getRequestCode(taskId: Int): Int?
 
-    @Query("SELECT task_id, is_complete, created_at, date_due FROM tasks WHERE expense_id = :expenseId AND is_upload = :uploadState")
-    suspend fun getTaskByExpenseId(expenseId: Int, uploadState: Int): List<TaskToUploadFromDb>
+    @Query(
+        """
+        SELECT 
+            e.expense_id_remote, 
+            t.task_id, 
+            t.is_complete, 
+            t.created_at, 
+            t.date_due,
+            t.is_upload
+        FROM 
+            tasks t INNER JOIN expenses e ON t.expense_id = e.expense_id 
+        WHERE 
+            e.is_upload = :expenseUploadState AND e.expense_id_remote is NOT NULL AND t.is_upload != :taskUploadState 
+    """
+    )
+    suspend fun getTasksByUploadState(
+        expenseUploadState: Int,
+        taskUploadState: Int
+    ): List<TaskByUploadStateDTO>
 
     @Query("UPDATE tasks SET request_code = :requestCode WHERE expense_id = :expenseId AND date_due = :dateDue")
     suspend fun updateTaskRequestCode(expenseId: Int, requestCode: Int?, dateDue: String)
@@ -69,7 +86,8 @@ interface TaskDao {
     )
     fun getNextTask(): Flow<List<NextExpenseDTO>>
 
-    @Query("""
+    @Query(
+        """
     SELECT 
         t.task_id as taskId,
         e.expense_amount as amount,
@@ -92,7 +110,8 @@ interface TaskDao {
         WHERE t2.expense_id = t.expense_id
     )
     ORDER BY t.date_due DESC;
-    """)
+    """
+    )
     fun getLatestTasks(): List<NextExpenseDTO>
 
     @Query("UPDATE tasks SET is_complete = :isCompleted WHERE task_id = :taskId")
