@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.lucasdev.budgetlyapp.common.domain.useCases.DownloadExpensesUseCase
 import com.lucasdev.budgetlyapp.common.domain.useCases.SyncExpensesUseCase
 import com.lucasdev.budgetlyapp.common.domain.useCases.SyncTasksUseCase
 import dagger.assisted.Assisted
@@ -14,12 +15,17 @@ class SyncWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val syncExpensesUseCase: SyncExpensesUseCase,
-    private val syncTasksUseCase: SyncTasksUseCase
+    private val syncTasksUseCase: SyncTasksUseCase,
+    private val downloadExpenses: DownloadExpensesUseCase
 ) : CoroutineWorker(appContext, workerParams) {
     override suspend fun doWork(): Result {
 
+        //UpdateTables
         syncExpensesUseCase()
         syncTasksUseCase()
+
+        //DownloadTables
+        downloadExpenses()
 
         return Result.success()
     }

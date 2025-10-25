@@ -2,16 +2,17 @@ package com.lucasdev.budgetlyapp.common.data.daos
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import com.lucasdev.budgetlyapp.common.data.entities.ExpenseEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ExpenseDao {
-    @Insert
+    @Insert(onConflict = REPLACE)
     suspend fun insertExpense(expenseEntity: ExpenseEntity)
 
-    @Insert
+    @Insert(onConflict = REPLACE)
     suspend fun insertExpenses(expenseEntities: List<ExpenseEntity>)
 
     @Query("SELECT MAX(expense_id) FROM expenses")
