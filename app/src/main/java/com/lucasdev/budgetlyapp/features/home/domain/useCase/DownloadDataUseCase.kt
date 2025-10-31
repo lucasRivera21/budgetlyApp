@@ -1,10 +1,13 @@
 package com.lucasdev.budgetlyapp.features.home.domain.useCase
 
+import com.lucasdev.budgetlyapp.common.domain.useCases.DownloadExpensesUseCase
 import com.lucasdev.budgetlyapp.features.home.data.HomeTask
-import com.lucasdev.budgetlyapp.features.home.data.toExepenseEntity
 import javax.inject.Inject
 
-class DownloadDataUseCase @Inject constructor(private val repository: HomeTask) {
+class DownloadDataUseCase @Inject constructor(
+    private val repository: HomeTask,
+    private val downloadExpensesUseCase: DownloadExpensesUseCase
+) {
     suspend operator fun invoke() {
         val expenseCount = repository.countExpenses()
 
@@ -12,20 +15,6 @@ class DownloadDataUseCase @Inject constructor(private val repository: HomeTask) 
             return
         }
 
-        downloadExpenses()
-    }
-
-    private suspend fun downloadExpenses() {
-        val expenseApiDTOList = repository.fetchExpenses()
-
-        if (expenseApiDTOList.isEmpty()) {
-            return
-        }
-
-        repository.deleteExpenses()
-
-        val expenseEntityList = expenseApiDTOList.map { it.toExepenseEntity() }
-
-        repository.insertExpenses(expenseEntityList)
+        downloadExpensesUseCase()
     }
 }
