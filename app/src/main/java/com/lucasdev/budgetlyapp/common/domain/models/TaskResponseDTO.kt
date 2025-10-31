@@ -1,6 +1,7 @@
 package com.lucasdev.budgetlyapp.common.domain.models
 
 import com.lucasdev.budgetlyapp.common.data.entities.TaskEntity
+import com.lucasdev.budgetlyapp.common.utils.UploadState
 
 data class TaskResponseDTO(
     val complete: Boolean = false,
@@ -19,5 +20,5 @@ fun TaskResponseDTO.toTaskEntity(expenseIdLocal: Int) = TaskEntity(
     dateDue = dateDue,
     expenseId = expenseIdLocal,
     requestCode = requestCode,
-    isUpload = 0
+    isUpload = UploadState.UPLOADED.code
 )
