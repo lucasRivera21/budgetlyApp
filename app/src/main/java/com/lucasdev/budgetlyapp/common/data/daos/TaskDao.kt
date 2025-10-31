@@ -2,6 +2,7 @@ package com.lucasdev.budgetlyapp.common.data.daos
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import com.lucasdev.budgetlyapp.common.data.entities.TaskEntity
 import com.lucasdev.budgetlyapp.common.domain.models.TaskByUploadStateDTO
@@ -11,11 +12,14 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TaskDao {
-    @Insert
+    @Insert(onConflict = REPLACE)
     suspend fun insertTasks(tasks: List<TaskEntity>)
 
-    @Insert
+    @Insert(onConflict = REPLACE)
     suspend fun insertTask(taskEntity: TaskEntity)
+
+    @Query("SELECT expense_id FROM expenses WHERE expense_id_remote = :expenseIdRemote")
+    suspend fun getExpenseIdLocal(expenseIdRemote: String): Int
 
     @Query(
         """
@@ -43,6 +47,7 @@ interface TaskDao {
             t.is_complete, 
             t.created_at, 
             t.date_due,
+            t.request_code,
             t.is_upload
         FROM 
             tasks t INNER JOIN expenses e ON t.expense_id = e.expense_id 

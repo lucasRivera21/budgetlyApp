@@ -10,7 +10,8 @@ data class ExpenseResponseDTO(
     val expenseGroupId: String = "",
     val hasNotification: Boolean = false,
     val day: Int? = null,
-    val expenseName: String = ""
+    val expenseName: String = "",
+    val taskList: List<TaskResponseDTO> = emptyList()
 )
 
 fun ExpenseResponseDTO.toExpenseEntity(isUpload: Int) = ExpenseEntity(

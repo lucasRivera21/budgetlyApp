@@ -1,6 +1,7 @@
 package com.lucasdev.budgetlyapp.worker
 
 import android.content.Context
+import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -9,6 +10,8 @@ import com.lucasdev.budgetlyapp.common.domain.useCases.SyncExpensesUseCase
 import com.lucasdev.budgetlyapp.common.domain.useCases.SyncTasksUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+
+private const val TAG = "SyncWorker"
 
 @HiltWorker
 class SyncWorker @AssistedInject constructor(
@@ -20,13 +23,19 @@ class SyncWorker @AssistedInject constructor(
 ) : CoroutineWorker(appContext, workerParams) {
     override suspend fun doWork(): Result {
 
-        //UpdateTables
-        syncExpensesUseCase()
-        syncTasksUseCase()
+        return try {
+            //UpdateTables
+            syncExpensesUseCase()
+            syncTasksUseCase()
 
-        //DownloadTables
-        downloadExpenses()
+            //DownloadTables
+            downloadExpenses()
 
-        return Result.success()
+            Result.success()
+        } catch (e: Exception) {
+            Log.e(TAG, "Error syncing data: ${e.message}")
+            Result.failure()
+        }
+
     }
 }

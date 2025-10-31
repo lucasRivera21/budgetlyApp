@@ -13,6 +13,8 @@ data class TaskByUploadStateDTO(
     val createdAt: String,
     @ColumnInfo("date_due")
     val dateDue: String,
+    @ColumnInfo("request_code")
+    val requestCode: Int?,
     @ColumnInfo("is_upload")
     val isUploaded: Int
 )
@@ -22,5 +24,6 @@ fun TaskByUploadStateDTO.toTaskToUpload() = TaskToUpload(
     expenseId = expenseIdRemote!!,
     isComplete = isComplete,
     createdAt = createdAt,
+    requestCode = requestCode,
     dateDue = dateDue
 )

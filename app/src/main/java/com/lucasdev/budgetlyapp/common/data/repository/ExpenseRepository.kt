@@ -5,11 +5,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
 import com.lucasdev.budgetlyapp.ExpenseCollection
+import com.lucasdev.budgetlyapp.TaskCollection
 import com.lucasdev.budgetlyapp.UsersCollection
 import com.lucasdev.budgetlyapp.common.data.AppDatabase
 import com.lucasdev.budgetlyapp.common.data.entities.ExpenseEntity
+import com.lucasdev.budgetlyapp.common.data.entities.TaskEntity
 import com.lucasdev.budgetlyapp.common.domain.models.ExpenseResponseDTO
 import com.lucasdev.budgetlyapp.common.domain.models.ExpenseToUpload
+import com.lucasdev.budgetlyapp.common.domain.models.TaskResponseDTO
 import com.lucasdev.budgetlyapp.common.utils.UploadState
 import com.lucasdev.budgetlyapp.features.register.presentation.TAG
 import jakarta.inject.Inject
@@ -24,7 +27,11 @@ interface ExpenseRepository {
 
     suspend fun downloadExpenses(): List<ExpenseResponseDTO>
 
-    suspend fun insertExpenses(expenses: List<ExpenseEntity>)
+    suspend fun insertExpense(expense: ExpenseEntity)
+
+    suspend fun getExpenseIdLocalByExpenseIdRemote(expenseIdRemote: String): Int
+
+    suspend fun insertTask(taskEntityList: List<TaskEntity>)
 }
 
 class ExpenseRepositoryImpl @Inject constructor(
@@ -84,14 +91,27 @@ class ExpenseRepositoryImpl @Inject constructor(
         try {
             val user = auth.currentUser
             if (user != null) {
-                val docSnapshot = api.collection(UsersCollection.collectionName).document(user.uid)
-                    .collection(ExpenseCollection.collectionName).get().await()
+                val docRef = api.collection(UsersCollection.collectionName).document(user.uid)
+                val docSnapshot = docRef.collection(ExpenseCollection.collectionName).get().await()
 
                 for (document in docSnapshot) {
-                    val expenseResponse = document.toObject<ExpenseResponseDTO>()
-                    val expenseResponseWithExpenseIdRemote =
-                        expenseResponse.copy(expenseIdRemote = document.id)
-                    expenseResponseList.add(expenseResponseWithExpenseIdRemote)
+                    val expenseResponseDTO = document.toObject<ExpenseResponseDTO>()
+
+                    val expenseIdRemote = document.id
+                    val docTaskSnapshot = docRef.collection(TaskCollection.collectionName)
+                        .whereEqualTo("expenseId", expenseIdRemote).get().await()
+
+                    val taskList = mutableListOf<TaskResponseDTO>()
+                    for (docTask in docTaskSnapshot) {
+                        val taskIdRemote = docTask.id
+                        val taskResponseDTO = docTask.toObject<TaskResponseDTO>()
+                        val taskResponse = taskResponseDTO.copy(taskIdRemote = taskIdRemote)
+                        taskList.add(taskResponse)
+                    }
+
+                    val expenseResponse =
+                        expenseResponseDTO.copy(expenseIdRemote = document.id, taskList = taskList)
+                    expenseResponseList.add(expenseResponse)
                 }
             }
         } catch (e: Exception) {
@@ -101,6 +121,12 @@ class ExpenseRepositoryImpl @Inject constructor(
         return expenseResponseList
     }
 
-    override suspend fun insertExpenses(expenses: List<ExpenseEntity>) =
-        room.expenseDao().insertExpenses(expenses)
+    override suspend fun insertExpense(expense: ExpenseEntity) =
+        room.expenseDao().insertExpense(expense)
+
+    override suspend fun getExpenseIdLocalByExpenseIdRemote(expenseIdRemote: String) =
+        room.taskDao().getExpenseIdLocal(expenseIdRemote)
+
+    override suspend fun insertTask(taskEntityList: List<TaskEntity>) =
+        room.taskDao().insertTasks(taskEntityList)
 }

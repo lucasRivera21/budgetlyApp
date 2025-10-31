@@ -5,5 +5,6 @@ data class TaskToUpload(
     val expenseId: String,
     val isComplete: Boolean,
     val createdAt: String,
+    val requestCode: Int?,
     val dateDue: String
 )
