@@ -25,9 +25,9 @@ class SyncTasksUseCase @Inject constructor(private val taskRepository: TaskWorke
                 val uploadState = UploadState.codeToUploadState(isUpload)
 
                 when (uploadState) {
-                    UploadState.DO_NOT_UPLOAD -> {
-                        uploadTasksWithOutUpload(taskListGrouped)
-                    }
+                    UploadState.DO_NOT_UPLOAD -> uploadTasksWithOutUpload(taskListGrouped)
+
+                    UploadState.EDITED -> updateTasks(taskListGrouped)
 
                     else -> Unit
                 }
@@ -46,5 +46,21 @@ class SyncTasksUseCase @Inject constructor(private val taskRepository: TaskWorke
                 taskRepository.updateTaskIsUploaded(taskByUploadStateDTO.taskId, taskIdRemote)
             }
         }
+    }
+
+    private suspend fun updateTasks(taskList: List<TaskByUploadStateDTO>) {
+        taskList.forEach { taskByUploadStateDTO ->
+            val taskToUpdate = taskByUploadStateDTO.toTaskToUpload()
+            val taskIdRemote = taskByUploadStateDTO.taskIdRemote
+            val result =
+                taskRepository.updateTaskList(taskIdRemote, taskToUpdate)
+
+            if (result.isSuccess) {
+                if (taskIdRemote != null) {
+                    taskRepository.updateTaskIsUploaded(taskByUploadStateDTO.taskId, taskIdRemote)
+                }
+            }
+        }
+
     }
 }

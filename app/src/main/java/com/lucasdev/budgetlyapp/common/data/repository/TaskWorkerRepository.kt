@@ -22,6 +22,8 @@ interface TaskWorkerRepository {
     suspend fun updateTaskIsUploaded(taskId: Int, taskIdRemote: String)
 
     suspend fun getTaskStringList(expenseId: Int): List<String>
+
+    suspend fun updateTaskList(taskIdRemote: String?, taskToUpdate: TaskToUpload): Result<String>
 }
 
 class TaskWorkerRepositoryImpl @Inject constructor(
@@ -60,4 +62,31 @@ class TaskWorkerRepositoryImpl @Inject constructor(
 
     override suspend fun getTaskStringList(expenseId: Int) =
         room.taskDao().getTaskIdRemoteListByExpenseId(expenseId)
+
+    override suspend fun updateTaskList(
+        taskIdRemote: String?,
+        taskToUpdate: TaskToUpload
+    ): Result<String> {
+        return try {
+            val user = auth.currentUser
+            if (user != null) {
+                val taskRef =
+                    api.collection(UsersCollection.collectionName).document(user.uid).collection(
+                        TaskCollection.collectionName
+                    )
+
+                if (taskIdRemote != null) {
+                    taskRef.document(taskIdRemote).set(taskToUpdate).await()
+                    Result.success("")
+                } else {
+                    Result.failure(Throwable())
+                }
+            } else {
+                Result.failure(Throwable())
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "updateTaskList: ", e)
+            Result.failure(e)
+        }
+    }
 }

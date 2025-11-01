@@ -46,6 +46,7 @@ interface TaskDao {
         """
         SELECT 
             e.expense_id_remote, 
+            t.task_id_remote,
             t.task_id, 
             t.is_complete, 
             t.created_at, 

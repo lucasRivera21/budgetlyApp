@@ -7,6 +7,8 @@ data class TaskByUploadStateDTO(
     val expenseIdRemote: String?,
     @ColumnInfo("task_id")
     val taskId: Int,
+    @ColumnInfo("task_id_remote")
+    val taskIdRemote: String?,
     @ColumnInfo("is_complete")
     val isComplete: Boolean,
     @ColumnInfo("created_at")
