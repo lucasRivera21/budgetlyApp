@@ -20,6 +20,8 @@ interface TaskWorkerRepository {
     suspend fun uploadTask(task: TaskToUpload): String?
 
     suspend fun updateTaskIsUploaded(taskId: Int, taskIdRemote: String)
+
+    suspend fun getTaskStringList(expenseId: Int): List<String>
 }
 
 class TaskWorkerRepositoryImpl @Inject constructor(
@@ -55,4 +57,7 @@ class TaskWorkerRepositoryImpl @Inject constructor(
             taskIdRemote = taskIdRemote,
             isUpload = UploadState.UPLOADED.code
         )
+
+    override suspend fun getTaskStringList(expenseId: Int) =
+        room.taskDao().getTaskIdRemoteListByExpenseId(expenseId)
 }

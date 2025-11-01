@@ -32,6 +32,10 @@ interface ExpenseRepository {
     suspend fun getExpenseIdLocalByExpenseIdRemote(expenseIdRemote: String): Int
 
     suspend fun insertTask(taskEntityList: List<TaskEntity>)
+
+    suspend fun deleteExpenseFromApi(expenseIdRemote: String?, taskIdRemoteList: List<String>)
+
+    suspend fun deleteExpenseFromDb(expenseIdLocal: Int)
 }
 
 class ExpenseRepositoryImpl @Inject constructor(
@@ -129,4 +133,31 @@ class ExpenseRepositoryImpl @Inject constructor(
 
     override suspend fun insertTask(taskEntityList: List<TaskEntity>) =
         room.taskDao().insertTasks(taskEntityList)
+
+    override suspend fun deleteExpenseFromApi(
+        expenseIdRemote: String?,
+        taskIdRemoteList: List<String>
+    ) {
+        try {
+            val user = auth.currentUser
+            user?.let {
+                expenseIdRemote?.let {
+                    val userRef = api.collection(UsersCollection.collectionName).document(user.uid)
+
+                    userRef.collection(ExpenseCollection.collectionName).document(expenseIdRemote)
+                        .delete().await()
+
+                    taskIdRemoteList.forEach { taskIdRemote ->
+                        userRef.collection(TaskCollection.collectionName).document(taskIdRemote)
+                            .delete().await()
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "deleteExpense", e)
+        }
+    }
+
+    override suspend fun deleteExpenseFromDb(expenseIdLocal: Int) =
+        room.expenseDao().deleteExpenseByExpenseIdLocal(expenseIdLocal)
 }

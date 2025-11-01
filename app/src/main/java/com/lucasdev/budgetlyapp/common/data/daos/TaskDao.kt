@@ -60,6 +60,9 @@ interface TaskDao {
         taskUploadState: Int
     ): List<TaskByUploadStateDTO>
 
+    @Query("SELECT task_id_remote FROM tasks WHERE expense_id = :expenseId")
+    suspend fun getTaskIdRemoteListByExpenseId(expenseId: Int): List<String>
+
     @Query("UPDATE tasks SET request_code = :requestCode WHERE expense_id = :expenseId AND date_due = :dateDue")
     suspend fun updateTaskRequestCode(expenseId: Int, requestCode: Int?, dateDue: String)
 
