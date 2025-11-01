@@ -30,6 +30,9 @@ interface ExpenseDao {
     @Query("SELECT is_upload FROM expenses WHERE expense_id = :expenseId")
     suspend fun getIsUpload(expenseId: Int): Int
 
+    @Query("SELECT is_upload FROM expenses WHERE expense_id = :expenseId")
+    suspend fun getUploadStateByExpenseId(expenseId: Int): Int
+
     @Query("UPDATE expenses SET has_notification = :hasNotification, is_upload = :isUpload WHERE expense_id = :expenseId")
     suspend fun updateExpenseNotification(expenseId: Int, hasNotification: Boolean, isUpload: Int)
 
@@ -38,6 +41,9 @@ interface ExpenseDao {
 
     @Query("UPDATE expenses SET is_upload = :isUpload, expense_id_remote = :expenseIdRemote WHERE expense_id = :expenseId")
     suspend fun updateExpensesIsUpload(expenseId: Int, expenseIdRemote: String, isUpload: Int)
+
+    @Query("DELETE FROM expenses WHERE expense_id = :expenseId")
+    suspend fun deleteExpenseByExpenseIdLocal(expenseId: Int)
 
     @Query("DELETE FROM expenses")
     suspend fun deleteAllExpenses()

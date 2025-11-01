@@ -35,6 +35,10 @@ interface ExpenseTask {
 
     suspend fun updateRequestCode(expenseId: Int, requestCode: Int?, dateDue: String)
 
+    suspend fun getUploadByExpenseId(expenseId: Int): Int
+
+    suspend fun updateDeleteExpense(expenseId: Int)
+
     suspend fun deleteExpense(expenseId: Int)
 }
 
@@ -149,7 +153,10 @@ class ExpenseRepository @Inject constructor(
         }
     }
 
-    override suspend fun deleteExpense(expenseId: Int) {
+    override suspend fun getUploadByExpenseId(expenseId: Int) =
+        room.expenseDao().getUploadStateByExpenseId(expenseId)
+
+    override suspend fun updateDeleteExpense(expenseId: Int) {
         try {
             room.expenseDao().updateExpenseIsUpload(expenseId, UploadState.DELETED.code)
             room.taskDao().updateTaskUploadState(expenseId, UploadState.DELETED.code)
@@ -157,4 +164,7 @@ class ExpenseRepository @Inject constructor(
             Log.e(TAG, "deleteExpense: ${e.message}")
         }
     }
+
+    override suspend fun deleteExpense(expenseId: Int) =
+        room.expenseDao().deleteExpenseByExpenseIdLocal(expenseId)
 }

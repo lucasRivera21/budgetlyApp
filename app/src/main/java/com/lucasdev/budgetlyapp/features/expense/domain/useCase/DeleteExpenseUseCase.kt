@@ -1,6 +1,7 @@
 package com.lucasdev.budgetlyapp.features.expense.domain.useCase
 
 import com.lucasdev.budgetlyapp.alarm.AlarmScheduler
+import com.lucasdev.budgetlyapp.common.utils.UploadState
 import com.lucasdev.budgetlyapp.features.expense.data.repository.ExpenseRepository
 import javax.inject.Inject
 
@@ -16,6 +17,15 @@ class DeleteExpenseUseCase @Inject constructor(
             }
         }
 
-        expenseRepository.deleteExpense(expenseId)
+        val isUploadCode = expenseRepository.getUploadByExpenseId(expenseId)
+
+        val uploadState = UploadState.codeToUploadState(isUploadCode)
+
+        if (uploadState == UploadState.DO_NOT_UPLOAD) {
+            expenseRepository.deleteExpense(expenseId)
+            return
+        }
+
+        expenseRepository.updateDeleteExpense(expenseId)
     }
 }
