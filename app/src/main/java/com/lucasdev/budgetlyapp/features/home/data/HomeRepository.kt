@@ -8,6 +8,7 @@ import com.lucasdev.budgetlyapp.UsersCollection
 import com.lucasdev.budgetlyapp.common.data.AppDatabase
 import com.lucasdev.budgetlyapp.common.data.entities.ExpenseEntity
 import com.lucasdev.budgetlyapp.common.domain.models.TagModel
+import com.lucasdev.budgetlyapp.common.utils.UploadState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -18,7 +19,8 @@ interface HomeTask {
     suspend fun getHomeData(): Flow<List<ExpenseEntity>>
     suspend fun fetchNextExpensesUseCase(): Flow<List<NextExpenseDTO>>
     suspend fun fetchRequestCode(taskId: String): Int?
-    suspend fun updateIsCompleteTask(taskId: String)
+    suspend fun getUploadByTaskId(taskId: Int): Int
+    suspend fun updateIsCompleteTask(taskId: String, uploadState: UploadState = UploadState.EDITED)
     suspend fun deleteExpenses()
     suspend fun insertExpenses(expenses: List<ExpenseEntity>)
     suspend fun countExpenses(): Int
@@ -43,9 +45,11 @@ class HomeRepository @Inject constructor(
         }
     }
 
-    override suspend fun updateIsCompleteTask(taskId: String) {
+    override suspend fun getUploadByTaskId(taskId: Int) = room.taskDao().getUploadByTaskId(taskId)
+
+    override suspend fun updateIsCompleteTask(taskId: String, uploadState: UploadState) {
         try {
-            room.taskDao().updateTaskCompletion(taskId.toInt(), true)
+            room.taskDao().updateTaskCompletion(taskId.toInt(), true, uploadState.code)
         } catch (e: Exception) {
             Log.e(TAG, "updateIsCompleteTask: ${e.message}")
         }

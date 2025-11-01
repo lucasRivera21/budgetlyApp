@@ -21,6 +21,9 @@ interface TaskDao {
     @Query("SELECT expense_id FROM expenses WHERE expense_id_remote = :expenseIdRemote")
     suspend fun getExpenseIdLocal(expenseIdRemote: String): Int
 
+    @Query("SELECT is_upload FROM tasks WHERE task_id = :taskId")
+    suspend fun getUploadByTaskId(taskId: Int): Int
+
     @Query(
         """
         SELECT 
@@ -122,6 +125,6 @@ interface TaskDao {
     )
     fun getLatestTasks(): List<NextExpenseDTO>
 
-    @Query("UPDATE tasks SET is_complete = :isCompleted WHERE task_id = :taskId")
-    suspend fun updateTaskCompletion(taskId: Int, isCompleted: Boolean)
+    @Query("UPDATE tasks SET is_complete = :isCompleted, is_upload = :uploadState WHERE task_id = :taskId")
+    suspend fun updateTaskCompletion(taskId: Int, isCompleted: Boolean, uploadState: Int)
 }
