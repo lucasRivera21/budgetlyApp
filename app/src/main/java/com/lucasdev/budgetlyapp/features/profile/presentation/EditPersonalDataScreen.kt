@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,6 +35,7 @@ import com.lucasdev.budgetlyapp.features.profile.presentation.viewModel.EditPers
 @Composable
 fun EditPersonalDataScreen(
     navController: NavHostController,
+    paddingValues: PaddingValues,
     editPersonalDataViewModel: EditPersonalDataViewModel = hiltViewModel()
 ) {
     val incomeValue by editPersonalDataViewModel.incomeValue.collectAsState()
@@ -43,6 +45,7 @@ fun EditPersonalDataScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
+            .padding(paddingValues)
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(48.dp)
     ) {

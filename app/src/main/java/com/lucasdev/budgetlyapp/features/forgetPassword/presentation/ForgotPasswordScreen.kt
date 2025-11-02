@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,6 +35,7 @@ import com.lucasdev.budgetlyapp.ui.theme.AppTheme
 @Composable
 fun ForgotPasswordScreen(
     navController: NavController,
+    paddingValues: PaddingValues,
     forgotPasswordViewModel: ForgotPasswordViewModel = hiltViewModel()
 ) {
     val email by forgotPasswordViewModel.email.collectAsState()
@@ -43,6 +45,7 @@ fun ForgotPasswordScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
+            .padding(paddingValues)
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(48.dp)
     ) {
@@ -109,6 +112,6 @@ fun ForgotPasswordScreen(
 fun ForgetPasswordScreenPreview() {
     AppTheme {
         val navController = NavController(LocalContext.current)
-        ForgotPasswordScreen(navController)
+        ForgotPasswordScreen(navController, paddingValues = PaddingValues())
     }
 }

@@ -1,13 +1,10 @@
 package com.lucasdev.budgetlyapp.features.expense.presentation
 
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.CircularProgressIndicator
@@ -41,8 +38,6 @@ fun CreateExpenseScreen(
     navController: NavHostController,
     viewModel: CreateExpenseViewModel = hiltViewModel()
 ) {
-    val scrollState = rememberScrollState()
-
     val nameExpense by viewModel.nameExpense.collectAsState()
     val amountExpense by viewModel.amountExpense.collectAsState()
     val categorySelected by viewModel.categorySelected.collectAsState()
@@ -69,27 +64,21 @@ fun CreateExpenseScreen(
             },
             onClick = { viewModel.onClickSave(expenseGroupId, navController) },
         )
-    }) { _ ->
-        Column(
-            Modifier
+    }) { innerPadding ->
+        LazyColumn(
+            modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .scrollable(scrollState, orientation = Orientation.Vertical),
+                .padding(innerPadding)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Header(navController)
-
-            TextFieldContainer(nameExpense, amountExpense, viewModel)
-
-            CategorySelector(categorySelected, viewModel)
-
-            DayPayContainer(dayPayString, hasDayPay, viewModel)
-
-            NotifyComponent(hasNotification, viewModel)
+            item { Header(navController) }
+            item { TextFieldContainer(nameExpense, amountExpense, viewModel) }
+            item { CategorySelector(categorySelected, viewModel) }
+            item { DayPayContainer(dayPayString, hasDayPay, viewModel) }
+            item { NotifyComponent(hasNotification, viewModel) }
         }
     }
-
-
 }
 
 @Preview(showBackground = true, apiLevel = 33)

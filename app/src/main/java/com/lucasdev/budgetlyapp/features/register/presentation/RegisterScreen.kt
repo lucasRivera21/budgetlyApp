@@ -2,6 +2,7 @@ package com.lucasdev.budgetlyapp.features.register.presentation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -41,6 +42,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun RegisterScreen(
     navController: NavController,
+    innerPadding: PaddingValues,
     registerViewModel: RegisterViewModel = hiltViewModel()
 ) {
     val pagerState = rememberPagerState(
@@ -72,6 +74,7 @@ fun RegisterScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(innerPadding)
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Header {
@@ -199,6 +202,6 @@ private fun ViewPager(
 @Composable
 fun RegisterScreenPreview() {
     AppTheme {
-        RegisterScreen(NavController(LocalContext.current))
+        RegisterScreen(NavController(LocalContext.current), innerPadding = PaddingValues())
     }
 }

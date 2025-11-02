@@ -2,9 +2,8 @@ package com.lucasdev.budgetlyapp.features.register.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -16,17 +15,22 @@ import com.lucasdev.budgetlyapp.ui.theme.AppTheme
 
 @Composable
 fun FormRegister(registerTitle: String, content: @Composable () -> Unit) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        Text(
-            registerTitle,
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface
-        )
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(60.dp)
+    ) {
+        item {
+            Text(
+                registerTitle,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
 
-        Spacer(Modifier.size(64.dp))
-
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            content()
+        item {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                content()
+            }
         }
     }
 }

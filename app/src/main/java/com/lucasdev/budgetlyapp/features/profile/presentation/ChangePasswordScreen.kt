@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,6 +35,7 @@ import com.lucasdev.budgetlyapp.features.profile.presentation.viewModel.ChangePa
 @Composable
 fun ChangePasswordScreen(
     navController: NavHostController,
+    paddingValues: PaddingValues,
     changePasswordViewModel: ChangePasswordViewModel = hiltViewModel()
 ) {
     val currentPassword by changePasswordViewModel.currentPassword.collectAsState()
@@ -45,6 +47,7 @@ fun ChangePasswordScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
+            .padding(paddingValues)
             .padding(vertical = 8.dp, horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(48.dp)
     ) {

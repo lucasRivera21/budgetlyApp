@@ -2,6 +2,7 @@ package com.lucasdev.budgetlyapp.navigation
 
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -18,7 +19,7 @@ import com.lucasdev.budgetlyapp.features.profile.presentation.EditPersonalDataSc
 import com.lucasdev.budgetlyapp.features.register.presentation.RegisterScreen
 
 @Composable
-fun AppNavigation(navController: NavHostController) {
+fun AppNavigation(navController: NavHostController, innerPadding: PaddingValues) {
     NavHost(
         navController = navController,
         startDestination = SplashScreen.route,
@@ -40,11 +41,11 @@ fun AppNavigation(navController: NavHostController) {
         }
 
         composable(LoginScreen.route) {
-            LoginScreen(navController)
+            LoginScreen(navController, innerPadding)
         }
 
         composable(RegisterScreen.route) {
-            RegisterScreen(navController)
+            RegisterScreen(navController, innerPadding)
         }
 
         composable(MainScreen.route) {
@@ -52,15 +53,15 @@ fun AppNavigation(navController: NavHostController) {
         }
 
         composable(EditPersonalDataScreen.route) {
-            EditPersonalDataScreen(navController)
+            EditPersonalDataScreen(navController, innerPadding)
         }
 
         composable(ChangePasswordScreen.route) {
-            ChangePasswordScreen(navController)
+            ChangePasswordScreen(navController, innerPadding)
         }
 
         composable(ForgotPasswordScreen.route) {
-            ForgotPasswordScreen(navController)
+            ForgotPasswordScreen(navController, innerPadding)
         }
 
         composable(

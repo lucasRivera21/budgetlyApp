@@ -3,6 +3,7 @@ package com.lucasdev.budgetlyapp.features.login.presentation
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,7 +37,11 @@ import com.lucasdev.budgetlyapp.navigation.ForgotPasswordScreen
 import com.lucasdev.budgetlyapp.ui.theme.AppTheme
 
 @Composable
-fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = hiltViewModel()) {
+fun LoginScreen(
+    navController: NavController,
+    innerPadding: PaddingValues,
+    loginViewModel: LoginViewModel = hiltViewModel()
+) {
     val email by loginViewModel.email.collectAsState()
     val password by loginViewModel.password.collectAsState()
     val isLoading by loginViewModel.isLoading.collectAsState()
@@ -44,6 +49,7 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = h
     Column(
         Modifier
             .fillMaxSize()
+            .padding(innerPadding)
             .padding(horizontal = 16.dp)
             .padding(top = 48.dp, bottom = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -169,6 +175,6 @@ fun TermsAndConditions() {
 @Composable
 fun LoginScreenPreview() {
     AppTheme {
-        LoginScreen(NavController(LocalContext.current))
+        LoginScreen(NavController(LocalContext.current), PaddingValues())
     }
 }
