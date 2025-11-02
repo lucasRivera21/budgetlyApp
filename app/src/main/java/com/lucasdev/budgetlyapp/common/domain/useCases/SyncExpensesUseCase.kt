@@ -4,6 +4,7 @@ import android.util.Log
 import com.lucasdev.budgetlyapp.common.data.entities.ExpenseEntity
 import com.lucasdev.budgetlyapp.common.data.repository.ExpenseRepository
 import com.lucasdev.budgetlyapp.common.data.repository.TaskWorkerRepository
+import com.lucasdev.budgetlyapp.common.domain.models.ExpenseToUpload
 import com.lucasdev.budgetlyapp.common.utils.UploadState
 import com.lucasdev.budgetlyapp.common.utils.UploadState.Companion.codeToUploadState
 import javax.inject.Inject
@@ -37,6 +38,7 @@ class SyncExpensesUseCase @Inject constructor(
             when (uploadState) {
                 UploadState.DO_NOT_UPLOAD -> uploadExpensesWithOutUpload(expenseList)
                 UploadState.DELETED -> deleteExpenses(expenseList)
+                UploadState.EDITED -> updateExpenses(expenseList)
                 else -> Unit
             }
         }
@@ -66,6 +68,33 @@ class SyncExpensesUseCase @Inject constructor(
 
             repository.deleteExpenseFromApi(expenseEntity.expenseIdRemote, taskIdRemoteList)
             repository.deleteExpenseFromDb(expenseEntity.expenseId)
+        }
+    }
+
+    private suspend fun updateExpenses(expenseList: List<ExpenseEntity>) {
+        expenseList.forEach { expenseEntity ->
+            val expenseToUpload = ExpenseToUpload(
+                expenseId = expenseEntity.expenseId,
+                expenseName = expenseEntity.expenseName,
+                expenseAmount = expenseEntity.expenseAmount,
+                createdAt = expenseEntity.createdAt,
+                day = expenseEntity.day,
+                expenseGroupId = expenseEntity.expenseGroupId,
+                hasNotification = expenseEntity.hasNotification,
+                tagId = expenseEntity.tagId
+            )
+
+            val expenseIdRemote = expenseEntity.expenseIdRemote!!
+
+            val result = repository.editExpense(expenseIdRemote, expenseToUpload)
+
+            if (result.isSuccess) {
+                repository.updateIsUploaded(
+                    expenseEntity.expenseId,
+                    expenseIdRemote,
+                    UploadState.UPLOADED.code
+                )
+            }
         }
     }
 }

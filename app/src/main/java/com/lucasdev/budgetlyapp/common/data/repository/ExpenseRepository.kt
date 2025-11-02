@@ -23,6 +23,11 @@ interface ExpenseRepository {
 
     suspend fun updateExpenses(expense: ExpenseEntity): String?
 
+    suspend fun editExpense(
+        expenseIdRemote: String,
+        expenseToUpload: ExpenseToUpload
+    ): Result<String>
+
     suspend fun updateIsUploaded(expenseId: Int, expenseIdRemote: String, isUploadStateCode: Int)
 
     suspend fun downloadExpenses(): List<ExpenseResponseDTO>
@@ -71,6 +76,27 @@ class ExpenseRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Log.e(TAG, "updateExpenses: ${e.message}")
             null
+        }
+    }
+
+    override suspend fun editExpense(
+        expenseIdRemote: String,
+        expenseToUpload: ExpenseToUpload
+    ): Result<String> {
+        return try {
+            val user = auth.currentUser
+
+            if (user != null) {
+                api.collection(UsersCollection.collectionName).document(user.uid)
+                    .collection(ExpenseCollection.collectionName).document(expenseIdRemote)
+                    .set(expenseToUpload).await()
+                Result.success("")
+            } else {
+                Result.failure(Exception())
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "edit expense error", e)
+            Result.failure(e)
         }
     }
 
