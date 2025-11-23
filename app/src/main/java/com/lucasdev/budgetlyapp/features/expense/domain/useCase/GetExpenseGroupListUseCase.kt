@@ -39,6 +39,6 @@ class GetExpenseGroupListUseCase @Inject constructor(private val expenseTask: Ex
             )
         }
 
-        return expenseModelGroupList
+        return expenseModelGroupList.sortedBy { it.createdAt }
     }
 }
