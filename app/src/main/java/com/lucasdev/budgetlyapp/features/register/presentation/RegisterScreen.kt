@@ -58,9 +58,6 @@ fun RegisterScreen(
     //About You
     val name by registerViewModel.name.collectAsState()
     val lastName by registerViewModel.lastName.collectAsState()
-    val dayBirth by registerViewModel.dayBirth.collectAsState()
-    val monthBirth by registerViewModel.monthBirth.collectAsState()
-    val yearBirth by registerViewModel.yearBirth.collectAsState()
 
     //Incoming Info
     val incomeValue by registerViewModel.incomeValue.collectAsState()
@@ -96,9 +93,6 @@ fun RegisterScreen(
             pagerState,
             name,
             lastName,
-            dayBirth,
-            monthBirth,
-            yearBirth,
             incomeValue,
             moneyType,
             email,
@@ -156,9 +150,6 @@ private fun ViewPager(
     pagerState: PagerState,
     name: TextFieldValue,
     lastName: TextFieldValue,
-    dayBirth: String,
-    monthBirth: String,
-    yearBirth: String,
     incomeValue: TextFieldValue,
     moneyType: String,
     email: TextFieldValue,
@@ -177,9 +168,6 @@ private fun ViewPager(
                 0 -> AboutYouScreen(
                     name,
                     lastName,
-                    dayBirth,
-                    monthBirth,
-                    yearBirth,
                     registerViewModel
                 )
 

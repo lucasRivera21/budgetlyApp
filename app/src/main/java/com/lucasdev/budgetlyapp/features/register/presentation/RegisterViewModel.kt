@@ -8,7 +8,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.lucasdev.budgetlyapp.R
 import com.lucasdev.budgetlyapp.features.register.domain.model.RegisterUserModel
 import com.lucasdev.budgetlyapp.common.utils.MoneyType
 import com.lucasdev.budgetlyapp.common.utils.clearThousandFormat
@@ -21,7 +20,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.time.LocalDate
 import javax.inject.Inject
 
 const val TAG = "RegisterViewModel"
@@ -44,65 +42,12 @@ class RegisterViewModel @Inject constructor(
     private val _lastName = MutableStateFlow(TextFieldValue(""))
     val lastName: MutableStateFlow<TextFieldValue> = _lastName
 
-    private val _dayBirth = MutableStateFlow("1")
-    val dayBirth = _dayBirth
-
-    private val _monthBirth = MutableStateFlow("")
-    val monthBirth = _monthBirth
-
-    private var selectedMonthBirth = 1
-
-    private val _yearBirth = MutableStateFlow(LocalDate.now().year.toString())
-    val yearBirth = _yearBirth
-
-    fun returnMonthList(): List<Int> {
-        return listOf(
-            R.string.register_month_jan,
-            R.string.register_month_feb,
-            R.string.register_month_mar,
-            R.string.register_month_abr,
-            R.string.register_month_may,
-            R.string.register_month_jun,
-            R.string.register_month_jul,
-            R.string.register_month_aug,
-            R.string.register_month_sep,
-            R.string.register_month_oct,
-            R.string.register_month_nov,
-            R.string.register_month_dic
-        )
-    }
-
-    fun returnDayList(): List<Int> {
-        return (1..31).toList()
-    }
-
-    fun returnYearList(): List<Int> {
-        val currentYear = LocalDate.now().year
-        return (currentYear - 100..currentYear).toList().reversed()
-    }
-
     fun onNameChange(newName: TextFieldValue) {
         _name.value = newName
     }
 
     fun onLastNameChange(newLastName: TextFieldValue) {
         _lastName.value = newLastName
-    }
-
-    fun onDayBirthChange(newDayBirth: String) {
-        _dayBirth.value = newDayBirth
-    }
-
-    fun onSelectedMonthBirthChange(newSelectedMonthBirth: Int) {
-        selectedMonthBirth = newSelectedMonthBirth + 1
-    }
-
-    fun onMonthBirthChange(newMonthBirth: String) {
-        _monthBirth.value = newMonthBirth
-    }
-
-    fun onYearBirthChange(newYearBirth: String) {
-        _yearBirth.value = newYearBirth
     }
 
     //Incoming Info
@@ -157,12 +102,9 @@ class RegisterViewModel @Inject constructor(
             Toast.makeText(context, "Completa los campos", Toast.LENGTH_SHORT).show()
             return
         }
-        val birthDate =
-            LocalDate.of(_yearBirth.value.toInt(), selectedMonthBirth, _dayBirth.value.toInt())
 
         registerUser.name = _name.value.text
         registerUser.lastName = _lastName.value.text
-        registerUser.birthDate = birthDate.toString()
 
         changePage()
     }
